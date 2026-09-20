@@ -1,6 +1,6 @@
 # Simple Makefile for the evil_word_guess project
 CXX := clang++
-CXXFLAGS := -std=c++23
+CXXFLAGS := -std=c++20
 CPPFLAGS := -Iincludes
 OPTFLAGS := -O0 -gdwarf-4
 
