@@ -23,31 +23,38 @@ struct Expense {
         return std::format("{:.2f}, {}, {}\n", cost, reason, day);
     }
 
-    // Overloading the < operator as a member function
+    // Sort by date first, then cost, then reason so same-day entries stay distinct.
     bool operator<(const Expense& other) const {
-        return this->cost < other.cost;
+        if (this->day != other.day) {
+            return this->day < other.day;
+        }
+        if (this->cost != other.cost) {
+            return this->cost < other.cost;
+        }
+        return this->reason < other.reason;
     }
-    // Overloading the > operator as a member function
-    bool operator>(const Expense& other) const {
-        return this->cost > other.cost;
-    }
-    // // Overloading the == operator as a member function
-    // bool operator==(const Expense& other) const {
-    //     return (this->cost == other.cost) && (this->reason == other.reason) && (this->day == other.day);
-    // }
-    // // Overloading the != operator as a member function
-    // bool operator==(const Expense& other) const {
-    //     return (this->cost != other.cost) || (this->reason != other.reason) || (this->day != other.day);
-    // }
 
-    // Default equality operator
-    bool operator==(const Expense&) const = default;
+    bool operator>(const Expense& other) const {
+        return other < *this;
+    }
+
+    // Overloading the == operator as a member function
+    bool operator==(const Expense& other) const {
+        return (this->cost == other.cost) && (this->reason == other.reason) && (this->day == other.day);
+    }
+    // Overloading the != operator as a member function
+    bool operator!=(const Expense& other) const {
+        return (this->cost != other.cost) || (this->reason != other.reason) || (this->day != other.day);
+    }
+
+    // // Default equality operator
+    // bool operator==(const Expense&) const = default;
 };
 class Month {
   public:
     // std::chrono::year year;
     std::chrono::month month;
-    std::vector<Expense> expenses;
+    std::set<Expense> expenses;
     double total = 0;
     std::string filename;
     bool changed = false;
