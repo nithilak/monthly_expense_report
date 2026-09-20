@@ -38,7 +38,11 @@ int main() {
 
 
   std::chrono::month month_to_add = std::chrono::February;
-  AddExpense(year_2026, month_to_add);
+  if (AddExpense(year_2026, month_to_add)) {
+    UpdateMonthFile(year_2026, month_to_add);
+  }
+
+  PrintExpenses(year_2026, month_to_add);
 
   return 0;
 }
