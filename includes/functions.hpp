@@ -19,7 +19,10 @@ void PrintExpenses(Year& year, std::chrono::month curr_month);
 
 double PopulateExpenses(const std::string& filename, Month& month);
 double PopulateExpenses(const std::string& filename, Year& year, std::chrono::month curr_month);
+double PopulateExpenses(Year& year);
 
 void PrintAnnualTotal(const Year& year);
+
+Year& InsertYear(int year);
 
 #endif // FUNCTIONS_HPP

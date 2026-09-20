@@ -353,9 +353,31 @@ double PopulateExpenses(const std::string& filename, Year& year, std::chrono::mo
     return total;
 }
 
+double PopulateExpenses(Year& year) {
+    std::string year_str = std::to_string(static_cast<int>(year.year));
+    for (int i = 1; i < 13; i++) {
+        std::chrono::month curr_month = static_cast<std::chrono::month>(i);
+        PopulateExpenses("includes/" + year_str + "Expenses/" + std::format("{:%B}", curr_month) + year_str + ".csv", year, curr_month);
+        //PrintExpenses(year, curr_month);
+    }
+    return year.total;
+}
+
 void PrintAnnualTotal(const Year& year) {
     std::cout << std::format("Year {}", static_cast<int>(year.year)) << std::endl;
     std::cout << std::string(colWidth * 2 + strWidth, '-') << "\n";
     std::cout << "Total Annual Expense: \n" << year.total << std::endl;
     std::cout << std::string(colWidth * 2 + strWidth, '-') << "\n" << std::endl;
+}
+
+Year& InsertYear(int year) {
+    std::string year_str = std::to_string(year);
+    std::chrono::year year_to_insert = std::chrono::year{year};
+    years.insert({year_to_insert, Year(year_to_insert)});
+
+    Year& year_return = years.at(year_to_insert);
+
+    PopulateExpenses(year_return);
+
+    return year_return;
 }
