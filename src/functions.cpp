@@ -8,6 +8,7 @@
 #include <string>
 #include <iomanip>
 #include <format>
+#include <chrono>
 
 void PrintFile(std::string filename) {
     // 1. Open the CSV file using an input file stream
@@ -131,7 +132,7 @@ double PrintExpenses(const std::vector<Expense>& expenses) {
     std::cout << total << std::endl;
 
     // Print bottom border
-    std::cout << std::string(colWidth * 2 + strWidth, '-') << "\n" << std::endl;
+    std::cout << std::string(colWidth * 2 + strWidth, '-') << "\n";
 
     return total;
 }
@@ -183,7 +184,7 @@ void PrintExpenses(const Month& month) {
     std::cout << month.total << std::endl;
 
     // Print bottom border
-    std::cout << std::string(colWidth * 2 + strWidth, '-') << "\n" << std::endl;
+    std::cout << std::string(colWidth * 2 + strWidth, '-') << "\n";
 }
 
 void PrintExpenses(const Month& month, std::chrono::year year) {
@@ -239,7 +240,7 @@ void PrintExpenses(const Month& month, std::chrono::year year) {
     std::cout << month.total << std::endl;
 
     // Print bottom border
-    std::cout << std::string(colWidth * 2 + strWidth, '-') << "\n" << std::endl;
+    std::cout << std::string(colWidth * 2 + strWidth, '-') << "\n";
 }
 
 void PrintExpenses(Year& year, std::chrono::month curr_month) {
@@ -296,7 +297,7 @@ void PrintExpenses(Year& year, std::chrono::month curr_month) {
     std::cout << month.total << std::endl;
 
     // Print bottom border
-    std::cout << std::string(colWidth * 2 + strWidth, '-') << "\n" << std::endl;;
+    std::cout << std::string(colWidth * 2 + strWidth, '-') << "\n";
 }
 
 double PopulateExpenses(const std::string& filename, Month& month) {
@@ -380,4 +381,114 @@ Year& InsertYear(int year) {
     PopulateExpenses(year_return);
 
     return year_return;
+}
+
+void AddExpense(Year& year, std::chrono::month curr_month) {
+    Month& month = year.months[static_cast<unsigned int>(curr_month) - 1];
+
+    std::cout << "Adding expense to: " << std::format("{:%B} {}", curr_month, static_cast<int>(year.year)) << std::endl;
+
+    std::cout << "Enter q to quit." << std::endl;
+
+    std::string line;
+
+    double num{};
+
+    // std::cout << "Enter a number, a word, and a day (1-31): ";
+    std::cout << "Enter a cost: ";
+
+    while (std::getline(std::cin, line)) {
+        if (line == "q") {
+            return;
+        }
+
+        std::stringstream ss(line);
+
+        if (ss >> num) {
+            std::cout << "Cost: " << num << "\n";
+            break;
+        } else {
+            std::cout << "Invalid input.\n";
+        }
+    }
+
+    std::string text;
+
+    std::cout << "Enter a reason: ";
+
+    while (std::getline(std::cin, text)) {
+        if (text == "q") {
+            return;
+        }
+
+        if (!line.empty()) {
+            std::cout << "Reason: " << text << "\n";
+            break;
+        } else {
+            std::cout << "Reason cannot be empty.\n";
+        }
+
+    }
+
+    unsigned day_value{};
+    std::chrono::day d{};
+    auto mdl = curr_month / std::chrono::last; // Last day of any February
+    auto ymdl = year.year / mdl;             // Resolves leap year (29 days)
+
+    std::chrono::day last_day = ymdl.day(); 
+    unsigned last_day_num = static_cast<unsigned>(last_day);
+    std::string date;
+
+    std::cout << "Enter a day (1-" << last_day_num << "): ";
+
+    while (std::getline(std::cin, line)) {
+        if (line == "q") {
+            return;
+        }
+
+        // Parse the numeric cost, reason text, and day manually.
+        // std::chrono::parse is not available in this standard library implementation.
+        std::stringstream ss(line);
+        if (ss >> day_value) {
+            if (day_value >= 1 && day_value <= last_day_num) {
+                d = std::chrono::day{static_cast<unsigned>(day_value)};
+                date = std::format("{}-{:02}-{:02}", 
+                    static_cast<int>(year.year), 
+                    static_cast<unsigned>(curr_month), 
+                    static_cast<unsigned>(d)
+                );
+                std::cout << "Day: " << date << "\n";
+                break;
+            } else {
+                std::cout << "Invalid day. Please enter a value from 1 to 31.\n";
+            }
+        } else {
+            std::cout << "Invalid input.\n";
+        }
+
+    }
+
+    std::cout << "Add Expense: " << num << ", " << text << ", " << date << std::endl;
+    std::cout << "Press y or n" << std::endl;
+
+    while (std::getline(std::cin, line)) {
+        if (line == "q") {
+            return;
+        }
+
+        if (line == "y") {
+            month.expenses.push_back(Expense(num, text, d));
+            std::cout << "Expense added." << std::endl;
+            return;
+        }
+
+        if (line == "n") {
+            AddExpense(year, curr_month);
+            return;
+        }
+
+        std::cout << "Invalid input.\n";
+
+    }
+
 }

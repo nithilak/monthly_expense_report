@@ -25,4 +25,6 @@ void PrintAnnualTotal(const Year& year);
 
 Year& InsertYear(int year);
 
+void AddExpense(Year& year, std::chrono::month curr_month);
+
 #endif // FUNCTIONS_HPP

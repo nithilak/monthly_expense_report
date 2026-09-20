@@ -36,5 +36,9 @@ int main() {
 
   PrintAnnualTotal(year_2026);
 
+
+  std::chrono::month month_to_add = std::chrono::February;
+  AddExpense(year_2026, month_to_add);
+
   return 0;
 }
