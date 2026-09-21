@@ -25,8 +25,8 @@ int main() {
   while (true) {
     std::cout << "Insert year: 0, Choose year: 1, See available years: 2, Delete year: 3" << std::endl;
     std::cout << "Print all expenses: 4, Print month expenses: 5" << std::endl;
-    std::cout << "Add expense: 6, Delete expense: 7" << std::endl; 
-    std::cout << "Print all annual totals: 8, Print annual total: 9" << std::endl;
+    std::cout << "Add expense: 6, Delete expense: 7, Update month file: 8" << std::endl; 
+    std::cout << "Print all annual totals: 9, Print annual total: 10" << std::endl;
 
     unsigned num;
 
@@ -50,8 +50,8 @@ int main() {
           std::cout << "Year: " << year.year << std::endl;
           std::cout << "Return to all years: 0" << std::endl;
           std::cout << "Print all expenses: 4, Print month expenses: 5" << std::endl;
-          std::cout << "Add expense: 6, Delete expense: 7" << std::endl; 
-          std::cout << "Print all annual totals: 8, Print annual total: 9" << std::endl;
+          std::cout << "Add expense: 6, Delete expense: 7, Update month file: 8" << std::endl; 
+          std::cout << "Print all annual totals: 9, Print annual total: 10" << std::endl;
 
           while (std::getline(std::cin, line)) {
             if (line == "q") {
@@ -68,9 +68,9 @@ int main() {
               std::cout << std::endl;
               if (num == 4) {
                 PrintAllExpenses(year);
-              } else if (num == 8) {
-                PrintTotalsFile(year);
               } else if (num == 9) {
+                PrintTotalsFile(year);
+              } else if (num == 10) {
                 PrintAnnualTotal(year);
               } else {
                 std::chrono::month month_to_add = PromptMonth();
@@ -87,6 +87,8 @@ int main() {
                     UpdateMonthFile(year, month_to_add);
                     UpdateTotalsFile(year);
                   }
+                } else if (num == 8) {
+                  UpdateMonthFile(year, month_to_add);
                 }
               }
             } else {
@@ -95,8 +97,8 @@ int main() {
             std::cout << "Year: " << year.year << std::endl;
             std::cout << "Return to all years: 0" << std::endl;
             std::cout << "Print all expenses: 4, Print month expenses: 5" << std::endl;
-            std::cout << "Add expense: 6, Delete expense: 7" << std::endl;
-            std::cout << "Print all annual totals: 8, Print annual total: 9" << std::endl;
+            std::cout << "Add expense: 6, Delete expense: 7, Update month file: 8" << std::endl; 
+            std::cout << "Print all annual totals: 9, Print annual total: 10" << std::endl;
           }
         } else if (num == 2) {
           std::cout << std::endl;
@@ -113,9 +115,9 @@ int main() {
           std::cout << std::endl;
           if (num == 4) {
             PrintAllExpenses(year);
-          } else if (num == 8) {
-            PrintTotalsFile(year);
           } else if (num == 9) {
+            PrintTotalsFile(year);
+          } else if (num == 10) {
             PrintAnnualTotal(year);
           } else {
             std::chrono::month month_to_add = PromptMonth();
@@ -134,6 +136,8 @@ int main() {
                 UpdateTotalsFile(year);
               }
               // std::cout << std::endl; //temp
+            } else if (num == 8) {
+              UpdateMonthFile(year, month_to_add);
             }
           }
         }
@@ -144,8 +148,8 @@ int main() {
 
       std::cout << "Insert year: 0, Choose year: 1, See available years: 2, Delete year: 3" << std::endl;
       std::cout << "Print all expenses: 4, Print month expenses: 5" << std::endl;
-      std::cout << "Add expense: 6, Delete expense: 7" << std::endl; 
-      std::cout << "Print all annual totals: 8, Print annual total: 9" << std::endl;
+      std::cout << "Add expense: 6, Delete expense: 7, Update month file: 8" << std::endl; 
+      std::cout << "Print all annual totals: 9, Print annual total: 10" << std::endl;
     }
   }
 

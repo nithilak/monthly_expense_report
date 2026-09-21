@@ -14,6 +14,7 @@
 
 //if you delete a month file while a session is in progress it will only be updated if you add/delete an expense
 //perhaps I should add an option to update the file separately but the UI is already pretty full
+//edit: added this feature
 
 //not my code, prints a csv file
 void PrintFile(std::string filename);
