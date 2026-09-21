@@ -10,6 +10,11 @@
 //I don't use const iterators but maybe they could be implemented
 //also perhaps there should be less copy and pasting in main
 
+//incosistent use of "\n" at the end of invalid rather than std::endl; but it's ok (got it from code written not by me)
+
+//if you delete a month file while a session is in progress it will only be updated if you add/delete an expense
+//perhaps I should add an option to update the file separately but the UI is already pretty full
+
 //not my code, prints a csv file
 void PrintFile(std::string filename);
 
@@ -37,6 +42,9 @@ double PopulateExpenses(Year& year);
 void PrintAnnualTotal(const Year& year);
 
 //inserts a year with all 12 month files formatted like includes/YEARExpenses/MONTHYEAR into years
+//also TotalExpensesYEAR.csv
+//creates directory and file if it does not exist
+//if files are deleted after inserted, running InsertYear again creates the files fresh but the memory of the old file stays
 Year& InsertYear(int year);
 
 //adds an expense to a month
@@ -47,9 +55,11 @@ int DeleteExpense(Year& year, std::chrono::month curr_month);
 int DeleteExpense(std::chrono::year year, Month& month);
 
 //updates the month's csv file to match its data
+//creates the file if it does not exist
 int UpdateMonthFile(const Year& year, std::chrono::month curr_month);
 
 //updates TotalExpensesYEAR.csv
+//creates the file if it does not exist
 int UpdateTotalsFile(const Year& year);
 //prints TotalExpensesYEAR.csv
 int PrintTotalsFile(const Year& year);
