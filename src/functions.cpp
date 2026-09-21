@@ -495,6 +495,8 @@ Year& InsertYear(int year) {
     Year& year_return = years.at(year_to_insert);
 
     PopulateExpenses(year_return);
+    
+    UpdateTotalsFile(year_return);
 
     return year_return;
 }
@@ -595,6 +597,7 @@ int AddExpense(Year& year, std::chrono::month curr_month) {
         if (line == "y") {
             month.expenses.insert(Expense(num, text, d));
             month.total += num;
+            year.total += num;
             // month.changed = true;
             std::cout << "Expense added." << std::endl;
             return 1;
@@ -654,6 +657,7 @@ int DeleteExpense(Year& year, std::chrono::month curr_month) {
                     if (line == "y") {
                         expenses.erase(it);
                         month.total -= expense.cost;
+                        year.total -= expense.cost;
                         // month.changed = true;
                         std::cout << "Expense deleted." << std::endl;
                         return 1;
@@ -749,7 +753,7 @@ int UpdateMonthFile(const Year& year, std::chrono::month curr_month) {
     // Best Practice: Always check if the file opened successfully
     if (!file.is_open()) {
         std::cerr << "Error: Could not open the file!" << std::endl;
-        return 1;
+        return 0;
     }
 
     const std::set<Expense>& expenses = month.expenses;
@@ -762,20 +766,20 @@ int UpdateMonthFile(const Year& year, std::chrono::month curr_month) {
 
     // month.changed = false;
 
-    return 0;
+    return 1;
 }
 
 int UpdateTotalsFile(const Year& year) {
     std::string year_str = std::to_string(static_cast<int>(year.year));
-    std::string filename = "includes/" + year_str + "Expenses/TotalExpenses" + year_str;
+    std::string filename = "includes/" + year_str + "Expenses/TotalExpenses" + year_str + ".csv";
 
-    // 1. Open the CSV file using an input file stream
+    // 1. Open the CSV file using an output file stream
     std::ofstream file(filename);
 
     // Best Practice: Always check if the file opened successfully
     if (!file.is_open()) {
         std::cerr << "Error: Could not open the file!" << std::endl;
-        return 1;
+        return 0;
     }
 
     file << "January,February,March,April,May,June,July,August,September,October,November,December,Total\n";
@@ -786,7 +790,77 @@ int UpdateTotalsFile(const Year& year) {
     }
     file << year.total << "\n";
 
-    return 0;
+    return 1;
+}
+
+int PrintTotalsFile(const Year& year) {
+    std::string year_str = std::to_string(static_cast<int>(year.year));
+    std::string filename = "includes/" + year_str + "Expenses/TotalExpenses" + year_str + ".csv";
+
+    std::ifstream file(filename);
+    if (!file.is_open()) {
+        std::cerr << "Error: Could not open the file!" << std::endl;
+        return 0;
+    }
+
+    std::string line;
+    std::vector<std::string> header;
+    std::vector<std::string> values;
+
+    if (std::getline(file, line)) {
+        std::stringstream header_stream(line);
+        std::string cell;
+        while (std::getline(header_stream, cell, ',')) {
+            header.push_back(cell);
+        }
+    }
+
+    if (std::getline(file, line)) {
+        std::stringstream values_stream(line);
+        std::string cell;
+        while (std::getline(values_stream, cell, ',')) {
+            values.push_back(cell);
+        }
+    }
+
+    if (header.empty() || values.empty()) {
+        std::cerr << "Error: No totals data found in the CSV file." << std::endl;
+        return 0;
+    }
+
+    std::cout << std::format("Year {}", static_cast<int>(year.year)) << std::endl;
+    std::cout << std::string(colWidth * 6, '-') << "\n";
+
+    std::cout << std::left;
+    for (int i = 0; i < 6 && i < static_cast<int>(header.size()); ++i) {
+        std::cout << std::setw(colWidth) << header[i];
+    }
+    std::cout << std::endl;
+
+    std::cout << std::left;
+    for (int i = 0; i < 6 && i < static_cast<int>(values.size()); ++i) {
+        std::cout << std::setw(colWidth) << values[i];
+    }
+    std::cout << std::endl;
+
+    std::cout << std::string(colWidth * 6, '-') << "\n";
+    std::cout << std::left;
+    for (int i = 6; i < 12 && i < static_cast<int>(header.size()); ++i) {
+        std::cout << std::setw(colWidth) << header[i];
+    }
+    std::cout << std::endl;
+
+    std::cout << std::left;
+    for (int i = 6; i < 12 && i < static_cast<int>(values.size()); ++i) {
+        std::cout << std::setw(colWidth) << values[i];
+    }
+    std::cout << std::endl;
+
+    std::cout << std::string(colWidth * 6, '-') << "\n";
+    std::cout << "Total: \n" << (values.size() > 12 ? values[12] : "0") << std::endl;
+    std::cout << std::string(colWidth * 6, '-') << "\n" << std::endl;
+
+    return 1;
 }
 
 int PromptInsertYear() {

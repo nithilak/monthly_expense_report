@@ -49,6 +49,8 @@ int DeleteExpense(std::chrono::year year, Month& month);
 int UpdateMonthFile(const Year& year, std::chrono::month curr_month);
 int UpdateTotalsFile(const Year& year);
 
+int PrintTotalsFile(const Year& year);
+
 int PromptInsertYear();
 Year& PromptYear();
 std::chrono::month PromptMonth();
