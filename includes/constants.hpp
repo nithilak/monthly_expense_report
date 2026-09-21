@@ -96,6 +96,7 @@ inline std::map<std::chrono::year, Year> years; //doing this to avoid implementi
 // Set the equal width for each column
 constexpr int colWidth = 20;
 constexpr int strWidth = 80;
+constexpr int idWidth = 3;
 
 
 #endif // CONSTANTS_HPP
