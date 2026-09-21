@@ -9,6 +9,7 @@
 #include <iomanip>
 #include <format>
 #include <chrono>
+#include <filesystem>
 
 void PrintFile(std::string filename) {
     // 1. Open the CSV file using an input file stream
@@ -422,9 +423,17 @@ double PopulateExpenses(const std::string& filename, Month& month) {
     // 1. Open the CSV file using an input file stream
     std::ifstream file(filename);
 
+    std::string dirPath = filename.substr(0, filename.size() - 11);
+    if (std::filesystem::create_directories(dirPath)) {
+        std::cerr << "Directory " << filename.substr(0, 21) << " not found. Creating directory..." << std::endl;
+    }
+
     // Best Practice: Always check if the file opened successfully
     if (!file.is_open()) {
-        std::cerr << "Error: Could not open the file!" << std::endl;
+        std::cerr << filename.substr(filename.size() - 11, 11) << " file not found. Creating file..." << std::endl;
+        std::ofstream file(filename);
+        file << "cost,reason,date\n";
+        return 0;
     }
 
     std::set<Expense>& expenses = month.expenses;
@@ -474,7 +483,7 @@ double PopulateExpenses(Year& year) {
     std::string year_str = std::to_string(static_cast<int>(year.year));
     for (int i = 1; i < 13; i++) {
         std::chrono::month curr_month = static_cast<std::chrono::month>(i);
-        PopulateExpenses("includes/" + year_str + "Expenses/" + std::format("{:%B}", curr_month) + year_str + ".csv", year, curr_month);
+        PopulateExpenses("includes/" + year_str + "Expenses/" + std::format("{:%b}", curr_month) + year_str + ".csv", year, curr_month);
         //PrintExpenses(year, curr_month);
     }
     return year.total;
@@ -747,6 +756,10 @@ int UpdateMonthFile(const Year& year, std::chrono::month curr_month) {
     const Month& month = year.months[static_cast<unsigned int>(curr_month) - 1];
     std::string filename = month.filename;
 
+    if (!std::filesystem::exists(filename)) {
+        std::cerr << filename.substr(filename.size() - 11, 11) << " file not found. Creating file..." << std::endl;
+    }
+
     // 1. Open the CSV file using an input file stream
     std::ofstream file(filename);
 
@@ -773,6 +786,10 @@ int UpdateTotalsFile(const Year& year) {
     std::string year_str = std::to_string(static_cast<int>(year.year));
     std::string filename = "includes/" + year_str + "Expenses/TotalExpenses" + year_str + ".csv";
 
+    if (!std::filesystem::exists(filename)) {
+        std::cout << filename.substr(filename.size() - 21, 21) << " file not found. Creating file...\n";
+    }
+    
     // 1. Open the CSV file using an output file stream
     std::ofstream file(filename);
 
@@ -799,8 +816,17 @@ int PrintTotalsFile(const Year& year) {
 
     std::ifstream file(filename);
     if (!file.is_open()) {
-        std::cerr << "Error: Could not open the file!" << std::endl;
-        return 0;
+        UpdateTotalsFile(year);
+        std::cout << std::endl;
+
+        file.clear();
+        file.open(filename);
+
+        if (!file.is_open()) {
+            std::cerr << "Error: Could not open the file!" << std::endl;
+            std::cout << std::endl;
+            return 0;
+        }
     }
 
     std::string line;
