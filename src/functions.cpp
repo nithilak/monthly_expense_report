@@ -85,7 +85,7 @@ std::vector<std::string> parseCSVLine(const std::string& line) {
 }
 
 
-double PrintExpenses(const std::vector<Expense>& expenses) {
+double PrintExpenses(const std::set<Expense>& expenses) {
     // // Set the equal width for each column
     // const int colWidth = 20;
     // const int strWidth = 80;
@@ -93,7 +93,7 @@ double PrintExpenses(const std::vector<Expense>& expenses) {
     int total = 0;
 
     // Print top border
-    std::cout << std::string(colWidth * 2 + strWidth, '-') << "\n";
+    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
 
 
     std::cout << std::left 
@@ -101,43 +101,153 @@ double PrintExpenses(const std::vector<Expense>& expenses) {
                     << std::setw(strWidth) << "Reason"
                     << std::setw(colWidth) << "Date" << "\n";
 
-    std::cout << std::string(colWidth * 2 + strWidth, '-') << "\n";
+    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
 
-    for (const auto& expense : expenses) { //size_t i = 0; i < csvData.size(); ++i
+    auto expense = expenses.begin();
+    for (int i = 1; i - 1 < expenses.size(); i++) { //const auto& expense : expenses //size_t i = 0; i < csvData.size(); ++i
         // std::vector<std::string> row = parseCSVLine(csvData[i]);
 
         //std::string date = std::format("{:02}-{}", curr_month, expenses[i].day);
-        std::string date = std::format("{:02}", static_cast<unsigned>(expense.day));
+        std::string date = std::format("{:02}", static_cast<unsigned>(expense->day));
 
         // Ensure the row has exactly 3 columns to avoid out-of-bounds errors
         // if (row.size() >= 3) {
             // std::left aligns text to the left; std::setw sets fixed spacing
             std::cout << std::left 
-                        << std::setw(colWidth) << expense.cost
-                        << std::setw(strWidth) << expense.reason
-                        << std::setw(colWidth) << date << "\n";
+                        << std::setw(colWidth) << expense->cost
+                        << std::setw(strWidth) << expense->reason
+                        << std::setw(colWidth) << date 
+                        << std::setw(idWidth) << i << "\n";
         // }
 
         // Print a divider under the header row
         // if (i == 0) {
         //     std::cout << std::string(colWidth * 2 + strWidth, '-') << "\n";
         // }
+        expense++;
     }
 
-    std::cout << std::string(colWidth * 2 + strWidth, '-') << "\n";
+    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
 
     std::cout << "Total" << std::endl;
     std::cout << total << std::endl;
 
     // Print bottom border
-    std::cout << std::string(colWidth * 2 + strWidth, '-') << "\n";
+    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n" << std::endl;
 
     return total;
 }
 
+void PrintExpenses(const std::set<Expense>& expenses, const Month& month) {
+    std::chrono::month curr_month = month.month;
+    std::cout << std::format("{:%B}", curr_month) << std::endl;
+
+
+    // // Set the equal width for each column
+    // const int colWidth = 20;
+    // const int strWidth = 80;
+
+    // Print top border
+    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
+
+
+    std::cout << std::left 
+                    << std::setw(colWidth) << "Cost"
+                    << std::setw(strWidth) << "Reason"
+                    << std::setw(colWidth) << "Date" << "\n";
+
+    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
+
+    auto expense = expenses.begin();
+    for (int i = 1; i - 1 < expenses.size(); i++) { //const auto& expense : expenses //size_t i = 0; i < csvData.size(); ++i
+        // std::vector<std::string> row = parseCSVLine(csvData[i]);
+
+        //std::string date = std::format("{:02}-{}", curr_month, expenses[i].day);
+        std::string date = std::format("{:02}-{:02}", static_cast<unsigned>(curr_month), static_cast<unsigned>(expense->day));
+
+        // Ensure the row has exactly 3 columns to avoid out-of-bounds errors
+        // if (row.size() >= 3) {
+            // std::left aligns text to the left; std::setw sets fixed spacing
+            std::cout << std::left 
+                        << std::setw(colWidth) << expense->cost
+                        << std::setw(strWidth) << expense->reason
+                        << std::setw(colWidth) << date 
+                        << std::setw(idWidth) << i << "\n";
+        // }
+
+        // Print a divider under the header row
+        // if (i == 0) {
+        //     std::cout << std::string(colWidth * 2 + strWidth, '-') << "\n";
+        // }
+        expense++;
+    }
+
+    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
+
+    std::cout << "Total" << std::endl;
+    std::cout << month.total << std::endl;
+
+    // Print bottom border
+    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n" << std::endl;
+}
+
+
+void PrintExpenses(const std::set<Expense>& expenses, const Month& month, std::chrono::year year) {
+    std::chrono::month curr_month = month.month;
+    std::cout << std::format("{:%B} {}", curr_month, static_cast<int>(year)) << std::endl;
+
+
+    // // Set the equal width for each column
+    // const int colWidth = 20;
+    // const int strWidth = 80;
+
+    // Print top border
+    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
+
+
+    std::cout << std::left 
+                    << std::setw(colWidth) << "Cost"
+                    << std::setw(strWidth) << "Reason"
+                    << std::setw(colWidth) << "Date" << "\n";
+
+    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
+
+    auto expense = expenses.begin();
+    for (int i = 1; i - 1 < expenses.size(); i++) { //const auto& expense : expenses //size_t i = 0; i < csvData.size(); ++i
+        // std::vector<std::string> row = parseCSVLine(csvData[i]);
+
+        //std::string date = std::format("{:02}-{}", curr_month, expenses[i].day);
+        std::string date = std::format("{}-{:02}-{:02}", year, static_cast<unsigned>(curr_month), static_cast<unsigned>(expense->day));
+
+        // Ensure the row has exactly 3 columns to avoid out-of-bounds errors
+        // if (row.size() >= 3) {
+            // std::left aligns text to the left; std::setw sets fixed spacing
+            std::cout << std::left 
+                        << std::setw(colWidth) << expense->cost
+                        << std::setw(strWidth) << expense->reason
+                        << std::setw(colWidth) << date 
+                        << std::setw(idWidth) << i << "\n";
+        // }
+
+        // Print a divider under the header row
+        // if (i == 0) {
+        //     std::cout << std::string(colWidth * 2 + strWidth, '-') << "\n";
+        // }
+        expense++;
+    }
+
+    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
+
+    std::cout << "Total" << std::endl;
+    std::cout << month.total << std::endl;
+
+    // Print bottom border
+    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n" << std::endl;
+}
+
 void PrintExpenses(const Month& month) {
     const std::set<Expense>& expenses = month.expenses;
-    const auto& curr_month = month.month;
+    std::chrono::month curr_month = month.month;
     // // Set the equal width for each column
     // const int colWidth = 20;
     // const int strWidth = 80;
@@ -145,7 +255,7 @@ void PrintExpenses(const Month& month) {
     std::cout << std::format("{:%B}", curr_month) << std::endl;
 
     // Print top border
-    std::cout << std::string(colWidth * 2 + strWidth, '-') << "\n";
+    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
 
 
     std::cout << std::left 
@@ -153,41 +263,44 @@ void PrintExpenses(const Month& month) {
                     << std::setw(strWidth) << "Reason"
                     << std::setw(colWidth) << "Date" << "\n";
 
-    std::cout << std::string(colWidth * 2 + strWidth, '-') << "\n";
+   std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
 
-    for (const auto& expense : expenses) { //size_t i = 0; i < csvData.size(); ++i
+    auto expense = expenses.begin();
+    for (int i = 1; i - 1 < expenses.size(); i++) { //const auto& expense : expenses //size_t i = 0; i < csvData.size(); ++i
         // std::vector<std::string> row = parseCSVLine(csvData[i]);
 
         //std::string date = std::format("{:02}-{}", curr_month, expenses[i].day);
-        std::string date = std::format("{:02}-{:02}", static_cast<unsigned>(curr_month), static_cast<unsigned>(expense.day));
+        std::string date = std::format("{:02}-{:02}", static_cast<unsigned>(curr_month), static_cast<unsigned>(expense->day));
 
         // Ensure the row has exactly 3 columns to avoid out-of-bounds errors
         // if (row.size() >= 3) {
             // std::left aligns text to the left; std::setw sets fixed spacing
             std::cout << std::left 
-                        << std::setw(colWidth) << expense.cost
-                        << std::setw(strWidth) << expense.reason
-                        << std::setw(colWidth) << date << "\n";
+                        << std::setw(colWidth) << expense->cost
+                        << std::setw(strWidth) << expense->reason
+                        << std::setw(colWidth) << date 
+                        << std::setw(idWidth) << i << "\n";
         // }
 
         // Print a divider under the header row
         // if (i == 0) {
         //     std::cout << std::string(colWidth * 2 + strWidth, '-') << "\n";
         // }
+        expense++;
     }
 
-    std::cout << std::string(colWidth * 2 + strWidth, '-') << "\n";
+    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
 
     std::cout << "Total" << std::endl;
     std::cout << month.total << std::endl;
 
     // Print bottom border
-    std::cout << std::string(colWidth * 2 + strWidth, '-') << "\n";
+    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n" << std::endl;
 }
 
 void PrintExpenses(const Month& month, std::chrono::year year) {
     const std::set<Expense>& expenses = month.expenses;
-    const auto& curr_month = month.month;
+    std::chrono::month curr_month = month.month;
 
     std::cout << std::format("{:%B} {}", curr_month, static_cast<int>(year)) << std::endl;
 
@@ -197,7 +310,7 @@ void PrintExpenses(const Month& month, std::chrono::year year) {
     // const int strWidth = 80;
 
     // Print top border
-    std::cout << std::string(colWidth * 2 + strWidth, '-') << "\n";
+    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
 
 
     std::cout << std::left 
@@ -205,36 +318,39 @@ void PrintExpenses(const Month& month, std::chrono::year year) {
                     << std::setw(strWidth) << "Reason"
                     << std::setw(colWidth) << "Date" << "\n";
 
-    std::cout << std::string(colWidth * 2 + strWidth, '-') << "\n";
+    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
 
-    for (const auto& expense : expenses) { //size_t i = 0; i < csvData.size(); ++i
+    auto expense = expenses.begin();
+    for (int i = 1; i - 1 < expenses.size(); i++) { //const auto& expense : expenses //size_t i = 0; i < csvData.size(); ++i
         // std::vector<std::string> row = parseCSVLine(csvData[i]);
 
         //std::string date = std::format("{:02}-{}", curr_month, expenses[i].day);
-        std::string date = std::format("{}-{:02}-{:02}", year, static_cast<unsigned>(curr_month), static_cast<unsigned>(expense.day));
+        std::string date = std::format("{}-{:02}-{:02}", year, static_cast<unsigned>(curr_month), static_cast<unsigned>(expense->day));
 
         // Ensure the row has exactly 3 columns to avoid out-of-bounds errors
         // if (row.size() >= 3) {
             // std::left aligns text to the left; std::setw sets fixed spacing
             std::cout << std::left 
-                        << std::setw(colWidth) << expense.cost
-                        << std::setw(strWidth) << expense.reason
-                        << std::setw(colWidth) << date << "\n";
+                        << std::setw(colWidth) << expense->cost
+                        << std::setw(strWidth) << expense->reason
+                        << std::setw(colWidth) << date 
+                        << std::setw(idWidth) << i << "\n";
         // }
 
         // Print a divider under the header row
         // if (i == 0) {
         //     std::cout << std::string(colWidth * 2 + strWidth, '-') << "\n";
         // }
+        expense++;
     }
 
-    std::cout << std::string(colWidth * 2 + strWidth, '-') << "\n";
+    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
 
     std::cout << "Total" << std::endl;
     std::cout << month.total << std::endl;
 
     // Print bottom border
-    std::cout << std::string(colWidth * 2 + strWidth, '-') << "\n";
+    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n" << std::endl;
 }
 
 void PrintExpenses(Year& year, std::chrono::month curr_month) {
@@ -250,7 +366,7 @@ void PrintExpenses(Year& year, std::chrono::month curr_month) {
     // const int strWidth = 80;
 
     // Print top border
-    std::cout << std::string(colWidth * 2 + strWidth, '-') << "\n";
+    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
 
 
     std::cout << std::left 
@@ -258,36 +374,39 @@ void PrintExpenses(Year& year, std::chrono::month curr_month) {
                     << std::setw(strWidth) << "Reason"
                     << std::setw(colWidth) << "Date" << "\n";
 
-    std::cout << std::string(colWidth * 2 + strWidth, '-') << "\n";
+    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
 
-    for (const auto& expense : expenses) { //size_t i = 0; i < csvData.size(); ++i
+    auto expense = expenses.begin();
+    for (int i = 1; i - 1 < expenses.size(); i++) { //const auto& expense : expenses //size_t i = 0; i < csvData.size(); ++i
         // std::vector<std::string> row = parseCSVLine(csvData[i]);
 
         //std::string date = std::format("{:02}-{}", curr_month, expenses[i].day);
-        std::string date = std::format("{}-{:02}-{:02}", year.year, static_cast<unsigned>(curr_month), static_cast<unsigned>(expense.day));
+        std::string date = std::format("{}-{:02}-{:02}", year.year, static_cast<unsigned>(curr_month), static_cast<unsigned>(expense->day));
 
         // Ensure the row has exactly 3 columns to avoid out-of-bounds errors
         // if (row.size() >= 3) {
             // std::left aligns text to the left; std::setw sets fixed spacing
             std::cout << std::left 
-                        << std::setw(colWidth) << expense.cost
-                        << std::setw(strWidth) << expense.reason
-                        << std::setw(colWidth) << date << "\n";
+                        << std::setw(colWidth) << expense->cost
+                        << std::setw(strWidth) << expense->reason
+                        << std::setw(colWidth) << date 
+                        << std::setw(idWidth) << i << "\n";
         // }
 
         // Print a divider under the header row
         // if (i == 0) {
         //     std::cout << std::string(colWidth * 2 + strWidth, '-') << "\n";
         // }
+        expense++;
     }
 
-    std::cout << std::string(colWidth * 2 + strWidth, '-') << "\n";
+    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
 
     std::cout << "Total" << std::endl;
     std::cout << month.total << std::endl;
 
     // Print bottom border
-    std::cout << std::string(colWidth * 2 + strWidth, '-') << "\n";
+    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n" << std::endl;
 }
 
 double PopulateExpenses(const std::string& filename, Month& month) {
@@ -479,6 +598,80 @@ int AddExpense(Year& year, std::chrono::month curr_month) {
 
         std::cout << "Invalid input.\n";
 
+    }
+
+    return 0;
+}
+
+int DeleteExpense(Year& year, std::chrono::month curr_month) {
+    Month& month = year.months[static_cast<unsigned int>(curr_month) - 1];
+    std::set<Expense>& expenses = month.expenses; 
+    // PrintExpenses(expenses, month, year.year);
+
+    std::cout << "Deleting expense from: " << std::format("{:%B} {}", curr_month, static_cast<int>(year.year)) << std::endl;
+
+    std::cout << "Enter q to quit." << std::endl;
+
+    std::string line;
+
+    unsigned num{};
+
+    // std::cout << "Enter a number, a word, and a day (1-31): ";
+    std::cout << "Enter a line number: ";
+
+    while (std::getline(std::cin, line)) {
+        if (line == "q") {
+            return 0;
+        }
+
+        std::stringstream ss(line);
+
+        if (ss >> num) {
+            if (num - 1 < expenses.size()) {
+                expenses.erase(std::next(expenses.begin(), num - 1));
+                std::cout << "Expense deleted." << std::endl;
+                return 1;
+            }
+        } else {
+            std::cout << "Invalid input.\n";
+        }
+    }
+
+    return 0;
+}
+
+int DeleteExpense(std::chrono::year year, Month& month) {
+    std::set<Expense>& expenses = month.expenses; 
+    std::chrono::month curr_month = month.month;
+    // PrintExpenses(expenses, month);
+
+    std::cout << "Deleting expense from: " << std::format("{:%B} {}", curr_month, static_cast<int>(year)) << std::endl;
+
+    std::cout << "Enter q to quit." << std::endl;
+
+    std::string line;
+
+    unsigned num{};
+
+    // std::cout << "Enter a number, a word, and a day (1-31): ";
+    std::cout << "Enter a line number: ";
+
+    while (std::getline(std::cin, line)) {
+        if (line == "q") {
+            return 0;
+        }
+
+        std::stringstream ss(line);
+
+        if (ss >> num) {
+            if (num - 1 < expenses.size()) {
+                expenses.erase(std::next(expenses.begin(), num - 1));
+                std::cout << "Expense deleted." << std::endl;
+                return 1;
+            }
+        } else {
+            std::cout << "Invalid input.\n";
+        }
     }
 
     return 0;

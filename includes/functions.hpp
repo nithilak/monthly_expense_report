@@ -11,7 +11,9 @@ void PrintFile(std::string filename);
 
 std::vector<std::string> parseCSVLine(const std::string& line);
 
-double PrintExpenses(const std::vector<Expense>& expenses);
+double PrintExpenses(const std::set<Expense>& expenses);
+void PrintExpenses(const std::set<Expense>& expenses, const Month& month);
+void PrintExpenses(const std::set<Expense>& expenses, std::chrono::month curr_month, std::chrono::year year);
 void PrintExpenses(const Month& month);
 void PrintExpenses(const Month& month, std::chrono::year year);
 void PrintExpenses(Year& year, std::chrono::month curr_month);
@@ -26,6 +28,9 @@ void PrintAnnualTotal(const Year& year);
 Year& InsertYear(int year);
 
 int AddExpense(Year& year, std::chrono::month curr_month);
+
+int DeleteExpense(Year& year, std::chrono::month curr_month);
+int DeleteExpense(std::chrono::year year, Month& month);
 
 int UpdateMonthFile(Year& year, std::chrono::month curr_month);
 
