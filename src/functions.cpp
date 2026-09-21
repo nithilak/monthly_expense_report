@@ -84,6 +84,13 @@ std::vector<std::string> parseCSVLine(const std::string& line) {
     return row;
 }
 
+void PrintAllExpenses(const Year& year) {
+    for (int i = 1; i < 13; i++) {
+      std::chrono::month curr_month = static_cast<std::chrono::month>(i);
+      PrintExpenses(year.months[i - 1], year.year);
+    }
+}
+
 
 double PrintExpenses(const std::set<Expense>& expenses) {
     // // Set the equal width for each column
@@ -263,7 +270,7 @@ void PrintExpenses(const Month& month) {
                     << std::setw(strWidth) << "Reason"
                     << std::setw(colWidth) << "Date" << "\n";
 
-   std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
+    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
 
     auto expense = expenses.begin();
     for (int i = 1; i - 1 < expenses.size(); i++) { //const auto& expense : expenses //size_t i = 0; i < csvData.size(); ++i
@@ -353,9 +360,9 @@ void PrintExpenses(const Month& month, std::chrono::year year) {
     std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n" << std::endl;
 }
 
-void PrintExpenses(Year& year, std::chrono::month curr_month) {
+void PrintExpenses(const Year& year, std::chrono::month curr_month) {
     int curr_year = static_cast<int>(year.year);
-    Month& month = year.months[static_cast<unsigned int>(curr_month) - 1];
+    const Month& month = year.months[static_cast<unsigned int>(curr_month) - 1];
     const std::set<Expense>& expenses = month.expenses;
 
     std::cout << std::format("{:%B} {}", curr_month, curr_year) << std::endl;
@@ -588,6 +595,7 @@ int AddExpense(Year& year, std::chrono::month curr_month) {
         if (line == "y") {
             month.expenses.insert(Expense(num, text, d));
             month.total += num;
+            // month.changed = true;
             std::cout << "Expense added." << std::endl;
             return 1;
         }
@@ -628,9 +636,36 @@ int DeleteExpense(Year& year, std::chrono::month curr_month) {
 
         if (ss >> num) {
             if (num - 1 < expenses.size()) {
-                expenses.erase(std::next(expenses.begin(), num - 1));
-                std::cout << "Expense deleted." << std::endl;
-                return 1;
+                auto it = std::next(expenses.begin(), num - 1);
+                const Expense& expense = *it;
+                std::string date = std::format("{}-{:02}-{:02}", 
+                    static_cast<int>(year.year), 
+                    static_cast<unsigned>(curr_month), 
+                    static_cast<unsigned>(expense.day)
+                );
+                std::cout << "Delete expense: " << expense.cost << ", " << expense.reason << ", " << date << std::endl;
+                std::cout << "Press y or n" << std::endl;
+
+                while (std::getline(std::cin, line)) {
+                    if (line == "q") {
+                        return 0;
+                    }
+
+                    if (line == "y") {
+                        expenses.erase(it);
+                        month.total -= expense.cost;
+                        // month.changed = true;
+                        std::cout << "Expense deleted." << std::endl;
+                        return 1;
+                    }
+
+                    if (line == "n") {
+                        return DeleteExpense(year, curr_month);
+                    }
+
+                    std::cout << "Invalid input.\n";
+
+                }
             }
         } else {
             std::cout << "Invalid input.\n";
@@ -665,9 +700,36 @@ int DeleteExpense(std::chrono::year year, Month& month) {
 
         if (ss >> num) {
             if (num - 1 < expenses.size()) {
-                expenses.erase(std::next(expenses.begin(), num - 1));
-                std::cout << "Expense deleted." << std::endl;
-                return 1;
+                auto it = std::next(expenses.begin(), num - 1);
+                const Expense& expense = *it;
+                std::string date = std::format("{}-{:02}-{:02}", 
+                    static_cast<int>(year), 
+                    static_cast<unsigned>(curr_month), 
+                    static_cast<unsigned>(expense.day)
+                );
+                std::cout << "Delete expense: " << expense.cost << ", " << expense.reason << ", " << date << std::endl;
+                std::cout << "Press y or n" << std::endl;
+
+                while (std::getline(std::cin, line)) {
+                    if (line == "q") {
+                        return 0;
+                    }
+
+                    if (line == "y") {
+                        expenses.erase(it);
+                        month.total -= expense.cost;
+                        // month.changed = true;
+                        std::cout << "Expense deleted." << std::endl;
+                        return 1;
+                    }
+
+                    if (line == "n") {
+                        return DeleteExpense(year, month);
+                    }
+
+                    std::cout << "Invalid input.\n";
+
+                }
             }
         } else {
             std::cout << "Invalid input.\n";
@@ -677,8 +739,8 @@ int DeleteExpense(std::chrono::year year, Month& month) {
     return 0;
 }
 
-int UpdateMonthFile(Year& year, std::chrono::month curr_month) {
-    Month& month = year.months[static_cast<unsigned int>(curr_month) - 1];
+int UpdateMonthFile(const Year& year, std::chrono::month curr_month) {
+    const Month& month = year.months[static_cast<unsigned int>(curr_month) - 1];
     std::string filename = month.filename;
 
     // 1. Open the CSV file using an input file stream
@@ -690,7 +752,7 @@ int UpdateMonthFile(Year& year, std::chrono::month curr_month) {
         return 1;
     }
 
-    std::set<Expense>& expenses = month.expenses;
+    const std::set<Expense>& expenses = month.expenses;
 
     file << "cost,reason,date\n";
 
@@ -698,5 +760,147 @@ int UpdateMonthFile(Year& year, std::chrono::month curr_month) {
         file << expense.cost << ",\"" << expense.reason << "\"," << std::format("{:02}", static_cast<unsigned>(expense.day)) << "\n";
     }
 
+    // month.changed = false;
+
     return 0;
+}
+
+int UpdateTotalsFile(const Year& year) {
+    std::string year_str = std::to_string(static_cast<int>(year.year));
+    std::string filename = "includes/" + year_str + "Expenses/TotalExpenses" + year_str;
+
+    // 1. Open the CSV file using an input file stream
+    std::ofstream file(filename);
+
+    // Best Practice: Always check if the file opened successfully
+    if (!file.is_open()) {
+        std::cerr << "Error: Could not open the file!" << std::endl;
+        return 1;
+    }
+
+    file << "January,February,March,April,May,June,July,August,September,October,November,December,Total\n";
+
+    for (const auto& month : year.months) {
+        file << month.total << ",";
+        // month.changed = false;
+    }
+    file << year.total << "\n";
+
+    return 0;
+}
+
+int PromptInsertYear() {
+    std::string line;
+    std::cout << "Insert year: ";
+
+    unsigned num;
+
+    while (std::getline(std::cin, line)) {
+        if (line == "q") {
+            return 0;
+        }
+
+        std::stringstream ss(line);
+
+        if (ss >> num) {
+            std::cout << "Inserted year: " << num << "\n";
+            InsertYear(num);
+            return 1;
+        } else {
+            std::cout << "Invalid input.\n";
+        }
+    }
+    
+    return -1;
+}
+
+Year& PromptYear() {
+    std::string line;
+    std::cout << "Enter 0 for latest year. Choose year: ";
+
+    int num;
+
+    while (std::getline(std::cin, line)) {
+        std::stringstream ss(line);
+
+        if (ss >> num) {
+
+            if (num == 0) {
+                auto it = years.end();
+                it--;
+                return it->second;
+            } else {
+                std::chrono::year year_to_insert = std::chrono::year{num};
+                auto it = years.find(year_to_insert);
+                if (it != years.end()) {
+                    return it->second;
+                } else {
+                    std::cout << "Year not found.\n";
+                }
+            }
+        } else {
+            std::cout << "Invalid input.\n";
+        }
+
+        std::cout << "Enter 0 for latest year. Choose year: ";
+    }
+
+    std::cerr << "Year could not be chosen." << std::endl;
+}
+
+std::chrono::month PromptMonth() {
+    std::string line;
+    std::cout << "Choose month (1-12): ";
+
+    unsigned num;
+
+    while (std::getline(std::cin, line)) {
+        std::stringstream ss(line);
+
+        if (ss >> num) {
+            if (0 < num && num < 13) {
+                std::cout << std::endl;
+                return static_cast<std::chrono::month>(num);
+            } else {
+                std::cout << "Please choose a number between 1-12.\n";
+            }
+        } else {
+            std::cout << "Invalid input.\n";
+        }
+        std::cout << "Choose month (1-12): ";
+    }
+
+    std::cerr << "Month could not be chosen." << std::endl;
+}
+
+int PromptYearErase() {
+    std::string line;
+    std::cout << "Enter q to quit. Choose year: ";
+
+    int num;
+
+    while (std::getline(std::cin, line)) {
+        if (line == "q") {
+            return 0;
+        }
+        std::stringstream ss(line);
+
+        if (ss >> num) {
+            std::chrono::year year_to_insert = std::chrono::year{num};
+            bool erased = years.erase(year_to_insert);
+            if (erased) {
+                std::cout << "Erased year " << year_to_insert << std::endl;
+            } else {
+                std::cout << "Year " << year_to_insert << " was not erased." << std::endl;
+            }
+            std::cout << std::endl;
+            return erased;
+        } else {
+            std::cout << "Invalid input.\n";
+        }
+
+        std::cout << "Enter q to quit.\nChoose year: ";
+    }
+
+    std::cerr << "Year could not be chosen." << std::endl;
 }

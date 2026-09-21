@@ -57,7 +57,7 @@ class Month {
     std::set<Expense> expenses;
     double total = 0;
     std::string filename;
-    bool changed = false;
+    // bool changed = false;
 
     Month(std::chrono::month enter_month) { //, std::chrono::year enter_year
         month = enter_month;
