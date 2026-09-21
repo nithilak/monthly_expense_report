@@ -33,6 +33,7 @@ double PopulateExpenses(const std::string& filename, Month& month);
 double PopulateExpenses(const std::string& filename, Year& year, std::chrono::month curr_month);
 double PopulateExpenses(Year& year);
 
+//prints the year's total cost
 void PrintAnnualTotal(const Year& year);
 
 //inserts a year with all 12 month files formatted like includes/YEARExpenses/MONTHYEAR into years
@@ -47,13 +48,22 @@ int DeleteExpense(std::chrono::year year, Month& month);
 
 //updates the month's csv file to match its data
 int UpdateMonthFile(const Year& year, std::chrono::month curr_month);
-int UpdateTotalsFile(const Year& year);
 
+//updates TotalExpensesYEAR.csv
+int UpdateTotalsFile(const Year& year);
+//prints TotalExpensesYEAR.csv
 int PrintTotalsFile(const Year& year);
 
-int PromptInsertYear();
+
+//returns a (prompted) year from years, no quit option
 Year& PromptYear();
+//returns a valid (prompted) month, no quit option
 std::chrono::month PromptMonth();
+
+//true if successfully inserted a (prompted) year into years, does not overwrite already inserted year
+//has quit option
+int PromptInsertYear();
+//erases a (prompted) year in years, has quit option
 int PromptYearErase();
 
 #endif // FUNCTIONS_HPP

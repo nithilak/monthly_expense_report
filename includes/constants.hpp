@@ -92,9 +92,12 @@ class Year {
     }
 };
 
-inline std::map<std::chrono::year, Year> years; //doing this to avoid implementing binary search using set when looking for the year
+//doing this to avoid implementing multiple lookups with binary search using set when looking for the year
+inline std::map<std::chrono::year, Year> years; 
+
 // Set the equal width for each column
 constexpr int colWidth = 20;
+
 constexpr int strWidth = 80;
 constexpr int idWidth = 3;
 
