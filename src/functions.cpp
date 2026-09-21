@@ -87,7 +87,7 @@ std::vector<std::string> parseCSVLine(const std::string& line) {
 
 void PrintAllExpenses(const Year& year) {
     for (int i = 1; i < 13; i++) {
-      std::chrono::month curr_month = static_cast<std::chrono::month>(i);
+    //   std::chrono::month curr_month = static_cast<std::chrono::month>(i);
       PrintExpenses(year.months[i - 1], year.year);
     }
 }
@@ -481,11 +481,14 @@ double PopulateExpenses(const std::string& filename, Year& year, std::chrono::mo
 
 double PopulateExpenses(Year& year) {
     std::string year_str = std::to_string(static_cast<int>(year.year));
+
+    std::chrono::month curr_month = std::chrono::January;
     for (int i = 1; i < 13; i++) {
-        std::chrono::month curr_month = static_cast<std::chrono::month>(i);
         PopulateExpenses("includes/" + year_str + "Expenses/" + std::format("{:%b}", curr_month) + year_str + ".csv", year, curr_month);
         //PrintExpenses(year, curr_month);
+        curr_month++;
     }
+
     return year.total;
 }
 
@@ -608,7 +611,7 @@ int AddExpense(Year& year, std::chrono::month curr_month) {
             month.total += num;
             year.total += num;
             // month.changed = true;
-            std::cout << "Expense added." << std::endl;
+            std::cout << "Expense added.\n" << std::endl;
             return 1;
         }
 
@@ -668,7 +671,7 @@ int DeleteExpense(Year& year, std::chrono::month curr_month) {
                         month.total -= expense.cost;
                         year.total -= expense.cost;
                         // month.changed = true;
-                        std::cout << "Expense deleted." << std::endl;
+                        std::cout << "Expense deleted.\n" << std::endl;
                         return 1;
                     }
 
@@ -732,7 +735,7 @@ int DeleteExpense(std::chrono::year year, Month& month) {
                         expenses.erase(it);
                         month.total -= expense.cost;
                         // month.changed = true;
-                        std::cout << "Expense deleted." << std::endl;
+                        std::cout << "Expense deleted.\n" << std::endl;
                         return 1;
                     }
 
@@ -750,6 +753,17 @@ int DeleteExpense(std::chrono::year year, Month& month) {
     }
 
     return 0;
+}
+
+int UpdateAllMonthFiles(const Year& year) {
+    int count = 0;
+    std::chrono::month curr_month = std::chrono::January;
+    for (int i = 1; i < 13; i++) {
+        // std::cout << "reaches" << std::endl;
+        count += UpdateMonthFile(year.year, curr_month);
+        curr_month++;
+    }
+    return count;
 }
 
 int UpdateMonthFile(const Year& year, std::chrono::month curr_month) {
@@ -924,10 +938,14 @@ Year& PromptYear() {
         std::stringstream ss(line);
 
         if (ss >> num) {
+            if (years.empty()) {
+                std::cerr << "No years are available.\n";
+                std::exit(1);
+            }
 
             if (num == 0) {
                 auto it = years.end();
-                it--;
+                --it;
                 return it->second;
             } else {
                 std::chrono::year year_to_insert = std::chrono::year{num};
@@ -946,6 +964,7 @@ Year& PromptYear() {
     }
 
     std::cerr << "Year could not be chosen." << std::endl;
+    std::exit(1);
 }
 
 std::chrono::month PromptMonth() {
@@ -971,6 +990,7 @@ std::chrono::month PromptMonth() {
     }
 
     std::cerr << "Month could not be chosen." << std::endl;
+    std::exit(1);
 }
 
 int PromptYearErase() {
@@ -1003,4 +1023,5 @@ int PromptYearErase() {
     }
 
     std::cerr << "Year could not be chosen." << std::endl;
+    std::exit(1);
 }
