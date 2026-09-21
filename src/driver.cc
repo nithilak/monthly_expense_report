@@ -12,34 +12,6 @@
 #include <chrono>
 
 int main() {
-  // PrintFile("includes/january.csv");
-  // PrintFile("includes/total_expenses.csv");
-
-  // Year& year_2026 = InsertYear(2026);
-
-  // // Month& January2026 = year_2026.months[static_cast<unsigned int>(curr_month) - 1];
-
-  // std::cout << std::endl;
-
-  // for (int i = 1; i < 13; i++) {
-  //   std::chrono::month curr_month = static_cast<std::chrono::month>(i);
-  //   PrintExpenses(year_2026, curr_month);
-  // }
-
-  // PrintAnnualTotal(year_2026);
-
-  // std::chrono::month month_to_add = std::chrono::February;
-  // if (AddExpense(year_2026, month_to_add)) {
-  //   UpdateMonthFile(year_2026, month_to_add);
-  // }
-  // PrintExpenses(year_2026, month_to_add);
-
-  // if (DeleteExpense(year_2026, month_to_add)) {
-  //   UpdateMonthFile(year_2026, month_to_add);
-  // }
-
-  // PrintExpenses(year_2026, month_to_add);
-
   std::string line;
 
   std::cout << "Enter q to quit." << std::endl;
@@ -176,8 +148,6 @@ int main() {
       std::cout << "Print all annual totals: 8, Print annual total: 9" << std::endl;
     }
   }
-
-
 
   return 0;
 }
