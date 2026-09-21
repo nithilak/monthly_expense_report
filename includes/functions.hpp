@@ -11,6 +11,10 @@
 //also perhaps there should be less copy and pasting in main
 
 //incosistent use of "\n" at the end of invalid rather than std::endl; but it's ok (got it from code written not by me)
+//apparently std::endl is more expensive and slower 
+//google says "You should use std::endl when you absolutely need to guarantee that the user or a file sees the text right now. "
+
+// ++i vs i++, --i vs i--, got replaced a few to --i from i-- by code suggestions
 
 //if you delete a month file while a session is in progress it will only be updated if you add/delete an expense
 //perhaps I should add an option to update the file separately but the UI is already pretty full
@@ -58,6 +62,8 @@ int DeleteExpense(std::chrono::year year, Month& month);
 //updates the month's csv file to match its data
 //creates the file if it does not exist
 int UpdateMonthFile(const Year& year, std::chrono::month curr_month);
+//does not work for some reason
+int UpdateAllMonthFiles(const Year& year);
 
 //updates TotalExpensesYEAR.csv
 //creates the file if it does not exist
