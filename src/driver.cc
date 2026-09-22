@@ -55,7 +55,8 @@ int main() {
 
         while (std::getline(std::cin, line)) {
           if (line == "q") {
-            return 0;
+            std::cout << std::endl;
+            break;
           }
 
           std::stringstream ss(line);
