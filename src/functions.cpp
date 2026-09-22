@@ -18,7 +18,7 @@ bool PrintFile(std::string filename) {
     // Best Practice: Always check if the file opened successfully
     if (!file.is_open()) {
         std::cerr << "Error: Could not open the file!" << std::endl;
-        return 0;
+        return false;
     }
 
     // This 2D vector will hold all the rows and columns
@@ -72,7 +72,7 @@ bool PrintFile(std::string filename) {
         std::cout << "\n";
     }
 
-    return 1;
+    return true;
 }
 
 // Function to split a CSV line by commas
@@ -107,11 +107,13 @@ void PrintMenuYear(std::chrono::year year) {
 bool PrintAllExpenses(const Year& year) {
     try {
         for (int i = 1; i < 13; i++) {
-        //   std::chrono::month curr_month = static_cast<std::chrono::month>(i);
-        PrintExpenses(year.months[i - 1], year.year);
+            //   std::chrono::month curr_month = static_cast<std::chrono::month>(i);
+            PrintExpenses(year.months[i - 1], year.year);
         }
+        return true;
     } catch (const std::runtime_error& e) {
         std::cerr << "Error encountered: " << e.what() << std::endl;
+        return false;
     }
 }
 
@@ -595,7 +597,7 @@ bool AddExpense(Year& year, std::chrono::month curr_month) {
     while (std::getline(std::cin, line)) {
         if (line == "q") {
             std::cout << std::endl;
-            return 0;
+            return false;
         }
 
         std::stringstream ss(line);
@@ -615,7 +617,7 @@ bool AddExpense(Year& year, std::chrono::month curr_month) {
     while (std::getline(std::cin, text)) {
         if (text == "q") {
             std::cout << std::endl;
-            return 0;
+            return false;
         }
 
         if (!line.empty()) {
@@ -641,7 +643,7 @@ bool AddExpense(Year& year, std::chrono::month curr_month) {
     while (std::getline(std::cin, line)) {
         if (line == "q") {
             std::cout << std::endl;
-            return 0;
+            return false;
         }
 
         // Parse the numeric cost, reason text, and day manually.
@@ -672,7 +674,7 @@ bool AddExpense(Year& year, std::chrono::month curr_month) {
     while (std::getline(std::cin, line)) {
         if (line == "q") {
             std::cout << std::endl;
-            return 0;
+            return false;
         }
 
         if (line == "y") {
@@ -681,7 +683,7 @@ bool AddExpense(Year& year, std::chrono::month curr_month) {
             year.total += num;
             // month.changed = true;
             std::cout << "Expense added.\n" << std::endl;
-            return 1;
+            return true;
         }
 
         if (line == "n") {
@@ -692,7 +694,7 @@ bool AddExpense(Year& year, std::chrono::month curr_month) {
 
     }
 
-    return 0;
+    return false;
 }
 
 bool DeleteExpense(Year& year, std::chrono::month curr_month) {
@@ -714,7 +716,7 @@ bool DeleteExpense(Year& year, std::chrono::month curr_month) {
     while (std::getline(std::cin, line)) {
         if (line == "q") {
             std::cout << std::endl;
-            return 0;
+            return false;
         }
 
         std::stringstream ss(line);
@@ -733,7 +735,7 @@ bool DeleteExpense(Year& year, std::chrono::month curr_month) {
 
                 while (std::getline(std::cin, line)) {
                     if (line == "q") {
-                        return 0;
+                        return false;
                     }
 
                     if (line == "y") {
@@ -743,7 +745,7 @@ bool DeleteExpense(Year& year, std::chrono::month curr_month) {
                         expenses.erase(it);
                         // month.changed = true;
                         std::cout << "Expense deleted.\n" << std::endl;
-                        return 1;
+                        return true;
                     }
 
                     if (line == "n") {
@@ -759,7 +761,7 @@ bool DeleteExpense(Year& year, std::chrono::month curr_month) {
         }
     }
 
-    return 0;
+    return false;
 }
 
 bool DeleteExpense(std::chrono::year year, Month& month) {
@@ -781,7 +783,7 @@ bool DeleteExpense(std::chrono::year year, Month& month) {
     while (std::getline(std::cin, line)) {
         if (line == "q") {
             std::cout << std::endl;
-            return 0;
+            return false;
         }
 
         std::stringstream ss(line);
@@ -800,7 +802,7 @@ bool DeleteExpense(std::chrono::year year, Month& month) {
 
                 while (std::getline(std::cin, line)) {
                     if (line == "q") {
-                        return 0;
+                        return false;
                     }
 
                     if (line == "y") {
@@ -808,7 +810,7 @@ bool DeleteExpense(std::chrono::year year, Month& month) {
                         expenses.erase(it);
                         // month.changed = true;
                         std::cout << "Expense deleted.\n" << std::endl;
-                        return 1;
+                        return true;
                     }
 
                     if (line == "n") {
@@ -824,7 +826,7 @@ bool DeleteExpense(std::chrono::year year, Month& month) {
         }
     }
 
-    return 0;
+    return false;
 }
 
 bool UpdateMonthFile(const Year& year, std::chrono::month curr_month) {
@@ -846,7 +848,7 @@ bool UpdateMonthFile(const Year& year, std::chrono::month curr_month) {
     // Best Practice: Always check if the file opened successfully
     if (!file.is_open()) {
         std::cerr << "Error: Could not open the file!" << std::endl;
-        return 0;
+        return false;
     }
 
     const std::set<Expense>& expenses = month.expenses;
@@ -859,7 +861,7 @@ bool UpdateMonthFile(const Year& year, std::chrono::month curr_month) {
 
     // month.changed = false;
 
-    return 1;
+    return true;
 }
 
 int UpdateAllMonthFiles(const Year& year) {
@@ -892,7 +894,7 @@ bool UpdateTotalsFile(const Year& year) {
     // Best Practice: Always check if the file opened successfully
     if (!file.is_open()) {
         std::cerr << "Error: Could not open the file!" << std::endl;
-        return 0;
+        return false;
     }
 
     file << "January,February,March,April,May,June,July,August,September,October,November,December,Total\n";
@@ -903,7 +905,7 @@ bool UpdateTotalsFile(const Year& year) {
     }
     file << year.total << "\n";
 
-    return 1;
+    return true;
 }
 
 bool PrintTotalsInternal(const Year& year) {
@@ -939,10 +941,10 @@ bool PrintTotalsInternal(const Year& year) {
         std::cout << std::string(colWidth * 6, '-') << "\n";
         std::cout << "Total: \n" << year.total << std::endl;
         std::cout << std::string(colWidth * 6, '-') << "\n" << std::endl;
-        return 1;
+        return true;
     } catch (const std::runtime_error& e) {
         std::cerr << "Error encountered: " << e.what() << "\n" << std::endl;
-        return 0;
+        return false;
     }
 }
 
@@ -961,7 +963,7 @@ bool PrintTotalsFile(const Year& year) {
         if (!file.is_open()) {
             std::cerr << "Error: Could not open the file!" << std::endl;
             std::cout << std::endl;
-            return 0;
+            return false;
         }
     }
 
@@ -987,7 +989,7 @@ bool PrintTotalsFile(const Year& year) {
 
     if (header.empty() || values.empty()) {
         std::cerr << "Error: No totals data found in the CSV file.\n" << std::endl;
-        return 0;
+        return false;
     }
 
     std::cout << std::format("Year {}", static_cast<int>(year.year)) << std::endl;
@@ -1022,7 +1024,7 @@ bool PrintTotalsFile(const Year& year) {
     std::cout << "Total: \n" << (values.size() > 12 ? values[12] : "0") << std::endl;
     std::cout << std::string(colWidth * 6, '-') << "\n" << std::endl;
 
-    return 1;
+    return true;
 }
 
 bool PromptInsertYear() {
@@ -1033,7 +1035,7 @@ bool PromptInsertYear() {
 
     while (std::getline(std::cin, line)) {
         if (line == "q") {
-            return 0;
+            return false;
         }
 
         std::stringstream ss(line);
@@ -1041,7 +1043,7 @@ bool PromptInsertYear() {
         if (ss >> num) {
             std::cout << "Inserted year: " << num << "\n";
             InsertYear(num);
-            return 1;
+            return true;
         } else {
             std::cout << "Invalid input.\n";
         }
@@ -1049,7 +1051,7 @@ bool PromptInsertYear() {
     
     std::cerr << "Year could not be inserted.\n" << std::endl;
     // std::exit(1);
-    return 0; //return -1;
+    return false; //return -1;
 }
 
 std::pair<Year&, bool> PromptYear() {
@@ -1145,7 +1147,7 @@ bool PromptYearErase() {
     while (std::getline(std::cin, line)) {
         if (line == "q") {
             std::cout << std::endl;
-            return 0;
+            return false;
         }
         std::stringstream ss(line);
 
@@ -1168,5 +1170,5 @@ bool PromptYearErase() {
 
     std::cerr << "Year could not be chosen.\n" << std::endl;
     // std::exit(1);
-    return 0;
+    return false;
 }

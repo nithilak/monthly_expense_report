@@ -14,6 +14,11 @@
 //std::chrono::year{int}; accepts an int but year.months[static_cast<unsigned int>(curr_month) - 1]; is an unsigned int cast function
 //could be more instances
 
+//could preface error messages with "Error: " like the computer code
+//also std::cout vs std::err in some cases, up to discretion
+
+//also add errors for reaching unreachable places? like after a while loop with std::getline
+
 //for the dirPath wanted to use the file path, but that doesn't work when I do it the fancy way or use substring (0, filename.size() - number)
 // std::filesystem::path p(filename);
 // std::string dirPath = p.parent_path().string();
