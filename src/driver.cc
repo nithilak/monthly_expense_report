@@ -136,7 +136,6 @@ int main() {
       } else if (num == 3) {
         std::cout << std::endl;
         PromptYearErase();
-        std::cout << std::endl;
       } else {
         std::pair<Year&, bool> get_year = PromptYear();
         

@@ -8,7 +8,14 @@
 #include "constants.hpp"
 
 //I don't use const iterators but maybe they could be implemented
-//also perhaps there should be less copy and pasting in main
+//also perhaps there should be less copy and pasting in main and less repeated newlines
+
+//using int vs unsigned for month and year
+//std::chrono::year{int}; accepts an int but year.months[static_cast<unsigned int>(curr_month) - 1]; is an unsigned int cast function
+//could be more instances
+
+//bit inconsistent with naming month vs curr_month, year vs curr_year 
+//for which one is the Month or Year and which is the std::chrono::month or std::chrono::year
 
 //incosistent use of "\n" at the end of invalid rather than std::endl; but it's ok (got it from code written not by me)
 //apparently std::endl is more expensive and slower 
@@ -38,16 +45,20 @@ void PrintFile(std::string filename);
 //not my code, // Function to split a CSV line by commas
 std::vector<std::string> parseCSVLine(const std::string& line);
 
+//prints the menu for the UI
 void PrintMenu();
 void PrintMenuYear(std::chrono::year year);
 
 //prints out all expenses for each month the year
 void PrintAllExpenses(const Year& year);
 
+//recalculates the year total by adding the total from each month. not my code
+void RecalculateYearTotals(Year& year);
+
 //prints out all expenses for the month
 double PrintExpenses(const std::set<Expense>& expenses);
 void PrintExpenses(const std::set<Expense>& expenses, const Month& month);
-void PrintExpenses(const std::set<Expense>& expenses, std::chrono::month curr_month, std::chrono::year year);
+void PrintExpenses(const std::set<Expense>& expenses, const Month& month, std::chrono::year year);
 void PrintExpenses(const Month& month);
 void PrintExpenses(const Month& month, std::chrono::year year);
 void PrintExpenses(const Year& year, std::chrono::month curr_month);
@@ -81,7 +92,7 @@ int UpdateMonthFile(const Year& year, std::chrono::month curr_month);
 int UpdateAllMonthFiles(const Year& year);
 
 
-//prints eac
+//prints each total stored in each month and the year total
 void PrintTotalsInternal(const Year& year);
 
 //updates TotalExpensesYEAR.csv
