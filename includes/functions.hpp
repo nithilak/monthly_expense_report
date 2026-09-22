@@ -64,7 +64,7 @@ void PrintMenu();
 void PrintMenuYear(std::chrono::year year);
 
 //prints out all expenses for each month the year
-bool PrintAllExpenses(const Year& year);
+void PrintAllExpenses(const Year& year);
 
 //recalculates the year total by adding the total from each month. not my code
 void RecalculateYearTotals(Year& year);
@@ -111,8 +111,7 @@ int UpdateAllMonthFiles(const Year& year);
 
 
 //prints each total stored in each month and the year total
-//returns 1 if printed with no errors
-bool PrintTotalsInternal(const Year& year);
+void PrintTotalsInternal(const Year& year);
 
 //updates TotalExpensesYEAR.csv
 //creates the file if it does not exist

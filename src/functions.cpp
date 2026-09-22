@@ -104,16 +104,10 @@ void PrintMenuYear(std::chrono::year year) {
     std::cout << "Print all annual totals: 10, Print annual total: 11" << std::endl;
 }
 
-bool PrintAllExpenses(const Year& year) {
-    try {
-        for (int i = 1; i < 13; i++) {
-            //   std::chrono::month curr_month = static_cast<std::chrono::month>(i);
-            PrintExpenses(year.months[i - 1], year.year);
-        }
-        return true;
-    } catch (const std::runtime_error& e) {
-        std::cerr << "Error encountered: " << e.what() << std::endl;
-        return false;
+void PrintAllExpenses(const Year& year) {
+    for (int i = 1; i < 13; i++) {
+        //   std::chrono::month curr_month = static_cast<std::chrono::month>(i);
+        PrintExpenses(year.months[i - 1], year.year);
     }
 }
 
@@ -908,44 +902,38 @@ bool UpdateTotalsFile(const Year& year) {
     return true;
 }
 
-bool PrintTotalsInternal(const Year& year) {
-    try {
-        std::cout << std::format("Year {}", static_cast<int>(year.year)) << std::endl;
-        std::cout << std::string(colWidth * 6, '-') << "\n";
+void PrintTotalsInternal(const Year& year) {
+    std::cout << std::format("Year {}", static_cast<int>(year.year)) << std::endl;
+    std::cout << std::string(colWidth * 6, '-') << "\n";
 
-        std::cout << std::left;
-        for (unsigned i = 1; i < 7; ++i) {
-            std::cout << std::setw(colWidth) << std::format("{:%B}", std::chrono::month{i});
-        }
-        std::cout << std::endl;
-
-        std::cout << std::left;
-        for (int i = 0; i < 6; ++i) {
-            std::cout << std::setw(colWidth) << year.months[i].total;
-        }
-        std::cout << std::endl;
-
-        std::cout << std::string(colWidth * 6, '-') << "\n";
-        std::cout << std::left;
-        for (unsigned i = 7; i < 13; ++i) {
-            std::cout << std::setw(colWidth) << std::format("{:%B}", std::chrono::month{i});
-        }
-        std::cout << std::endl;
-
-        std::cout << std::left;
-        for (int i = 6; i < 12; ++i) {
-            std::cout << std::setw(colWidth) << year.months[i].total;
-        }
-        std::cout << std::endl;
-
-        std::cout << std::string(colWidth * 6, '-') << "\n";
-        std::cout << "Total: \n" << year.total << std::endl;
-        std::cout << std::string(colWidth * 6, '-') << "\n" << std::endl;
-        return true;
-    } catch (const std::runtime_error& e) {
-        std::cerr << "Error encountered: " << e.what() << "\n" << std::endl;
-        return false;
+    std::cout << std::left;
+    for (unsigned i = 1; i < 7; ++i) {
+        std::cout << std::setw(colWidth) << std::format("{:%B}", std::chrono::month{i});
     }
+    std::cout << std::endl;
+
+    std::cout << std::left;
+    for (int i = 0; i < 6; ++i) {
+        std::cout << std::setw(colWidth) << year.months[i].total;
+    }
+    std::cout << std::endl;
+
+    std::cout << std::string(colWidth * 6, '-') << "\n";
+    std::cout << std::left;
+    for (unsigned i = 7; i < 13; ++i) {
+        std::cout << std::setw(colWidth) << std::format("{:%B}", std::chrono::month{i});
+    }
+    std::cout << std::endl;
+
+    std::cout << std::left;
+    for (int i = 6; i < 12; ++i) {
+        std::cout << std::setw(colWidth) << year.months[i].total;
+    }
+    std::cout << std::endl;
+
+    std::cout << std::string(colWidth * 6, '-') << "\n";
+    std::cout << "Total: \n" << year.total << std::endl;
+    std::cout << std::string(colWidth * 6, '-') << "\n" << std::endl;
 }
 
 bool PrintTotalsFile(const Year& year) {
