@@ -821,17 +821,6 @@ int DeleteExpense(std::chrono::year year, Month& month) {
     return 0;
 }
 
-int UpdateAllMonthFiles(const Year& year) {
-    int count = 0;
-    std::chrono::month curr_month = std::chrono::January;
-    for (int i = 1; i < 13; i++) {
-        // std::cout << "reaches" << std::endl;
-        count += UpdateMonthFile(year.year, curr_month);
-        curr_month++;
-    }
-    return count;
-}
-
 int UpdateMonthFile(const Year& year, std::chrono::month curr_month) {
     const Month& month = year.months[static_cast<unsigned int>(curr_month) - 1];
     std::string filename = month.filename;
@@ -860,6 +849,17 @@ int UpdateMonthFile(const Year& year, std::chrono::month curr_month) {
     // month.changed = false;
 
     return 1;
+}
+
+int UpdateAllMonthFiles(const Year& year) {
+    int count = 0;
+    std::chrono::month curr_month = std::chrono::January;
+    for (int i = 1; i < 13; i++) {
+        // std::cout << "reaches" << std::endl;
+        count += UpdateMonthFile(year.year, curr_month);
+        curr_month++;
+    }
+    return count;
 }
 
 int UpdateTotalsFile(const Year& year) {
@@ -1132,6 +1132,7 @@ int PromptYearErase() {
             } else {
                 std::cout << "Year " << year_to_insert << " was not found." << std::endl;
             }
+            std::cout << std::endl;
             return erased;
         } else {
             std::cout << "Invalid input.\n";
