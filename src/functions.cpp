@@ -85,10 +85,38 @@ std::vector<std::string> parseCSVLine(const std::string& line) {
     return row;
 }
 
+void PrintMenu() {
+    std::cout << "Insert year: 0, Choose year: 1, See available years: 2, Delete year: 3" << std::endl;
+    std::cout << "Print all month expenses: 4, Print month expenses: 5" << std::endl;
+    std::cout << "Add expense: 6, Delete expense: 7" << std::endl;
+    std::cout << "Update month file: 8, Update all month files: 9, Update totals file: 10" << std::endl; 
+    std::cout << "Print all annual totals: 11, Print annual total: 12" << std::endl;
+}
+
+void PrintMenuYear(std::chrono::year year) {
+    std::cout << "Year: " << year << std::endl;
+    std::cout << "Return to all years: 0" << std::endl;
+    std::cout << "Print all month expenses: 4, Print month expenses: 5" << std::endl;
+    std::cout << "Add expense: 6, Delete expense: 7" << std::endl;
+    std::cout << "Update month file: 8, Update all month files: 9, Update totals file: 10" << std::endl; 
+    std::cout << "Print all annual totals: 10, Print annual total: 11" << std::endl;
+}
+
 void PrintAllExpenses(const Year& year) {
     for (int i = 1; i < 13; i++) {
     //   std::chrono::month curr_month = static_cast<std::chrono::month>(i);
       PrintExpenses(year.months[i - 1], year.year);
+    }
+}
+
+void RecalculateYearTotals(Year& year) {
+    year.total = 0.0;
+    for (auto& month : year.months) {
+        month.total = 0.0;
+        for (const auto& expense : month.expenses) {
+            month.total += expense.cost;
+        }
+        year.total += month.total;
     }
 }
 
@@ -98,7 +126,7 @@ double PrintExpenses(const std::set<Expense>& expenses) {
     // const int colWidth = 20;
     // const int strWidth = 80;
 
-    int total = 0;
+    double total = 0;
 
     // Print top border
     std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
@@ -112,17 +140,20 @@ double PrintExpenses(const std::set<Expense>& expenses) {
     std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
 
     auto expense = expenses.begin();
-    for (int i = 1; i - 1 < expenses.size(); i++) { //const auto& expense : expenses //size_t i = 0; i < csvData.size(); ++i
+    int expenses_size_goal = expenses.size() + 1;
+    for (int i = 1; i < expenses_size_goal; i++) { //const auto& expense : expenses //size_t i = 0; i < csvData.size(); ++i
         // std::vector<std::string> row = parseCSVLine(csvData[i]);
 
         //std::string date = std::format("{:02}-{}", curr_month, expenses[i].day);
         std::string date = std::format("{:02}", static_cast<unsigned>(expense->day));
 
+        double cost = expense->cost;
+
         // Ensure the row has exactly 3 columns to avoid out-of-bounds errors
         // if (row.size() >= 3) {
             // std::left aligns text to the left; std::setw sets fixed spacing
             std::cout << std::left 
-                        << std::setw(colWidth) << expense->cost
+                        << std::setw(colWidth) << cost
                         << std::setw(strWidth) << expense->reason
                         << std::setw(colWidth) << date 
                         << std::setw(idWidth) << i << "\n";
@@ -132,12 +163,16 @@ double PrintExpenses(const std::set<Expense>& expenses) {
         // if (i == 0) {
         //     std::cout << std::string(colWidth * 2 + strWidth, '-') << "\n";
         // }
+        total += cost;
         expense++;
     }
 
     std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
 
     std::cout << "Total" << std::endl;
+
+    // std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
+    
     std::cout << total << std::endl;
 
     // Print bottom border
@@ -167,7 +202,8 @@ void PrintExpenses(const std::set<Expense>& expenses, const Month& month) {
     std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
 
     auto expense = expenses.begin();
-    for (int i = 1; i - 1 < expenses.size(); i++) { //const auto& expense : expenses //size_t i = 0; i < csvData.size(); ++i
+    int expenses_size_goal = expenses.size() + 1;
+    for (int i = 1; i < expenses_size_goal; i++) { //const auto& expense : expenses //size_t i = 0; i < csvData.size(); ++i
         // std::vector<std::string> row = parseCSVLine(csvData[i]);
 
         //std::string date = std::format("{:02}-{}", curr_month, expenses[i].day);
@@ -193,6 +229,9 @@ void PrintExpenses(const std::set<Expense>& expenses, const Month& month) {
     std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
 
     std::cout << "Total" << std::endl;
+
+    // std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
+    
     std::cout << month.total << std::endl;
 
     // Print bottom border
@@ -221,7 +260,8 @@ void PrintExpenses(const std::set<Expense>& expenses, const Month& month, std::c
     std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
 
     auto expense = expenses.begin();
-    for (int i = 1; i - 1 < expenses.size(); i++) { //const auto& expense : expenses //size_t i = 0; i < csvData.size(); ++i
+    int expenses_size_goal = expenses.size() + 1;
+    for (int i = 1; i < expenses_size_goal; i++) { //const auto& expense : expenses //size_t i = 0; i < csvData.size(); ++i
         // std::vector<std::string> row = parseCSVLine(csvData[i]);
 
         //std::string date = std::format("{:02}-{}", curr_month, expenses[i].day);
@@ -247,6 +287,9 @@ void PrintExpenses(const std::set<Expense>& expenses, const Month& month, std::c
     std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
 
     std::cout << "Total" << std::endl;
+
+    // std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
+    
     std::cout << month.total << std::endl;
 
     // Print bottom border
@@ -274,7 +317,8 @@ void PrintExpenses(const Month& month) {
     std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
 
     auto expense = expenses.begin();
-    for (int i = 1; i - 1 < expenses.size(); i++) { //const auto& expense : expenses //size_t i = 0; i < csvData.size(); ++i
+    int expenses_size_goal = expenses.size() + 1;
+    for (int i = 1; i < expenses_size_goal; i++) { //const auto& expense : expenses //size_t i = 0; i < csvData.size(); ++i
         // std::vector<std::string> row = parseCSVLine(csvData[i]);
 
         //std::string date = std::format("{:02}-{}", curr_month, expenses[i].day);
@@ -300,6 +344,9 @@ void PrintExpenses(const Month& month) {
     std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
 
     std::cout << "Total" << std::endl;
+
+    // std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
+    
     std::cout << month.total << std::endl;
 
     // Print bottom border
@@ -329,7 +376,8 @@ void PrintExpenses(const Month& month, std::chrono::year year) {
     std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
 
     auto expense = expenses.begin();
-    for (int i = 1; i - 1 < expenses.size(); i++) { //const auto& expense : expenses //size_t i = 0; i < csvData.size(); ++i
+    int expenses_size_goal = expenses.size() + 1;
+    for (int i = 1; i < expenses_size_goal; i++) { //const auto& expense : expenses //size_t i = 0; i < csvData.size(); ++i
         // std::vector<std::string> row = parseCSVLine(csvData[i]);
 
         //std::string date = std::format("{:02}-{}", curr_month, expenses[i].day);
@@ -355,6 +403,9 @@ void PrintExpenses(const Month& month, std::chrono::year year) {
     std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
 
     std::cout << "Total" << std::endl;
+
+    // std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
+    
     std::cout << month.total << std::endl;
 
     // Print bottom border
@@ -385,7 +436,8 @@ void PrintExpenses(const Year& year, std::chrono::month curr_month) {
     std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
 
     auto expense = expenses.begin();
-    for (int i = 1; i - 1 < expenses.size(); i++) { //const auto& expense : expenses //size_t i = 0; i < csvData.size(); ++i
+    int expenses_size_goal = expenses.size() + 1;
+    for (int i = 1; i < expenses_size_goal; i++) { //const auto& expense : expenses //size_t i = 0; i < csvData.size(); ++i
         // std::vector<std::string> row = parseCSVLine(csvData[i]);
 
         //std::string date = std::format("{:02}-{}", curr_month, expenses[i].day);
@@ -411,6 +463,9 @@ void PrintExpenses(const Year& year, std::chrono::month curr_month) {
     std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
 
     std::cout << "Total" << std::endl;
+
+    // std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
+    
     std::cout << month.total << std::endl;
 
     // Print bottom border
@@ -436,9 +491,12 @@ double PopulateExpenses(const std::string& filename, Month& month) {
         return 0;
     }
 
+    month.expenses.clear();
+
     std::set<Expense>& expenses = month.expenses;
 
     double& total = month.total;
+    month.total = 0;
     std::string line;
     std::getline(file, line);
     // std::cout << line << std::endl;
@@ -481,6 +539,7 @@ double PopulateExpenses(const std::string& filename, Year& year, std::chrono::mo
 
 double PopulateExpenses(Year& year) {
     std::string year_str = std::to_string(static_cast<int>(year.year));
+    year.total = 0;
 
     std::chrono::month curr_month = std::chrono::January;
     for (int i = 1; i < 13; i++) {
@@ -529,6 +588,7 @@ int AddExpense(Year& year, std::chrono::month curr_month) {
 
     while (std::getline(std::cin, line)) {
         if (line == "q") {
+            std::cout << std::endl;
             return 0;
         }
 
@@ -548,6 +608,7 @@ int AddExpense(Year& year, std::chrono::month curr_month) {
 
     while (std::getline(std::cin, text)) {
         if (text == "q") {
+            std::cout << std::endl;
             return 0;
         }
 
@@ -573,6 +634,7 @@ int AddExpense(Year& year, std::chrono::month curr_month) {
 
     while (std::getline(std::cin, line)) {
         if (line == "q") {
+            std::cout << std::endl;
             return 0;
         }
 
@@ -603,6 +665,7 @@ int AddExpense(Year& year, std::chrono::month curr_month) {
 
     while (std::getline(std::cin, line)) {
         if (line == "q") {
+            std::cout << std::endl;
             return 0;
         }
 
@@ -644,6 +707,7 @@ int DeleteExpense(Year& year, std::chrono::month curr_month) {
 
     while (std::getline(std::cin, line)) {
         if (line == "q") {
+            std::cout << std::endl;
             return 0;
         }
 
@@ -667,9 +731,10 @@ int DeleteExpense(Year& year, std::chrono::month curr_month) {
                     }
 
                     if (line == "y") {
-                        expenses.erase(it);
+                        //const double deleted_cost = expense.cost;
                         month.total -= expense.cost;
                         year.total -= expense.cost;
+                        expenses.erase(it);
                         // month.changed = true;
                         std::cout << "Expense deleted.\n" << std::endl;
                         return 1;
@@ -709,6 +774,7 @@ int DeleteExpense(std::chrono::year year, Month& month) {
 
     while (std::getline(std::cin, line)) {
         if (line == "q") {
+            std::cout << std::endl;
             return 0;
         }
 
@@ -732,8 +798,8 @@ int DeleteExpense(std::chrono::year year, Month& month) {
                     }
 
                     if (line == "y") {
-                        expenses.erase(it);
                         month.total -= expense.cost;
+                        expenses.erase(it);
                         // month.changed = true;
                         std::cout << "Expense deleted.\n" << std::endl;
                         return 1;
@@ -822,6 +888,40 @@ int UpdateTotalsFile(const Year& year) {
     file << year.total << "\n";
 
     return 1;
+}
+
+void PrintTotalsInternal(const Year& year) {
+    std::cout << std::format("Year {}", static_cast<int>(year.year)) << std::endl;
+    std::cout << std::string(colWidth * 6, '-') << "\n";
+
+    std::cout << std::left;
+    for (unsigned i = 1; i < 7; ++i) {
+        std::cout << std::setw(colWidth) << std::format("{:%B}", std::chrono::month{i});
+    }
+    std::cout << std::endl;
+
+    std::cout << std::left;
+    for (int i = 0; i < 6; ++i) {
+        std::cout << std::setw(colWidth) << year.months[i].total;
+    }
+    std::cout << std::endl;
+
+    std::cout << std::string(colWidth * 6, '-') << "\n";
+    std::cout << std::left;
+    for (unsigned i = 7; i < 13; ++i) {
+        std::cout << std::setw(colWidth) << std::format("{:%B}", std::chrono::month{i});
+    }
+    std::cout << std::endl;
+
+    std::cout << std::left;
+    for (int i = 6; i < 12; ++i) {
+        std::cout << std::setw(colWidth) << year.months[i].total;
+    }
+    std::cout << std::endl;
+
+    std::cout << std::string(colWidth * 6, '-') << "\n";
+    std::cout << "Total: \n" << year.total << std::endl;
+    std::cout << std::string(colWidth * 6, '-') << "\n" << std::endl;
 }
 
 int PrintTotalsFile(const Year& year) {
@@ -928,7 +1028,7 @@ int PromptInsertYear() {
     return -1;
 }
 
-Year& PromptYear() {
+std::pair<Year&, bool> PromptYear() {
     std::string line;
     std::cout << "Enter 0 for latest year. Choose year: ";
 
@@ -936,22 +1036,37 @@ Year& PromptYear() {
 
     while (std::getline(std::cin, line)) {
         std::stringstream ss(line);
+        if (line == "q") {
+            return {quit_year, false};
+        }
 
         if (ss >> num) {
             if (years.empty()) {
                 std::cerr << "No years are available.\n";
-                std::exit(1);
+
+                std::cout << "Insert year?" << std::endl;
+                std::cout << "Press y or n" << std::endl;
+
+                while (std::getline(std::cin, line)) {
+                    if (line == "y") {
+                        PromptInsertYear();
+                        return PromptYear();
+                    } else if (line == "n" || line == "q") {
+                        return {quit_year, false};
+                    }
+                }
+
             }
 
             if (num == 0) {
                 auto it = years.end();
                 --it;
-                return it->second;
+                return {it->second, true};
             } else {
                 std::chrono::year year_to_insert = std::chrono::year{num};
                 auto it = years.find(year_to_insert);
                 if (it != years.end()) {
-                    return it->second;
+                    return {it->second, true};
                 } else {
                     std::cout << "Year not found.\n";
                 }
@@ -967,19 +1082,22 @@ Year& PromptYear() {
     std::exit(1);
 }
 
-std::chrono::month PromptMonth() {
+std::pair<std::chrono::month, bool> PromptMonth() {
     std::string line;
     std::cout << "Choose month (1-12): ";
 
     unsigned num;
 
     while (std::getline(std::cin, line)) {
+        if (line == "q") {
+            return {std::chrono::January, false};
+        }
+
         std::stringstream ss(line);
 
         if (ss >> num) {
             if (0 < num && num < 13) {
-                std::cout << std::endl;
-                return static_cast<std::chrono::month>(num);
+                return {static_cast<std::chrono::month>(num), true};
             } else {
                 std::cout << "Please choose a number between 1-12.\n";
             }
@@ -1001,6 +1119,7 @@ int PromptYearErase() {
 
     while (std::getline(std::cin, line)) {
         if (line == "q") {
+            std::cout << std::endl;
             return 0;
         }
         std::stringstream ss(line);
@@ -1009,11 +1128,10 @@ int PromptYearErase() {
             std::chrono::year year_to_insert = std::chrono::year{num};
             bool erased = years.erase(year_to_insert);
             if (erased) {
-                std::cout << "Erased year " << year_to_insert << std::endl;
+                std::cout << "Deleted year " << year_to_insert << std::endl; //"Erased year"
             } else {
-                std::cout << "Year " << year_to_insert << " was not erased." << std::endl;
+                std::cout << "Year " << year_to_insert << " was not found." << std::endl;
             }
-            std::cout << std::endl;
             return erased;
         } else {
             std::cout << "Invalid input.\n";

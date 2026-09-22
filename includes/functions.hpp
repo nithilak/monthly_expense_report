@@ -16,15 +16,30 @@
 
 // ++i vs i++, --i vs i--, got replaced a few to --i from i-- by code suggestions
 
+//for (int i = 0; i < years.size() - 1; i++) {} turns out that calls the size function each time
+//has been optimized
+
+//See available years says "deleted" when the year is "erased" by function call
+
+//currently after doing AddExpense and DeleteExpense in main the month file and the totals file are automatically updated
+//could be changed
+
+//can't figure out how to quit when in promptyear or promptmonth
+//edit: feature has been added
+//could have it based on whether the year returned was quit_year, but chose to use the std::pair to be explicit
+
 //if you delete a month file while a session is in progress it will only be updated if you add/delete an expense
 //perhaps I should add an option to update the file separately but the UI is already pretty full
-//edit: added this feature
+//edit: added this feature, added a separate line in the UI for all update functions
 
 //not my code, prints a csv file
 void PrintFile(std::string filename);
 
 //not my code, // Function to split a CSV line by commas
 std::vector<std::string> parseCSVLine(const std::string& line);
+
+void PrintMenu();
+void PrintMenuYear(std::chrono::year year);
 
 //prints out all expenses for each month the year
 void PrintAllExpenses(const Year& year);
@@ -65,22 +80,32 @@ int UpdateMonthFile(const Year& year, std::chrono::month curr_month);
 //does not work for some reason
 int UpdateAllMonthFiles(const Year& year);
 
+
+//prints eac
+void PrintTotalsInternal(const Year& year);
+
 //updates TotalExpensesYEAR.csv
 //creates the file if it does not exist
 int UpdateTotalsFile(const Year& year);
 //prints TotalExpensesYEAR.csv
+//creates the file if it does not exist via UpdateTotalsFile
 int PrintTotalsFile(const Year& year);
 
 
-//returns a (prompted) year from years, no quit option
-Year& PromptYear();
-//returns a valid (prompted) month, no quit option
-std::chrono::month PromptMonth();
+//for these two I could make a quit option by implementing a default year
+
+//returns a (prompted) year from years
+//no quit option unless if no year exists and you choose not to insert one then it quits the whole program
+std::pair<Year&, bool> PromptYear();
+//returns a valid (prompted) month
+//no quit option, has one that could be implemented to quit the whole program
+std::pair<std::chrono::month, bool> PromptMonth();
 
 //true if successfully inserted a (prompted) year into years, does not overwrite already inserted year
 //has quit option
 int PromptInsertYear();
-//erases a (prompted) year in years, has quit option
+//erases a (prompted) year in years
+//has quit option
 int PromptYearErase();
 
 #endif // FUNCTIONS_HPP
