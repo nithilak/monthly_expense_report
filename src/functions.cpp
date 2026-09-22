@@ -491,12 +491,12 @@ double PopulateExpenses(const std::string& filename, Month& month) {
         return 0;
     }
 
-    month.expenses.clear();
-
     std::set<Expense>& expenses = month.expenses;
 
+    expenses.clear(); //just to make sure
+
     double& total = month.total;
-    month.total = 0;
+    month.total = 0; //just to make sure
     std::string line;
     std::getline(file, line);
     // std::cout << line << std::endl;
@@ -539,7 +539,7 @@ double PopulateExpenses(const std::string& filename, Year& year, std::chrono::mo
 
 double PopulateExpenses(Year& year) {
     std::string year_str = std::to_string(static_cast<int>(year.year));
-    year.total = 0;
+    year.total = 0; //just to make sure
 
     std::chrono::month curr_month = std::chrono::January;
     for (int i = 1; i < 13; i++) {
@@ -974,7 +974,7 @@ int PrintTotalsFile(const Year& year) {
     }
 
     if (header.empty() || values.empty()) {
-        std::cerr << "Error: No totals data found in the CSV file." << std::endl;
+        std::cerr << "Error: No totals data found in the CSV file.\n" << std::endl;
         return 0;
     }
 
@@ -1035,7 +1035,9 @@ int PromptInsertYear() {
         }
     }
     
-    return -1;
+    std::cerr << "Year could not be inserted.\n" << std::endl;
+    // std::exit(1);
+    return 0; //return -1;
 }
 
 std::pair<Year&, bool> PromptYear() {
@@ -1087,8 +1089,9 @@ std::pair<Year&, bool> PromptYear() {
         std::cout << "Enter 0 for latest year. Choose year: ";
     }
 
-    std::cerr << "Year could not be chosen." << std::endl;
-    std::exit(1);
+    std::cerr << "Year could not be chosen.\n" << std::endl;
+    // std::exit(1);
+    return {quit_year, false};
 }
 
 std::pair<std::chrono::month, bool> PromptMonth() {
@@ -1116,8 +1119,9 @@ std::pair<std::chrono::month, bool> PromptMonth() {
         std::cout << "Choose month (1-12): ";
     }
 
-    std::cerr << "Month could not be chosen." << std::endl;
-    std::exit(1);
+    std::cerr << "Month could not be chosen.\n" << std::endl;
+    // std::exit(1);
+    return {std::chrono::January, false};
 }
 
 int PromptYearErase() {
@@ -1150,6 +1154,7 @@ int PromptYearErase() {
         std::cout << "Enter q to quit.\nChoose year: ";
     }
 
-    std::cerr << "Year could not be chosen." << std::endl;
-    std::exit(1);
+    std::cerr << "Year could not be chosen.\n" << std::endl;
+    // std::exit(1);
+    return 0;
 }
