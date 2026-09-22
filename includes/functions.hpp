@@ -14,6 +14,11 @@
 //std::chrono::year{int}; accepts an int but year.months[static_cast<unsigned int>(curr_month) - 1]; is an unsigned int cast function
 //could be more instances
 
+//for the dirPath wanted to use the file path, but that doesn't work when I do it the fancy way or use substring (0, filename.size() - number)
+// std::filesystem::path p(filename);
+// std::string dirPath = p.parent_path().string();
+//std::string dirPath = filename.substr(0, filename.size() - 11 or 12 for month file or 21 or 22 for totals file); idk
+
 //bit inconsistent with naming month vs curr_month, year vs curr_year 
 //for which one is the Month or Year and which is the std::chrono::month or std::chrono::year
 

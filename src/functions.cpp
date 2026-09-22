@@ -475,7 +475,7 @@ void PrintExpenses(const Year& year, std::chrono::month curr_month) {
 double PopulateExpenses(const std::string& filename, Month& month) {
     month.filename = filename;
 
-    std::string dirPath = filename.substr(0, 21);
+    std::string dirPath = filename.substr(0, fixed_csv_file_prefix_length);
     if (std::filesystem::create_directories(dirPath)) {
         std::cerr << "Directory " << dirPath << " not found. Creating directory..." << std::endl;
     }
@@ -825,7 +825,7 @@ int UpdateMonthFile(const Year& year, std::chrono::month curr_month) {
     const Month& month = year.months[static_cast<unsigned int>(curr_month) - 1];
     std::string filename = month.filename;
 
-    std::string dirPath = filename.substr(0, 21);
+    std::string dirPath = filename.substr(0, fixed_csv_file_prefix_length);
     if (std::filesystem::create_directories(dirPath)) {
         std::cerr << "Directory " << dirPath << " not found. Creating directory..." << std::endl;
     }
@@ -871,7 +871,7 @@ int UpdateTotalsFile(const Year& year) {
     std::string year_str = std::to_string(static_cast<int>(year.year));
     std::string filename = "includes/" + year_str + "Expenses/TotalExpenses" + year_str + ".csv";
 
-    std::string dirPath = filename.substr(0, 21);
+    std::string dirPath = filename.substr(0, fixed_csv_file_prefix_length);
     if (std::filesystem::create_directories(dirPath)) {
         std::cerr << "Directory " << dirPath << " not found. Creating directory..." << std::endl;
     }
