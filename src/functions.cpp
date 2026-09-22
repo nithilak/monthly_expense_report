@@ -11,14 +11,14 @@
 #include <chrono>
 #include <filesystem>
 
-void PrintFile(std::string filename) {
+bool PrintFile(std::string filename) {
     // 1. Open the CSV file using an input file stream
     std::ifstream file(filename);
 
     // Best Practice: Always check if the file opened successfully
     if (!file.is_open()) {
         std::cerr << "Error: Could not open the file!" << std::endl;
-        return;
+        return 0;
     }
 
     // This 2D vector will hold all the rows and columns
@@ -71,6 +71,8 @@ void PrintFile(std::string filename) {
         }
         std::cout << "\n";
     }
+
+    return 1;
 }
 
 // Function to split a CSV line by commas
@@ -102,10 +104,14 @@ void PrintMenuYear(std::chrono::year year) {
     std::cout << "Print all annual totals: 10, Print annual total: 11" << std::endl;
 }
 
-void PrintAllExpenses(const Year& year) {
-    for (int i = 1; i < 13; i++) {
-    //   std::chrono::month curr_month = static_cast<std::chrono::month>(i);
-      PrintExpenses(year.months[i - 1], year.year);
+bool PrintAllExpenses(const Year& year) {
+    try {
+        for (int i = 1; i < 13; i++) {
+        //   std::chrono::month curr_month = static_cast<std::chrono::month>(i);
+        PrintExpenses(year.months[i - 1], year.year);
+        }
+    } catch (const std::runtime_error& e) {
+        std::cerr << "Error encountered: " << e.what() << std::endl;
     }
 }
 
@@ -572,7 +578,7 @@ Year& InsertYear(int year) {
     return year_return;
 }
 
-int AddExpense(Year& year, std::chrono::month curr_month) {
+bool AddExpense(Year& year, std::chrono::month curr_month) {
     Month& month = year.months[static_cast<unsigned int>(curr_month) - 1];
 
     std::cout << "Adding expense to: " << std::format("{:%B} {}", curr_month, static_cast<int>(year.year)) << std::endl;
@@ -689,7 +695,7 @@ int AddExpense(Year& year, std::chrono::month curr_month) {
     return 0;
 }
 
-int DeleteExpense(Year& year, std::chrono::month curr_month) {
+bool DeleteExpense(Year& year, std::chrono::month curr_month) {
     Month& month = year.months[static_cast<unsigned int>(curr_month) - 1];
     std::set<Expense>& expenses = month.expenses; 
     // PrintExpenses(expenses, month, year.year);
@@ -756,7 +762,7 @@ int DeleteExpense(Year& year, std::chrono::month curr_month) {
     return 0;
 }
 
-int DeleteExpense(std::chrono::year year, Month& month) {
+bool DeleteExpense(std::chrono::year year, Month& month) {
     std::set<Expense>& expenses = month.expenses; 
     std::chrono::month curr_month = month.month;
     // PrintExpenses(expenses, month);
@@ -821,7 +827,7 @@ int DeleteExpense(std::chrono::year year, Month& month) {
     return 0;
 }
 
-int UpdateMonthFile(const Year& year, std::chrono::month curr_month) {
+bool UpdateMonthFile(const Year& year, std::chrono::month curr_month) {
     const Month& month = year.months[static_cast<unsigned int>(curr_month) - 1];
     std::string filename = month.filename;
 
@@ -867,7 +873,7 @@ int UpdateAllMonthFiles(const Year& year) {
     return count;
 }
 
-int UpdateTotalsFile(const Year& year) {
+bool UpdateTotalsFile(const Year& year) {
     std::string year_str = std::to_string(static_cast<int>(year.year));
     std::string filename = "includes/" + year_str + "Expenses/TotalExpenses" + year_str + ".csv";
 
@@ -900,41 +906,47 @@ int UpdateTotalsFile(const Year& year) {
     return 1;
 }
 
-void PrintTotalsInternal(const Year& year) {
-    std::cout << std::format("Year {}", static_cast<int>(year.year)) << std::endl;
-    std::cout << std::string(colWidth * 6, '-') << "\n";
+bool PrintTotalsInternal(const Year& year) {
+    try {
+        std::cout << std::format("Year {}", static_cast<int>(year.year)) << std::endl;
+        std::cout << std::string(colWidth * 6, '-') << "\n";
 
-    std::cout << std::left;
-    for (unsigned i = 1; i < 7; ++i) {
-        std::cout << std::setw(colWidth) << std::format("{:%B}", std::chrono::month{i});
+        std::cout << std::left;
+        for (unsigned i = 1; i < 7; ++i) {
+            std::cout << std::setw(colWidth) << std::format("{:%B}", std::chrono::month{i});
+        }
+        std::cout << std::endl;
+
+        std::cout << std::left;
+        for (int i = 0; i < 6; ++i) {
+            std::cout << std::setw(colWidth) << year.months[i].total;
+        }
+        std::cout << std::endl;
+
+        std::cout << std::string(colWidth * 6, '-') << "\n";
+        std::cout << std::left;
+        for (unsigned i = 7; i < 13; ++i) {
+            std::cout << std::setw(colWidth) << std::format("{:%B}", std::chrono::month{i});
+        }
+        std::cout << std::endl;
+
+        std::cout << std::left;
+        for (int i = 6; i < 12; ++i) {
+            std::cout << std::setw(colWidth) << year.months[i].total;
+        }
+        std::cout << std::endl;
+
+        std::cout << std::string(colWidth * 6, '-') << "\n";
+        std::cout << "Total: \n" << year.total << std::endl;
+        std::cout << std::string(colWidth * 6, '-') << "\n" << std::endl;
+        return 1;
+    } catch (const std::runtime_error& e) {
+        std::cerr << "Error encountered: " << e.what() << "\n" << std::endl;
+        return 0;
     }
-    std::cout << std::endl;
-
-    std::cout << std::left;
-    for (int i = 0; i < 6; ++i) {
-        std::cout << std::setw(colWidth) << year.months[i].total;
-    }
-    std::cout << std::endl;
-
-    std::cout << std::string(colWidth * 6, '-') << "\n";
-    std::cout << std::left;
-    for (unsigned i = 7; i < 13; ++i) {
-        std::cout << std::setw(colWidth) << std::format("{:%B}", std::chrono::month{i});
-    }
-    std::cout << std::endl;
-
-    std::cout << std::left;
-    for (int i = 6; i < 12; ++i) {
-        std::cout << std::setw(colWidth) << year.months[i].total;
-    }
-    std::cout << std::endl;
-
-    std::cout << std::string(colWidth * 6, '-') << "\n";
-    std::cout << "Total: \n" << year.total << std::endl;
-    std::cout << std::string(colWidth * 6, '-') << "\n" << std::endl;
 }
 
-int PrintTotalsFile(const Year& year) {
+bool PrintTotalsFile(const Year& year) {
     std::string year_str = std::to_string(static_cast<int>(year.year));
     std::string filename = "includes/" + year_str + "Expenses/TotalExpenses" + year_str + ".csv";
 
@@ -1013,7 +1025,7 @@ int PrintTotalsFile(const Year& year) {
     return 1;
 }
 
-int PromptInsertYear() {
+bool PromptInsertYear() {
     std::string line;
     std::cout << "Insert year: ";
 
@@ -1124,7 +1136,7 @@ std::pair<std::chrono::month, bool> PromptMonth() {
     return {std::chrono::January, false};
 }
 
-int PromptYearErase() {
+bool PromptYearErase() {
     std::string line;
     std::cout << "Enter q to quit. Choose year: ";
 

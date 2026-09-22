@@ -45,8 +45,9 @@
 //perhaps I should add an option to update the file separately but the UI is already pretty full
 //edit: added this feature, added a separate line in the UI for all update functions
 
-//not my code, prints a csv file
-void PrintFile(std::string filename);
+//not my code, prints a csv file 
+//I changed it to return bool
+bool PrintFile(std::string filename);
 
 //not my code, // Function to split a CSV line by commas
 std::vector<std::string> parseCSVLine(const std::string& line);
@@ -56,7 +57,7 @@ void PrintMenu();
 void PrintMenuYear(std::chrono::year year);
 
 //prints out all expenses for each month the year
-void PrintAllExpenses(const Year& year);
+bool PrintAllExpenses(const Year& year);
 
 //recalculates the year total by adding the total from each month. not my code
 void RecalculateYearTotals(Year& year);
@@ -87,32 +88,33 @@ void PrintAnnualTotal(const Year& year);
 Year& InsertYear(int year);
 
 //adds an expense to a month, returns 1 if made a change
-int AddExpense(Year& year, std::chrono::month curr_month);
+bool AddExpense(Year& year, std::chrono::month curr_month);
 
 //deletes an expense from a month, returns 1 if made a change
-int DeleteExpense(Year& year, std::chrono::month curr_month);
-int DeleteExpense(std::chrono::year year, Month& month);
+bool DeleteExpense(Year& year, std::chrono::month curr_month);
+bool DeleteExpense(std::chrono::year year, Month& month);
 
 //updates the month's csv file to match its data
 //creates the file if it does not exist
 //returns 1 if updated the file successfully after creating the file
-int UpdateMonthFile(const Year& year, std::chrono::month curr_month);
+bool UpdateMonthFile(const Year& year, std::chrono::month curr_month);
 //does not work for some reason
 //supposed to return number of successfully updated files
 int UpdateAllMonthFiles(const Year& year);
 
 
 //prints each total stored in each month and the year total
-void PrintTotalsInternal(const Year& year);
+//returns 1 if printed with no errors
+bool PrintTotalsInternal(const Year& year);
 
 //updates TotalExpensesYEAR.csv
 //creates the file if it does not exist
 //returns 1 if updated the file successfully after creating the file
-int UpdateTotalsFile(const Year& year);
+bool UpdateTotalsFile(const Year& year);
 //prints TotalExpensesYEAR.csv
 //creates the file if it does not exist via UpdateTotalsFile
 //returns 1 if file was opened and had both header not empty and values not empty
-int PrintTotalsFile(const Year& year);
+bool PrintTotalsFile(const Year& year);
 
 
 //for these two I could make a quit option by implementing a default year
@@ -127,10 +129,10 @@ std::pair<std::chrono::month, bool> PromptMonth();
 
 //returns 1 if successfully inserted a (prompted) year into years, does not overwrite already inserted year
 //has quit option
-int PromptInsertYear();
+bool PromptInsertYear();
 //erases a (prompted) year in years
 //returns 1 if erased a year
 //has quit option
-int PromptYearErase();
+bool PromptYearErase();
 
 #endif // FUNCTIONS_HPP
