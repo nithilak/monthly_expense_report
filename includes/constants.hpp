@@ -82,6 +82,8 @@ class Year {
     std::array<Month, 12> months = {Month(std::chrono::January), Month(std::chrono::February), Month(std::chrono::March), Month(std::chrono::April), Month(std::chrono::May), Month(std::chrono::June), Month(std::chrono::July), Month(std::chrono::August), Month(std::chrono::September), Month(std::chrono::October), Month(std::chrono::November), Month(std::chrono::December)};
     double total = 0;
 
+    Year(){};
+
     Year(std::chrono::year enter_year) {
         year = enter_year;
     }
@@ -93,7 +95,8 @@ class Year {
 };
 
 //doing this to avoid implementing multiple lookups with binary search using set when looking for the year
-inline std::map<std::chrono::year, Year> years; 
+inline std::map<std::chrono::year, Year> years;
+inline Year quit_year; //why does it have to be inline
 
 // Set the equal width for each column
 constexpr int colWidth = 20;
