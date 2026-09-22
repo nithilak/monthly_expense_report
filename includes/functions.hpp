@@ -26,7 +26,8 @@
 //apparently std::endl is more expensive and slower 
 //google says "You should use std::endl when you absolutely need to guarantee that the user or a file sees the text right now. "
 
-// ++i vs i++, --i vs i--, got replaced a few to --i from i-- by code suggestions
+// ++i vs i++, --i vs i--, ++iter vs iter++, --iter vs iter--
+//got replaced few i-- to --i by code suggestions
 
 //for (int i = 0; i < years.size() - 1; i++) {} turns out that calls the size function each time
 //has been optimized
@@ -61,6 +62,7 @@ void PrintAllExpenses(const Year& year);
 void RecalculateYearTotals(Year& year);
 
 //prints out all expenses for the month
+//non void function returns the total for the expenses
 double PrintExpenses(const std::set<Expense>& expenses);
 void PrintExpenses(const std::set<Expense>& expenses, const Month& month);
 void PrintExpenses(const std::set<Expense>& expenses, const Month& month, std::chrono::year year);
@@ -70,6 +72,7 @@ void PrintExpenses(const Year& year, std::chrono::month curr_month);
 
 //reads in a csv file under the folder in includes/YEARExpenses/MONTHYEAR and uses it to fill month.expenses
 //also updates each month and year total
+//returns the month's/year's total
 double PopulateExpenses(const std::string& filename, Month& month);
 double PopulateExpenses(const std::string& filename, Year& year, std::chrono::month curr_month);
 double PopulateExpenses(Year& year);
@@ -83,17 +86,19 @@ void PrintAnnualTotal(const Year& year);
 //if files are deleted after inserted, running InsertYear again creates the files fresh but the memory of the old file stays
 Year& InsertYear(int year);
 
-//adds an expense to a month
+//adds an expense to a month, returns 1 if made a change
 int AddExpense(Year& year, std::chrono::month curr_month);
 
-//deletes an expense from a month
+//deletes an expense from a month, returns 1 if made a change
 int DeleteExpense(Year& year, std::chrono::month curr_month);
 int DeleteExpense(std::chrono::year year, Month& month);
 
 //updates the month's csv file to match its data
 //creates the file if it does not exist
+//returns 1 if updated the file successfully after creating the file
 int UpdateMonthFile(const Year& year, std::chrono::month curr_month);
 //does not work for some reason
+//supposed to return number of successfully updated files
 int UpdateAllMonthFiles(const Year& year);
 
 
@@ -102,9 +107,11 @@ void PrintTotalsInternal(const Year& year);
 
 //updates TotalExpensesYEAR.csv
 //creates the file if it does not exist
+//returns 1 if updated the file successfully after creating the file
 int UpdateTotalsFile(const Year& year);
 //prints TotalExpensesYEAR.csv
 //creates the file if it does not exist via UpdateTotalsFile
+//returns 1 if file was opened and had both header not empty and values not empty
 int PrintTotalsFile(const Year& year);
 
 
@@ -112,16 +119,17 @@ int PrintTotalsFile(const Year& year);
 
 //returns a (prompted) year from years
 //if no year exists and you choose not to insert one then it returns quit option
-//bool is false if quit option is desired
+//bool is false if quit option is desired, not a valid year
 std::pair<Year&, bool> PromptYear();
 //returns a valid (prompted) month
-//bool is false if quit option is desired
+//bool is false if quit option is desired, not a valid month
 std::pair<std::chrono::month, bool> PromptMonth();
 
-//true if successfully inserted a (prompted) year into years, does not overwrite already inserted year
+//returns 1 if successfully inserted a (prompted) year into years, does not overwrite already inserted year
 //has quit option
 int PromptInsertYear();
 //erases a (prompted) year in years
+//returns 1 if erased a year
 //has quit option
 int PromptYearErase();
 
