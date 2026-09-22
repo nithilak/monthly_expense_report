@@ -17,7 +17,9 @@
 //could preface error messages with "Error: " like the computer code
 //also std::cout vs std::err in some cases, up to discretion
 
-//also add errors for reaching unreachable places? like after a while loop with std::getline
+//currently all the functions are bool, but should they return an int for specific error codes?
+
+//also could add errors for reaching unreachable places? like after a while loop with std::getline
 
 //for the dirPath wanted to use the file path, but that doesn't work when I do it the fancy way or use substring (0, filename.size() - number)
 // std::filesystem::path p(filename);
