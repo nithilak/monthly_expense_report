@@ -475,13 +475,13 @@ void PrintExpenses(const Year& year, std::chrono::month curr_month) {
 double PopulateExpenses(const std::string& filename, Month& month) {
     month.filename = filename;
 
+    std::string dirPath = filename.substr(0, 21);
+    if (std::filesystem::create_directories(dirPath)) {
+        std::cerr << "Directory " << dirPath << " not found. Creating directory..." << std::endl;
+    }
+
     // 1. Open the CSV file using an input file stream
     std::ifstream file(filename);
-
-    std::string dirPath = filename.substr(0, filename.size() - 11);
-    if (std::filesystem::create_directories(dirPath)) {
-        std::cerr << "Directory " << filename.substr(0, 21) << " not found. Creating directory..." << std::endl;
-    }
 
     // Best Practice: Always check if the file opened successfully
     if (!file.is_open()) {
@@ -825,6 +825,11 @@ int UpdateMonthFile(const Year& year, std::chrono::month curr_month) {
     const Month& month = year.months[static_cast<unsigned int>(curr_month) - 1];
     std::string filename = month.filename;
 
+    std::string dirPath = filename.substr(0, 21);
+    if (std::filesystem::create_directories(dirPath)) {
+        std::cerr << "Directory " << dirPath << " not found. Creating directory..." << std::endl;
+    }
+
     if (!std::filesystem::exists(filename)) {
         std::cerr << filename.substr(filename.size() - 11, 11) << " file not found. Creating file..." << std::endl;
     }
@@ -865,6 +870,11 @@ int UpdateAllMonthFiles(const Year& year) {
 int UpdateTotalsFile(const Year& year) {
     std::string year_str = std::to_string(static_cast<int>(year.year));
     std::string filename = "includes/" + year_str + "Expenses/TotalExpenses" + year_str + ".csv";
+
+    std::string dirPath = filename.substr(0, 21);
+    if (std::filesystem::create_directories(dirPath)) {
+        std::cerr << "Directory " << dirPath << " not found. Creating directory..." << std::endl;
+    }
 
     if (!std::filesystem::exists(filename)) {
         std::cout << filename.substr(filename.size() - 21, 21) << " file not found. Creating file...\n";
@@ -1049,8 +1059,7 @@ std::pair<Year&, bool> PromptYear() {
 
                 while (std::getline(std::cin, line)) {
                     if (line == "y") {
-                        PromptInsertYear();
-                        return PromptYear();
+                        return {InsertYear(num), true};
                     } else if (line == "n" || line == "q") {
                         return {quit_year, false};
                     }

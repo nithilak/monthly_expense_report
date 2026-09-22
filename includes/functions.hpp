@@ -106,10 +106,11 @@ int PrintTotalsFile(const Year& year);
 //for these two I could make a quit option by implementing a default year
 
 //returns a (prompted) year from years
-//no quit option unless if no year exists and you choose not to insert one then it quits the whole program
+//if no year exists and you choose not to insert one then it returns quit option
+//bool is false if quit option is desired
 std::pair<Year&, bool> PromptYear();
 //returns a valid (prompted) month
-//no quit option, has one that could be implemented to quit the whole program
+//bool is false if quit option is desired
 std::pair<std::chrono::month, bool> PromptMonth();
 
 //true if successfully inserted a (prompted) year into years, does not overwrite already inserted year

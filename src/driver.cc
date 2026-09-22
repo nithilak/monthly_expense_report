@@ -174,7 +174,7 @@ int main() {
             //   std::cout << "not ";
             // }
             // std::cout << "updated." << std::endl;
-            std::cout << std::format("{:%b}{} .csv {}updated.\n", 
+            std::cout << std::format("{:%b}{}.csv {}updated.\n", 
                         month_to_add, 
                         year.year, 
                         passed ? "" : "not ");
