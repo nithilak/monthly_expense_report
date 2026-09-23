@@ -889,7 +889,7 @@ int UpdateTotalsFile(const Year& year) {
         return 0;
     }
 
-    file << "January,February,March,April,May,June,July,August,September,October,November,December,Total\n";
+    file << "Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec,Total\n";
 
     for (const auto& month : year.months) {
         file << month.total << ",";
