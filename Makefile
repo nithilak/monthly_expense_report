@@ -1,4 +1,4 @@
-# Simple Makefile for the evil_word_guess project
+# Simple Makefile
 CXX := clang++
 CXXFLAGS := -std=c++20
 CPPFLAGS := -Iincludes
