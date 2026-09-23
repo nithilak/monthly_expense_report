@@ -79,10 +79,14 @@ void PrintExpenses(const Month& month, std::chrono::year year);
 void PrintExpenses(const Year& year, std::chrono::month curr_month);
 
 //reads in a csv file under the folder in includes/YEARExpenses/MONTHYEAR and uses it to fill month.expenses
-//also updates each month and year total
-//returns the month's/year's total
+//creates the file and directory if it does not exist
+//updates month total and returns it
 double PopulateExpenses(const std::string& filename, Month& month);
+//deprecated by being skipped over
+//runs PopulateExpenses for that month and updates the year total
 double PopulateExpenses(const std::string& filename, Year& year, std::chrono::month curr_month);
+//runs PopulateExpenses for each month in the year and updates the year total
+//returns the year's total
 double PopulateExpenses(Year& year);
 
 //prints the year's total cost

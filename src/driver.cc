@@ -17,6 +17,7 @@ int main() {
   std::cout << "Enter q to quit." << std::endl;
   
   if (!PromptInsertYear()) {
+    std::cout << std::endl;
     return 0;
   }
 
@@ -28,6 +29,7 @@ int main() {
 
   while (std::getline(std::cin, line)) {
     if (line == "q") {
+      std::cout << std::endl;
       return 0;
     }
 

@@ -543,7 +543,7 @@ double PopulateExpenses(Year& year) {
 
     std::chrono::month curr_month = std::chrono::January;
     for (int i = 1; i < 13; i++) {
-        PopulateExpenses("includes/" + year_str + "Expenses/" + std::format("{:%b}", curr_month) + year_str + ".csv", year, curr_month);
+        year.total += PopulateExpenses("includes/" + year_str + "Expenses/" + std::format("{:%b}", curr_month) + year_str + ".csv", year.months[static_cast<unsigned int>(curr_month) - 1]);
         //PrintExpenses(year, curr_month);
         curr_month++;
     }
