@@ -92,10 +92,10 @@ double PopulateExpenses(Year& year);
 //prints the year's total cost
 void PrintAnnualTotal(const Year& year);
 
-//inserts a year with all 12 month files formatted like includes/YEARExpenses/MONTHYEAR into years
-//also TotalExpensesYEAR.csv
+//inserts a year with all 12 month files formatted like includes/YEARExpenses/MONTHYEAR.csv into years
+//also updates includes/YEARExpenses/TotalExpensesYEAR.csv
 //creates directory and file if it does not exist
-//if files are deleted after inserted, running InsertYear again creates the files fresh but the memory of the old file stays
+//if files are deleted after inserted, running InsertYear again creates the files fresh from what is currently in memory
 Year& InsertYear(int year);
 
 //adds an expense to a month, returns 1 if made a change
