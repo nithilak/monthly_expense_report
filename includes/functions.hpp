@@ -19,6 +19,12 @@
 // std::string dirPath = p.parent_path().string();
 //std::string dirPath = filename.substr(0, filename.size() - 11 or 12 for month file or 21 or 22 for totals file); idk
 
+//could preface error messages with "Error: " like the computer code
+//also std::cout vs std::err in some cases, up to discretion
+
+//also could add errors for reaching unreachable places? like after a while loop with std::getline
+//currently returning the quit option in those cases
+
 //bit inconsistent with naming month vs curr_month, year vs curr_year 
 //for which one is the Month or Year and which is the std::chrono::month or std::chrono::year
 
@@ -36,6 +42,8 @@
 
 //currently after doing AddExpense and DeleteExpense in main the month file and the totals file are automatically updated
 //could be changed
+
+//press q anytime to go back a level
 
 //can't figure out how to quit when in promptyear or promptmonth
 //edit: feature has been added
@@ -94,7 +102,7 @@ int DeleteExpense(Year& year, std::chrono::month curr_month);
 int DeleteExpense(std::chrono::year year, Month& month);
 
 //updates the month's csv file to match its data
-//creates the file if it does not exist
+//creates the directory and file if it does not exist
 //returns 1 if updated the file successfully after creating the file
 int UpdateMonthFile(const Year& year, std::chrono::month curr_month);
 //does not work for some reason
@@ -106,12 +114,12 @@ int UpdateAllMonthFiles(const Year& year);
 void PrintTotalsInternal(const Year& year);
 
 //updates TotalExpensesYEAR.csv
-//creates the file if it does not exist
+//creates the directory and file if it does not exist
 //returns 1 if updated the file successfully after creating the file
 int UpdateTotalsFile(const Year& year);
 //prints TotalExpensesYEAR.csv
-//creates the file if it does not exist via UpdateTotalsFile
-//returns 1 if file was opened and had both header not empty and values not empty
+//creates the directory and file if it does not exist via UpdateTotalsFile
+//returns 1 if csv file was opened and had both header not empty and values not empty
 int PrintTotalsFile(const Year& year);
 
 
