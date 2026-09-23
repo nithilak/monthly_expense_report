@@ -487,7 +487,7 @@ double PopulateExpenses(const std::string& filename, Month& month) {
     if (!file.is_open()) {
         std::cerr << filename.substr(filename.size() - 11, 11) << " file not found. Creating file..." << std::endl;
         std::ofstream file(filename);
-        file << "cost,reason,date\n";
+        file << "cost,reason,day\n";
         return 0;
     }
 
@@ -845,7 +845,7 @@ int UpdateMonthFile(const Year& year, std::chrono::month curr_month) {
 
     const std::set<Expense>& expenses = month.expenses;
 
-    file << "cost,reason,date\n";
+    file << "cost,reason,day\n";
 
     for (const auto& expense : expenses) {
         file << expense.cost << ",\"" << expense.reason << "\"," << std::format("{:02}", static_cast<unsigned>(expense.day)) << "\n";
