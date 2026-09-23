@@ -1,5 +1,17 @@
 A list of all monthly expenses.
 
+do:
+
+
+make
+
+clear (optionally)
+
+./bin/exec
+
+
+to run the program.
+
 Press q to quit anytime and go back a level.
 
 Insert year by adding a folder in includes with the title YEARExpenses.
