@@ -98,6 +98,7 @@ class Year {
 inline std::map<std::chrono::year, Year> years;
 inline Year quit_year; //why does it have to be inline
 
+//the length is currently the length of "includes/YEARExpenses"
 //csv_dir_prefix_length
 //fixed_csv_dir_size
 constexpr int fixed_csv_file_prefix_length = 21;
