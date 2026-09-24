@@ -14,10 +14,11 @@
 //std::chrono::year{int}; accepts an int but year.months[static_cast<unsigned int>(curr_month) - 1]; is an unsigned int cast function
 //could be more instances
 
-//for the dirPath wanted to use the file path, but that doesn't work when I do it the fancy way or use substring (0, filename.size() - number)
+//for the dirPath I wanted to use the file path, but that doesn't work when I do it the fancy way or use substring (0, filename.size() - number)
 // std::filesystem::path p(filename);
 // std::string dirPath = p.parent_path().string();
 //std::string dirPath = filename.substr(0, filename.size() - 11 or 12 for month file or 21 or 22 for totals file); idk
+//now I am doing it with SplitPath() but it could be done better I think
 
 //could preface error messages with "Error: " like the computer code
 //also std::cout vs std::cerr in some cases, up to discretion
@@ -40,6 +41,14 @@
 
 //See available years says "deleted" when the year is "erased" by function call
 
+//cuurently year Zero is not allowed to be created and not processed when stored as a directory 
+//(when properly named, the directory would be 0000Expenses) 
+//(and that is what it checks for, although I think 0Expenses also works but it writes to 0000Expenses when uploading
+//as per the naming convention that I made for all years less than 4 digits)
+//I could add YEARExpensesBCE
+//oh wait hold on, google says
+//In C++20, std::chrono::year stores BCE years using negative values and astronomical year numbering, where the year N BCE is represented mathematically as 1 - N.Because of this system, there is a year 0 in std::chrono::year, which corresponds exactly to 1 BCE in the traditional historical calendar.
+
 //currently there is an option in PromptInsertYear() to include all years in directory "./includes/"
 //the UI is a bit cluttered for when new files are created
 
@@ -57,8 +66,9 @@
 //currently after doing AddExpense and DeleteExpense in main the month file and the totals file are automatically updated
 //could be changed
 
-//AddExpense does not permit you to enter an empty reason currently 
-//if it is in the CSV file when you read it it throws an error
+//AddExpense does not permit you to enter an empty reason or whitespace reasonn currently 
+//if the reason is empty/whitespace in the CSV file when you read it in with PopulateExpenses, 
+//PopulateExpenses throws an error that is caught and displayed and it does not add that specific expense
 
 //I wrote a helper function to parse the csv for writing, but now I am using std::quoted 
 //I am using a helper function for reading to parse inside the double quotes
@@ -75,6 +85,11 @@
 //if you delete a month file while a session is in progress it will only be updated if you add/delete an expense
 //perhaps I should add an option to update the file separately but the UI is already pretty full
 //edit: added this feature, added a separate line in the UI for all update functions
+
+//currently it should be safe to run the update functions because the month.filename paths and totals file path 
+//are created with code, (somewhere earlier in the code, I think PopulateExpenses and UpdateTotalsFile, 
+//and PrintTotalFile calls UpdateTotalsFile if the file cannot be opened but has been replaced with PrintTotalsInternal)
+//but if not you might want to run a try catch block around the function, though at that point you can't guarantee if anything changed or not
 
 //all print functions after PrintMenuYear and AddExpense and DeleteExpense print a newline at the end
 //PromptInsertYear and PromptYear and PromptMonth functions do not print a newline at the end
@@ -105,7 +120,12 @@ std::vector<std::string> parseCSVLine4(const std::string& line);
 //essentially the same as std::quoted(line, '"', '"')
 std::string MakeQuoted(const std::string& line);
 
+//returns the parent path of the input string by checking for the last instance of "/"
+std::string ReturnDirPath(const std::string& filename);
 
+//returns the parent path of the input string by checking for the last instance of "/" as the first entry
+//returns the rest as the second entry
+std::vector<std::string> SplitPath(const std::string& filename);
 
 //prints the menu for the UI
 void PrintMenu();

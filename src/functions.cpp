@@ -297,6 +297,37 @@ std::string MakeQuoted(const std::string& line) {
     return output;
 }
 
+std::string ReturnDirPath(const std::string& filename) {
+    int filename_length = filename.size();
+    for (int i = filename_length - 1; i >= 0; i--) {
+        std::cout << filename.at(i) << std::endl;
+        if (filename.at(i) == '/') {
+            return filename.substr(0, i + 1);
+        }
+    }
+    return "";
+}
+
+std::vector<std::string> SplitPath(const std::string& filename) {
+    std::vector<std::string> ret;
+
+    if (filename.empty()) {
+        return ret;
+    }
+
+    int filename_length = filename.size();
+    for (int i = filename_length - 1; i >= 0; i--) {
+        // std::cout << filename.at(i) << std::endl;
+        if (filename.at(i) == '/') {
+            ret.push_back(filename.substr(0, i + 1));
+            ret.push_back(filename.substr(i + 1, filename_length - i - 1));
+            return ret;
+        }
+    }
+
+    return ret;
+}
+
 void PrintMenu() {
     std::cout << "Insert year: 0, Choose year: 1, See available years: 2, Delete year: 3" << std::endl;
     std::cout << "Print all month expenses: 4, Print month expenses: 5" << std::endl;
@@ -593,9 +624,30 @@ void PrintExpenses(const Year& year, std::chrono::month curr_month) {
 double PopulateExpenses(const std::string& filename, Month& month) {
     month.filename = filename;
 
-    std::string dirPath = filename.substr(0, fixed_csv_file_prefix_length);
+    std::vector<std::string> paths = SplitPath(filename);
+
+    if (paths.size() != 2) {
+        std::cerr << filename << " could not be read." << std::endl;
+        return 0;
+    }
+
+    // std::cout << paths[0] << std::endl;
+    // std::cout << paths[1] << std::endl;
+
+    std::string dirPath = paths[0];
+
+    if (dirPath.empty()) {
+        std::cerr << filename << " could not be read." << std::endl;
+        return 0;
+    }
+
     if (std::filesystem::create_directories(dirPath)) {
         std::cerr << "Directory " << dirPath << " not found. Creating directory..." << std::endl;
+    }
+
+    if (paths[1].empty()) {
+        std::cerr << filename << " could not be read." << std::endl;
+        return 0;
     }
 
     // 1. Open the CSV file using an input file stream
@@ -603,7 +655,7 @@ double PopulateExpenses(const std::string& filename, Month& month) {
 
     // Best Practice: Always check if the file opened successfully
     if (!file.is_open()) {
-        std::cerr << filename.substr(filename.size() - 11, 11) << " file not found. Creating file..." << std::endl;
+        std::cerr << paths[1] << " file not found. Creating file..." << std::endl;
         std::ofstream file(filename);
         file << "cost,reason,day\n";
         return 0;
@@ -630,8 +682,8 @@ double PopulateExpenses(const std::string& filename, Month& month) {
             std::getline(ss, cost, ',');
             std::getline(ss, line);
 
-            std::string reason = parseCSVLine5ChangeLine(line);
-            if (reason.find_first_not_of(" \t\n\v\f\r") != std::string::npos) {
+            reason = parseCSVLine5ChangeLine(line);
+            if (reason.find_first_not_of(" \t\n\v\f\r") == std::string::npos) {
                 throw std::runtime_error("Reason cannot be empty.");
             }
             //day = line; //could just use line
@@ -979,13 +1031,31 @@ int UpdateMonthFile(const Year& year, std::chrono::month curr_month) {
     const Month& month = year.months[static_cast<unsigned int>(curr_month) - 1];
     std::string filename = month.filename;
 
-    std::string dirPath = filename.substr(0, fixed_csv_file_prefix_length);
+    std::vector<std::string> paths = SplitPath(filename);
+
+    if (paths.size() != 2) {
+        std::cerr << filename << " could not be read." << std::endl;
+        return 0;
+    }
+
+    std::string dirPath = paths[0];
+
+    if (dirPath.empty()) {
+        std::cerr << filename << " could not be read." << std::endl;
+        return 0;
+    }
+
     if (std::filesystem::create_directories(dirPath)) {
         std::cerr << "Directory " << dirPath << " not found. Creating directory..." << std::endl;
     }
 
+    if (paths[1].empty()) {
+        std::cerr << filename << " could not be read." << std::endl;
+        return 0;
+    }
+
     if (!std::filesystem::exists(filename)) {
-        std::cerr << filename.substr(filename.size() - 11, 11) << " file not found. Creating file..." << std::endl;
+        std::cerr << paths[1] << " file not found. Creating file..." << std::endl;
     }
 
     // 1. Open the CSV file using an input file stream
@@ -1031,13 +1101,31 @@ int UpdateTotalsFile(const Year& year) {
     std::string year_str = std::format("{}", year.year);
     std::string filename = "includes/" + year_str + "Expenses/TotalExpenses" + year_str + ".csv";
 
-    std::string dirPath = filename.substr(0, fixed_csv_file_prefix_length);
+    std::vector<std::string> paths = SplitPath(filename);
+
+    if (paths.size() != 2) {
+        std::cerr << filename << " could not be read." << std::endl;
+        return 0;
+    }
+
+    std::string dirPath = paths[0];
+
+    if (dirPath.empty()) {
+        std::cerr << filename << " could not be read." << std::endl;
+        return 0;
+    }
+
     if (std::filesystem::create_directories(dirPath)) {
         std::cerr << "Directory " << dirPath << " not found. Creating directory..." << std::endl;
     }
 
+    if (paths[1].empty()) {
+        std::cerr << filename << " could not be read." << std::endl;
+        return 0;
+    }
+
     if (!std::filesystem::exists(filename)) {
-        std::cerr << filename.substr(filename.size() - 21, 21) << " file not found. Creating file..." << std::endl;
+        std::cerr << paths[1] << " file not found. Creating file..." << std::endl;
     }
     
     // 1. Open the CSV file using an output file stream
