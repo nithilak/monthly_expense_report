@@ -15,7 +15,7 @@ Press q to quit anytime and go back a level.
 Insert year by adding a folder in includes with the title YEARExpenses.  
 
 Then insert each month in the folder under the title MmmYEAR.csv.  
-The civ headers are cost,reason,day, for example 500.34,"reason",05  
+The csv headers are cost,reason,day, for example 500.34,"reason",05  
 (The automatic file creator writes the day in zero leading format upon a file update.)  
 
 Optionally insert TotalExpensesYEAR.csv in the folder with the csv header  
