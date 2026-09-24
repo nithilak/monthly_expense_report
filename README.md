@@ -12,12 +12,13 @@ to run the program.
 
 Press q to quit anytime and go back a level.  
 
-Insert year by adding a folder in includes with the title YEARExpenses.
+Insert year by adding a folder in includes with the title YEARExpenses.  
 (The automatic file creator writes the year with a 4 leading zero format.)  
 
 Then insert each month in the folder under the title MmmYEAR.csv.  
 The csv headers are cost,reason,day, for example 500.34,"reason",05  
 (The automatic file creator writes the day in a zero leading format upon a file update.)  
+(The program does not accept an empty/whitespace only reason and will not add that expense to memory.)
 
 Optionally insert TotalExpensesYEAR.csv in the folder with the csv header  
 Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec,Total  
