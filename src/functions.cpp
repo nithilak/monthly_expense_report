@@ -444,7 +444,7 @@ double PopulateExpenses(const std::string& filename, Year& year, std::chrono::mo
 }
 
 double PopulateExpenses(Year& year) {
-    std::string year_str = std::to_string(static_cast<int>(year.year));
+    std::string year_str = std::format("{}", year.year);
     year.total = 0; //just to make sure
 
     std::chrono::month curr_month = std::chrono::January;
@@ -465,7 +465,7 @@ void PrintAnnualTotal(const Year& year) {
 }
 
 Year& InsertYear(int year) {
-    std::string year_str = std::to_string(year);
+    // std::string year_str = std::format("{:04}", year);
     std::chrono::year year_to_insert = std::chrono::year{year};
     years.insert({year_to_insert, Year(year_to_insert)});
 
@@ -794,7 +794,7 @@ int UpdateAllMonthFiles(const Year& year) {
 }
 
 int UpdateTotalsFile(const Year& year) {
-    std::string year_str = std::to_string(static_cast<int>(year.year));
+    std::string year_str = std::format("{}", year.year);
     std::string filename = "includes/" + year_str + "Expenses/TotalExpenses" + year_str + ".csv";
 
     std::string dirPath = filename.substr(0, fixed_csv_file_prefix_length);
@@ -861,7 +861,7 @@ void PrintTotalsInternal(const Year& year) {
 }
 
 int PrintTotalsFile(const Year& year) {
-    std::string year_str = std::to_string(static_cast<int>(year.year));
+    std::string year_str = std::format("{}", year.year);
     std::string filename = "includes/" + year_str + "Expenses/TotalExpenses" + year_str + ".csv";
 
     std::ifstream file(filename);
@@ -944,72 +944,64 @@ int PromptInsertYear() {
 
     std::string line;
 
-    std::cout << "Insert all years in directory \"./includes/\"?" << std::endl;
-    std::cout << "Press y or n" << std::endl;
+    std::cout << "Press 0 to insert all years in directory \"./includes/\"" << std::endl;
+    std::cout << "Insert year: ";
 
     while (std::getline(std::cin, line)) {
         if (line == "q") {
             return 0;
-        }
+        } 
 
-        if (line == "y") {
-            std::cout << std::endl;
-            std::filesystem::path targetDir = "./includes/"; 
-            int count = 0;
-            try {
-                if (std::filesystem::exists(targetDir) && std::filesystem::is_directory(targetDir)) {
-                    for (const auto& entry : std::filesystem::directory_iterator(targetDir)) {
-                        // Check if the current entry is a folder
-                        if (entry.is_directory()) {
-                            std::string path = entry.path().filename().string();
-                            std::stringstream ss(path);
-                            unsigned year_num;
-                            std::string word;
-                            if ((ss >> year_num)) {
-                                if (ss >> word && word == "Expenses") {
-                                    std::cout << "Inserted year: " << year_num << "\n";
-                                    InsertYear(year_num);
-                                    count++;
+        unsigned num;
+
+        std::stringstream ss(line);
+
+        if (ss >> num) {
+            if (num == 0) { //so you can't insert a 0 year
+                std::cout << std::endl;
+                std::filesystem::path targetDir = "./includes/"; 
+                int count = 0;
+                try {
+                    if (std::filesystem::exists(targetDir) && std::filesystem::is_directory(targetDir)) {
+                        for (const auto& entry : std::filesystem::directory_iterator(targetDir)) {
+                            // Check if the current entry is a folder
+                            if (entry.is_directory()) {
+                                std::string path = entry.path().filename().string();
+                                std::stringstream ss(path);
+                                unsigned year_num;
+                                std::string word;
+                                if ((ss >> year_num)) {
+                                    if (ss >> word && word == "Expenses") {
+                                        if (year_num == 0) {
+                                            std::cout << "Zero year not allowed.\n";
+                                        } else {
+                                            std::cout << "Inserted year: " << year_num << "\n";
+                                            InsertYear(year_num);
+                                            count++;
+                                        }
+                                    }
                                 }
                             }
                         }
+                    } else {
+                        std::cerr << "Provided path does not exist or is not a directory." << std::endl;
                     }
-                } else {
-                    std::cerr << "Provided path does not exist or is not a directory." << std::endl;
+                } catch (const std::filesystem::filesystem_error& e) {
+                    std::cerr << "Error: " << e.what() << std::endl;
                 }
-            } catch (const std::filesystem::filesystem_error& e) {
-                std::cerr << "Error: " << e.what() << std::endl;
-            }
 
-            return count; //should I really return count of inserted years, or should I return 1?
+                return count; //should I really return count of inserted years, or should I return 1?
+            } else {
+                // std::cout << std::endl; //only because it becomes hard to read
+                std::cout << "Inserted year: " << num << "\n";
+                InsertYear(num);
+                return 1;
+            }
+        } else {
+            std::cout << "Invalid input.\n";
         }
 
-        if (line == "n") {
-            std::cout << "Insert year: ";
-
-            unsigned num;
-
-            while (std::getline(std::cin, line)) {
-                if (line == "q") {
-                    return 0;
-                }
-
-                std::stringstream ss(line);
-
-                if (ss >> num) {
-                    // std::cout << std::endl; //only because it becomes hard to read
-                    std::cout << "Inserted year: " << num << "\n";
-                    InsertYear(num);
-                    return 1;
-                } else {
-                    std::cout << "Invalid input.\n";
-                }
-                
-                std::cout << "Insert year: ";
-            }
-        }
-
-        std::cout << "Invalid input.\n";
+        std::cout << "Insert year: ";
 
     }
     
