@@ -118,6 +118,20 @@
 //currently there is an option in PromptInsertYear() to include all years in directory "./includes/"
 //the UI is a bit cluttered for when new files are created
 
+//running InsertYear again overwrites what is stored in memory
+//it also reinserts the filename into month, not too much overhead so I don't think this is a big deal
+//it acts as if creating the year from scratch
+//could change the behavior to not do that using result.second
+// auto result1 = myMap.insert({1, "Apple"});
+// std::cout << std::boolalpha;
+// std::cout << result1.second << "\n"; // Prints: true
+//from google:
+//true: The key was not in the map yet. The new item was added.
+//false: The key was already in the map. No new item was added, and the old value stayed the same.
+//but keeping this behavior allows changes from both directions without complicating the UI
+//it is risky to run insert all years though (especially with the 0 shortcut button), so the user needs to be careful
+//but if you don't delete the files and re-add different ones it should be ok with the automatic updates
+
 //can't decide the insert year behavior in PromptYear()
 //current behavior is the best to not have a crowded UI, unless you also want to remove the handholding insert year y or n option
 //which is arguably better and has a cleaner UI
