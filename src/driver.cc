@@ -25,7 +25,7 @@ int main() {
 
   PrintMenu();
 
-  unsigned num;
+  int num; //unsigned num;
 
   while (std::getline(std::cin, line)) {
     if (line == "q") {

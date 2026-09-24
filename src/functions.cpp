@@ -325,6 +325,7 @@ std::vector<std::string> SplitPath(const std::string& filename) {
         }
     }
 
+    // ret.push_back(filename.substr(0, i + 1));
     return ret;
 }
 
@@ -332,8 +333,9 @@ void PrintMenu() {
     std::cout << "Insert year: 0, Choose year: 1, See available years: 2, Delete year: 3" << std::endl;
     std::cout << "Print all month expenses: 4, Print month expenses: 5" << std::endl;
     std::cout << "Add expense: 6, Delete expense: 7" << std::endl;
-    std::cout << "Update month file: 8, Update all month files: 9, Update totals file: 10" << std::endl; 
-    std::cout << "Print all annual totals: 11, Print annual total: 12" << std::endl;
+    std::cout << "Update month file: 8, Update all month files: 9, Update totals file: 10" << std::endl; //9 is for a year
+    // std::cout << "Update all month files and total files for all years: 11" << std::endl; 
+    std::cout << "Print all month totals: 11, Print annual total: 12" << std::endl;
 }
 
 void PrintMenuYear(std::chrono::year year) {
@@ -342,7 +344,7 @@ void PrintMenuYear(std::chrono::year year) {
     std::cout << "Print all month expenses: 4, Print month expenses: 5" << std::endl;
     std::cout << "Add expense: 6, Delete expense: 7" << std::endl;
     std::cout << "Update month file: 8, Update all month files: 9, Update totals file: 10" << std::endl; 
-    std::cout << "Print all annual totals: 10, Print annual total: 11" << std::endl;
+    std::cout << "Print all month totals: 10, Print annual total: 11" << std::endl;
 }
 
 void PrintAvailableYears() {
@@ -627,7 +629,7 @@ double PopulateExpenses(const std::string& filename, Month& month) {
     std::vector<std::string> paths = SplitPath(filename);
 
     if (paths.size() != 2) {
-        std::cerr << filename << " could not be read." << std::endl;
+        std::cerr << filename << " filename for month " << std::format("{:%b}", month.month) << " could not be read." << std::endl;
         return 0;
     }
 
@@ -637,7 +639,7 @@ double PopulateExpenses(const std::string& filename, Month& month) {
     std::string dirPath = paths[0];
 
     if (dirPath.empty()) {
-        std::cerr << filename << " could not be read." << std::endl;
+        std::cerr << filename << " directory could not be read." << std::endl;
         return 0;
     }
 
@@ -646,7 +648,7 @@ double PopulateExpenses(const std::string& filename, Month& month) {
     }
 
     if (paths[1].empty()) {
-        std::cerr << filename << " could not be read." << std::endl;
+        std::cerr << filename << " file name could not be read." << std::endl;
         return 0;
     }
 
@@ -1034,14 +1036,14 @@ int UpdateMonthFile(const Year& year, std::chrono::month curr_month) {
     std::vector<std::string> paths = SplitPath(filename);
 
     if (paths.size() != 2) {
-        std::cerr << filename << " could not be read." << std::endl;
+        std::cerr << filename << " filename for " << std::format("{}-{:%b}", year.year, month.month) << " could not be read." << std::endl;
         return 0;
     }
 
     std::string dirPath = paths[0];
 
     if (dirPath.empty()) {
-        std::cerr << filename << " could not be read." << std::endl;
+        std::cerr << filename << " directory could not be read." << std::endl;
         return 0;
     }
 
@@ -1050,7 +1052,7 @@ int UpdateMonthFile(const Year& year, std::chrono::month curr_month) {
     }
 
     if (paths[1].empty()) {
-        std::cerr << filename << " could not be read." << std::endl;
+        std::cerr << filename << " file name could not be read." << std::endl;
         return 0;
     }
 
@@ -1088,11 +1090,10 @@ int UpdateMonthFile(const Year& year, std::chrono::month curr_month) {
 
 int UpdateAllMonthFiles(const Year& year) {
     int count = 0;
-    std::chrono::month curr_month = std::chrono::January;
+    std::chrono::month month_to_add = std::chrono::January;
     for (int i = 1; i < 13; i++) {
-        // std::cout << "reaches" << std::endl;
-        count += UpdateMonthFile(year.year, curr_month);
-        curr_month++;
+        count += UpdateMonthFile(year, month_to_add);
+        month_to_add++;
     }
     return count;
 }
@@ -1104,14 +1105,14 @@ int UpdateTotalsFile(const Year& year) {
     std::vector<std::string> paths = SplitPath(filename);
 
     if (paths.size() != 2) {
-        std::cerr << filename << " could not be read." << std::endl;
+        std::cerr << filename << " filename for year " << std::format("{}", year.year) << " could not be read." << std::endl;
         return 0;
     }
 
     std::string dirPath = paths[0];
 
     if (dirPath.empty()) {
-        std::cerr << filename << " could not be read." << std::endl;
+        std::cerr << filename << " directory could not be read." << std::endl;
         return 0;
     }
 
@@ -1120,7 +1121,7 @@ int UpdateTotalsFile(const Year& year) {
     }
 
     if (paths[1].empty()) {
-        std::cerr << filename << " could not be read." << std::endl;
+        std::cerr << filename << " file name could not be read." << std::endl;
         return 0;
     }
 
@@ -1274,7 +1275,29 @@ int PromptInsertYear() {
             return 0;
         } 
 
-        unsigned num;
+        if (line == "zero") {
+            std::cout << "Are you sure you want to enter year 0?" << std::endl;
+            std::cout << "Press y or n" << std::endl;
+
+            while (std::getline(std::cin, line)) {
+                if (line == "q") {
+                    return 0;
+                } else if (line == "y") {
+                    std::cout << "Inserted year: " << 0 << "\n";
+                    InsertYear(0);
+                    return 1;
+                } else if (line == "n") {
+                    break;
+                } else {
+                    std::cout << "Invalid input\n";
+                }
+            }
+
+            std::cout << "Insert year: ";
+            continue;
+        }
+
+        int num;
 
         std::stringstream ss(line);
 
@@ -1290,17 +1313,17 @@ int PromptInsertYear() {
                             if (entry.is_directory()) {
                                 std::string path = entry.path().filename().string();
                                 std::stringstream ss(path);
-                                unsigned year_num;
+                                int year_num;
                                 std::string word;
                                 if ((ss >> year_num)) {
                                     if (ss >> word && word == "Expenses") {
-                                        if (year_num == 0) {
-                                            std::cout << "Zero year not allowed.\n";
-                                        } else {
+                                        // if (year_num == 0) {
+                                        //     std::cout << "Zero year not allowed.\n";
+                                        // } else {
                                             std::cout << "Inserted year: " << year_num << "\n";
                                             InsertYear(year_num);
                                             count++;
-                                        }
+                                        // }
                                     }
                                 }
                             }
@@ -1313,6 +1336,7 @@ int PromptInsertYear() {
                 }
 
                 return count; //should I really return count of inserted years, or should I return 1?
+                
             } else {
                 // std::cout << std::endl; //only because it becomes hard to read
                 std::cout << "Inserted year: " << num << "\n";
@@ -1342,6 +1366,20 @@ std::pair<Year&, bool> PromptYear() {
         std::stringstream ss(line);
         if (line == "q") {
             return {quit_year, false};
+        }
+
+        bool choose_zero = false;
+
+
+        if (line == "zero") {
+            choose_zero = true;
+            // 1. Clear the contents
+            ss.str(""); 
+            
+            // 2. Reset error flags (like EOF), allowing you to write/read again safely
+            ss.clear(); 
+
+            ss << "0";
         }
 
         if (ss >> num) {
@@ -1383,7 +1421,7 @@ std::pair<Year&, bool> PromptYear() {
 
             }
 
-            if (num == 0) {
+            if (num == 0 && !choose_zero) {
                 auto it = years.end();
                 --it;
                 return {it->second, true};

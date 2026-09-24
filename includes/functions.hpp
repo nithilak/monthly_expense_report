@@ -19,6 +19,10 @@
 // std::string dirPath = p.parent_path().string();
 //std::string dirPath = filename.substr(0, filename.size() - 11 or 12 for month file or 21 or 22 for totals file); idk
 //now I am doing it with SplitPath() but it could be done better I think
+//like with reason.find_first_not_of("/")
+//also the error handling for not being able to open the file seems off somehow, ctrl+f dirPath to find all instances of this
+//PopulateExpenses(const std::string& filename, Month& month), UpdateMonthFile(const Year& year, std::chrono::month curr_month), UpdateTotalsFile(const Year& year)
+//the only way it could fail that I can see is if SplitPath() doesn't return a valid file path in the vector
 
 //could preface error messages with "Error: " like the computer code
 //also std::cout vs std::cerr in some cases, up to discretion
@@ -39,15 +43,77 @@
 //for (int i = 0; i < years.size() - 1; i++) {} turns out that calls the size function each time
 //has been optimized
 
+
+
 //See available years says "deleted" when the year is "erased" by function call
 
-//cuurently year Zero is not allowed to be created and not processed when stored as a directory 
+//could change the directory from "./includes" to its own folder
+
+//not added feature
+// std::cout << "Update all month files and total files for all years: 11" << std::endl; 
+//at this point the UI needs a sub menu if totals and years are to be separate
+//this just makes the UI too cluttered
+//plus what are you doing that needs this feature????
+//the months get updated automatically so unless you deleted a whole bunch of them at once?
+//but I mean it's kinda simple
+// for (const Year& year : years) {
+//     UpdateAllMonthFiles(year);
+//     UpdateTotalsFile(year);
+// }
+
+//also not added feature
+//print all the annual totals for all years
+// for (const Year& year : years) {
+//     PrintAnnualTotal(year);
+// }
+//or print it more in the style of PrintTotalsInternal(year)
+//for each block go until 6 are printed or whatever is left is printed
+// void PrintTotalsInternalYears(const Year& year) {
+//     std::cout << std::string(colWidth * 6, '-') << "\n";
+
+//     auto iter = years.begin();
+//     auto iter2 = years.begin();
+
+//     double total = 0;
+
+//     while (iter != years.end() && iter2 != years.end()) { //should have the same value
+
+//         std::cout << std::left;
+//         for (unsigned i = 0; i < 6 && iter != years.end(); ++i) {
+//             std::cout << std::setw(colWidth) << std::format("{}", iter->first);
+//             iter++;
+//         }
+//         std::cout << std::endl;
+
+//         std::cout << std::left;
+//         for (int i = 0; i < 6 && iter2 != years.end(); ++i) {
+//             double num = iter2->second.total;
+//             std::cout << std::setw(colWidth) << num;
+//             total += num;
+//             iter2++;
+//         }
+//         std::cout << std::endl;
+
+//     }
+
+//     std::cout << std::string(colWidth * 6, '-') << "\n";
+//     std::cout << "Total: \n" << total << std::endl;
+//     std::cout << std::string(colWidth * 6, '-') << "\n" << std::endl;
+// }
+//then print the total over all the years
+//not going to print the total over all the years
+//we're getting into data science territory at this point
+//what next? display it on a graph? calculate the average trends and spending habits?
+
+//curently year Zero (0) is allowed to be created and is processed when stored as a directory 
 //(when properly named, the directory would be 0000Expenses) 
 //(and that is what it checks for, although I think 0Expenses also works but it writes to 0000Expenses when uploading
-//as per the naming convention that I made for all years less than 4 digits)
+//as per the naming convention that I made for all years less than 4 digits) (not my convention really, it is the default printing of std::chrono::year)
 //I could add YEARExpensesBCE
 //oh wait hold on, google says
 //In C++20, std::chrono::year stores BCE years using negative values and astronomical year numbering, where the year N BCE is represented mathematically as 1 - N.Because of this system, there is a year 0 in std::chrono::year, which corresponds exactly to 1 BCE in the traditional historical calendar.
+//theoretically negative number years should work now
+//if you really want to enter or choose the year 0, you have to enter the word "zero"
 
 //currently there is an option in PromptInsertYear() to include all years in directory "./includes/"
 //the UI is a bit cluttered for when new files are created
@@ -57,7 +123,7 @@
 //which is arguably better and has a cleaner UI
 
 //currently expenses are stored under a multiset so that duplicate equal elenents could be added
-//ould change it so that ekements can't be equal but that doesn't make sense
+//could change it so that elements can't be equal but that doesn't make sense
 
 //it is possible for an expense to be 0
 
@@ -86,10 +152,12 @@
 //perhaps I should add an option to update the file separately but the UI is already pretty full
 //edit: added this feature, added a separate line in the UI for all update functions
 
+//see dirPath discussion above
 //currently it should be safe to run the update functions because the month.filename paths and totals file path 
 //are created with code, (somewhere earlier in the code, I think PopulateExpenses and UpdateTotalsFile, 
 //and PrintTotalFile calls UpdateTotalsFile if the file cannot be opened but has been replaced with PrintTotalsInternal)
 //but if not you might want to run a try catch block around the function, though at that point you can't guarantee if anything changed or not
+
 
 //all print functions after PrintMenuYear and AddExpense and DeleteExpense print a newline at the end
 //PromptInsertYear and PromptYear and PromptMonth functions do not print a newline at the end
@@ -131,6 +199,7 @@ std::vector<std::string> SplitPath(const std::string& filename);
 void PrintMenu();
 void PrintMenuYear(std::chrono::year year);
 
+//prints all the available year numbers in years
 void PrintAvailableYears();
 
 //prints out all expenses for each month the year
