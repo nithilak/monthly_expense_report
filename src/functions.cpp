@@ -103,9 +103,11 @@ void PrintMenuYear(std::chrono::year year) {
 }
 
 void PrintAllExpenses(const Year& year) {
+    std::chrono::month curr_month = std::chrono::January;
     for (int i = 1; i < 13; i++) {
     //   std::chrono::month curr_month = static_cast<std::chrono::month>(i);
-      PrintExpenses(year.months[i - 1], year.year);
+      PrintExpenses(year, curr_month);
+      curr_month++;
     }
 }
 
@@ -121,7 +123,7 @@ void RecalculateYearTotals(Year& year) {
 }
 
 
-double PrintExpenses(const std::set<Expense>& expenses) {
+double PrintExpenses(const std::multiset<Expense>& expenses) {
     // // Set the equal width for each column
     // const int colWidth = 20;
     // const int strWidth = 80;
@@ -181,129 +183,17 @@ double PrintExpenses(const std::set<Expense>& expenses) {
     return total;
 }
 
-void PrintExpenses(const std::set<Expense>& expenses, const Month& month) {
-    std::chrono::month curr_month = month.month;
-    std::cout << std::format("{:%B}", curr_month) << std::endl;
-
-
-    // // Set the equal width for each column
-    // const int colWidth = 20;
-    // const int strWidth = 80;
-
-    // Print top border
-    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
-
-
-    std::cout << std::left 
-                    << std::setw(colWidth) << "Cost"
-                    << std::setw(strWidth) << "Reason"
-                    << std::setw(colWidth) << "Date" << "\n";
-
-    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
-
-    auto expense = expenses.begin();
-    int expenses_size_goal = expenses.size() + 1;
-    for (int i = 1; i < expenses_size_goal; i++) { //const auto& expense : expenses //size_t i = 0; i < csvData.size(); ++i
-        // std::vector<std::string> row = parseCSVLine(csvData[i]);
-
-        //std::string date = std::format("{:02}-{}", curr_month, expenses[i].day);
-        std::string date = std::format("{:02}-{:02}", static_cast<unsigned>(curr_month), static_cast<unsigned>(expense->day));
-
-        // Ensure the row has exactly 3 columns to avoid out-of-bounds errors
-        // if (row.size() >= 3) {
-            // std::left aligns text to the left; std::setw sets fixed spacing
-            std::cout << std::left 
-                        << std::setw(colWidth) << expense->cost
-                        << std::setw(strWidth) << expense->reason
-                        << std::setw(colWidth) << date 
-                        << std::setw(idWidth) << i << "\n";
-        // }
-
-        // Print a divider under the header row
-        // if (i == 0) {
-        //     std::cout << std::string(colWidth * 2 + strWidth, '-') << "\n";
-        // }
-        expense++;
-    }
-
-    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
-
-    std::cout << "Total" << std::endl;
-
-    // std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
-    
-    std::cout << month.total << std::endl;
-
-    // Print bottom border
-    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n" << std::endl;
-}
-
-
-void PrintExpenses(const std::set<Expense>& expenses, const Month& month, std::chrono::year year) {
-    std::chrono::month curr_month = month.month;
-    std::cout << std::format("{:%B} {}", curr_month, static_cast<int>(year)) << std::endl;
-
-
-    // // Set the equal width for each column
-    // const int colWidth = 20;
-    // const int strWidth = 80;
-
-    // Print top border
-    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
-
-
-    std::cout << std::left 
-                    << std::setw(colWidth) << "Cost"
-                    << std::setw(strWidth) << "Reason"
-                    << std::setw(colWidth) << "Date" << "\n";
-
-    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
-
-    auto expense = expenses.begin();
-    int expenses_size_goal = expenses.size() + 1;
-    for (int i = 1; i < expenses_size_goal; i++) { //const auto& expense : expenses //size_t i = 0; i < csvData.size(); ++i
-        // std::vector<std::string> row = parseCSVLine(csvData[i]);
-
-        //std::string date = std::format("{:02}-{}", curr_month, expenses[i].day);
-        std::string date = std::format("{}-{:02}-{:02}", year, static_cast<unsigned>(curr_month), static_cast<unsigned>(expense->day));
-
-        // Ensure the row has exactly 3 columns to avoid out-of-bounds errors
-        // if (row.size() >= 3) {
-            // std::left aligns text to the left; std::setw sets fixed spacing
-            std::cout << std::left 
-                        << std::setw(colWidth) << expense->cost
-                        << std::setw(strWidth) << expense->reason
-                        << std::setw(colWidth) << date 
-                        << std::setw(idWidth) << i << "\n";
-        // }
-
-        // Print a divider under the header row
-        // if (i == 0) {
-        //     std::cout << std::string(colWidth * 2 + strWidth, '-') << "\n";
-        // }
-        expense++;
-    }
-
-    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
-
-    std::cout << "Total" << std::endl;
-
-    // std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
-    
-    std::cout << month.total << std::endl;
-
-    // Print bottom border
-    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n" << std::endl;
-}
-
 void PrintExpenses(const Month& month) {
-    const std::set<Expense>& expenses = month.expenses;
     std::chrono::month curr_month = month.month;
+    std::cout << std::format("{:%B}", curr_month) << std::endl;
+
+
+    const std::multiset<Expense>& expenses = month.expenses;
+
+
     // // Set the equal width for each column
     // const int colWidth = 20;
     // const int strWidth = 80;
-
-    std::cout << std::format("{:%B}", curr_month) << std::endl;
 
     // Print top border
     std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
@@ -352,12 +242,13 @@ void PrintExpenses(const Month& month) {
     // Print bottom border
     std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n" << std::endl;
 }
+
 
 void PrintExpenses(const Month& month, std::chrono::year year) {
-    const std::set<Expense>& expenses = month.expenses;
     std::chrono::month curr_month = month.month;
-
     std::cout << std::format("{:%B} {}", curr_month, static_cast<int>(year)) << std::endl;
+
+    const std::multiset<Expense>& expenses = month.expenses;
 
 
     // // Set the equal width for each column
@@ -411,11 +302,70 @@ void PrintExpenses(const Month& month, std::chrono::year year) {
     // Print bottom border
     std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n" << std::endl;
 }
+
+// void PrintExpenses(const Month& month, std::chrono::year year) {
+//     const std::multiset<Expense>& expenses = month.expenses;
+//     std::chrono::month curr_month = month.month;
+
+//     std::cout << std::format("{:%B} {}", curr_month, static_cast<int>(year)) << std::endl;
+
+
+//     // // Set the equal width for each column
+//     // const int colWidth = 20;
+//     // const int strWidth = 80;
+
+//     // Print top border
+//     std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
+
+
+//     std::cout << std::left 
+//                     << std::setw(colWidth) << "Cost"
+//                     << std::setw(strWidth) << "Reason"
+//                     << std::setw(colWidth) << "Date" << "\n";
+
+//     std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
+
+//     auto expense = expenses.begin();
+//     int expenses_size_goal = expenses.size() + 1;
+//     for (int i = 1; i < expenses_size_goal; i++) { //const auto& expense : expenses //size_t i = 0; i < csvData.size(); ++i
+//         // std::vector<std::string> row = parseCSVLine(csvData[i]);
+
+//         //std::string date = std::format("{:02}-{}", curr_month, expenses[i].day);
+//         std::string date = std::format("{}-{:02}-{:02}", year, static_cast<unsigned>(curr_month), static_cast<unsigned>(expense->day));
+
+//         // Ensure the row has exactly 3 columns to avoid out-of-bounds errors
+//         // if (row.size() >= 3) {
+//             // std::left aligns text to the left; std::setw sets fixed spacing
+//             std::cout << std::left 
+//                         << std::setw(colWidth) << expense->cost
+//                         << std::setw(strWidth) << expense->reason
+//                         << std::setw(colWidth) << date 
+//                         << std::setw(idWidth) << i << "\n";
+//         // }
+
+//         // Print a divider under the header row
+//         // if (i == 0) {
+//         //     std::cout << std::string(colWidth * 2 + strWidth, '-') << "\n";
+//         // }
+//         expense++;
+//     }
+
+//     std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
+
+//     std::cout << "Total" << std::endl;
+
+//     // std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
+    
+//     std::cout << month.total << std::endl;
+
+//     // Print bottom border
+//     std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n" << std::endl;
+// }
 
 void PrintExpenses(const Year& year, std::chrono::month curr_month) {
     int curr_year = static_cast<int>(year.year);
     const Month& month = year.months[static_cast<unsigned int>(curr_month) - 1];
-    const std::set<Expense>& expenses = month.expenses;
+    const std::multiset<Expense>& expenses = month.expenses;
 
     std::cout << std::format("{:%B} {}", curr_month, curr_year) << std::endl;
 
@@ -491,7 +441,7 @@ double PopulateExpenses(const std::string& filename, Month& month) {
         return 0;
     }
 
-    std::set<Expense>& expenses = month.expenses;
+    std::multiset<Expense>& expenses = month.expenses;
 
     expenses.clear(); //just to make sure
 
@@ -600,6 +550,8 @@ int AddExpense(Year& year, std::chrono::month curr_month) {
         } else {
             std::cout << "Invalid input.\n";
         }
+
+        // std::cout << "Enter a cost: ";
     }
 
     std::string text;
@@ -619,6 +571,7 @@ int AddExpense(Year& year, std::chrono::month curr_month) {
             std::cout << "Reason cannot be empty.\n";
         }
 
+        // std::cout << "Enter a reason: ";
     }
 
     unsigned day_value{};
@@ -658,6 +611,7 @@ int AddExpense(Year& year, std::chrono::month curr_month) {
             std::cout << "Invalid input.\n";
         }
 
+        // std::cout << "Enter a day (1-" << last_day_num << "): ";
     }
 
     std::cout << "Add Expense: " << num << ", " << text << ", " << date << std::endl;
@@ -691,7 +645,7 @@ int AddExpense(Year& year, std::chrono::month curr_month) {
 
 int DeleteExpense(Year& year, std::chrono::month curr_month) {
     Month& month = year.months[static_cast<unsigned int>(curr_month) - 1];
-    std::set<Expense>& expenses = month.expenses; 
+    std::multiset<Expense>& expenses = month.expenses; 
     // PrintExpenses(expenses, month, year.year);
 
     std::cout << "Deleting expense from: " << std::format("{:%B} {}", curr_month, static_cast<int>(year.year)) << std::endl;
@@ -747,17 +701,21 @@ int DeleteExpense(Year& year, std::chrono::month curr_month) {
                     std::cout << "Invalid input.\n";
 
                 }
+            } else {
+                std::cout << "Line number not found.\n";
             }
         } else {
             std::cout << "Invalid input.\n";
         }
+
+        // std::cout << "Enter a line number: ";
     }
 
     return 0;
 }
 
 int DeleteExpense(std::chrono::year year, Month& month) {
-    std::set<Expense>& expenses = month.expenses; 
+    std::multiset<Expense>& expenses = month.expenses; 
     std::chrono::month curr_month = month.month;
     // PrintExpenses(expenses, month);
 
@@ -812,10 +770,14 @@ int DeleteExpense(std::chrono::year year, Month& month) {
                     std::cout << "Invalid input.\n";
 
                 }
+            } else {
+                std::cout << "Line number not found.\n";
             }
         } else {
             std::cout << "Invalid input.\n";
         }
+
+        // std::cout << "Enter a line number: ";
     }
 
     return 0;
@@ -843,7 +805,7 @@ int UpdateMonthFile(const Year& year, std::chrono::month curr_month) {
         return 0;
     }
 
-    const std::set<Expense>& expenses = month.expenses;
+    const std::multiset<Expense>& expenses = month.expenses;
 
     file << "cost,reason,day\n";
 

@@ -54,7 +54,7 @@ class Month {
   public:
     // std::chrono::year year;
     std::chrono::month month;
-    std::set<Expense> expenses;
+    std::multiset<Expense> expenses;
     double total = 0;
     std::string filename;
     // bool changed = false;

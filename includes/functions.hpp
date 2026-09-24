@@ -40,6 +40,11 @@
 
 //See available years says "deleted" when the year is "erased" by function call
 
+//currently expenses are stored under a multiset so that duplicate equal elenents could be added
+//ould change it so that ekements can't be equal but that doesn't make sense
+
+//AddExpense and DeleteExpense have one long continuous text when selecting no until you select yes or quit
+
 //currently after doing AddExpense and DeleteExpense in main the month file and the totals file are automatically updated
 //could be changed
 
@@ -71,11 +76,9 @@ void RecalculateYearTotals(Year& year);
 
 //prints out all expenses for the month
 //non void function returns the total for the expenses
-double PrintExpenses(const std::set<Expense>& expenses);
-void PrintExpenses(const std::set<Expense>& expenses, const Month& month);
-void PrintExpenses(const std::set<Expense>& expenses, const Month& month, std::chrono::year year);
+double PrintExpenses(const std::multiset<Expense>& expenses);
 void PrintExpenses(const Month& month);
-void PrintExpenses(const Month& month, std::chrono::year year);
+// void PrintExpenses(const Month& month, std::chrono::year year); //nice but unsafe
 void PrintExpenses(const Year& year, std::chrono::month curr_month);
 
 //reads in a csv file under the folder in includes/YEARExpenses/MONTHYEAR and uses it to fill month.expenses
