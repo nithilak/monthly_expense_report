@@ -631,7 +631,7 @@ double PopulateExpenses(const std::string& filename, Month& month) {
             std::getline(ss, line);
 
             std::string reason = parseCSVLine5ChangeLine(line);
-            if (reason.empty()) {
+            if (reason.find_first_not_of(" \t\n\v\f\r") != std::string::npos) {
                 throw std::runtime_error("Reason cannot be empty.");
             }
             //day = line; //could just use line

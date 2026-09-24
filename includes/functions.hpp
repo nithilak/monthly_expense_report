@@ -60,9 +60,11 @@
 //AddExpense does not permit you to enter an empty reason currently 
 //if it is in the CSV file when you read it it throws an error
 
-//I am using helper function to parse the csv for writing. 
+//I wrote a helper function to parse the csv for writing, but now I am using std::quoted 
 //I am using a helper function for reading to parse inside the double quotes
 //I tried to use std::quoted for writing but it doubled the quotes at the end so I just write the small code myself
+//but then it turned out that the error was me adding quotes outside of the quote function 
+//so I removed those extra quotes and it worked
 
 //press q anytime to go back a level
 
@@ -99,7 +101,8 @@ std::string parseCSVLine5ChangeLine(std::string& line);
 //like 2 but it only prints an error message if more than one set of quotes was traversed
 std::vector<std::string> parseCSVLine4(const std::string& line);
 
-
+//changes every " to "" and surrounds the string with double quotes
+//essentially the same as std::quoted(line, '"', '"')
 std::string MakeQuoted(const std::string& line);
 
 
