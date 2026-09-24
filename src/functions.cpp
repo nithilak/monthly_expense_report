@@ -102,6 +102,22 @@ void PrintMenuYear(std::chrono::year year) {
     std::cout << "Print all annual totals: 10, Print annual total: 11" << std::endl;
 }
 
+void PrintAvailableYears() {
+    std::cout << "Available years: ";
+
+    int years_size_goal = years.size() - 1;
+    if (years_size_goal > -1) {
+        auto it = years.begin();
+        for (int i = 0; i < years_size_goal; i++) {
+        std::cout << it->first << ", ";
+        ++it;
+        }
+        std::cout << it->first;
+    }
+
+    std::cout << "\n" << std::endl;
+}
+
 void PrintAllExpenses(const Year& year) {
     std::chrono::month curr_month = std::chrono::January;
     for (int i = 1; i < 13; i++) {
@@ -213,66 +229,6 @@ void PrintExpenses(const Month& month) {
 
         //std::string date = std::format("{:02}-{}", curr_month, expenses[i].day);
         std::string date = std::format("{:02}-{:02}", static_cast<unsigned>(curr_month), static_cast<unsigned>(expense->day));
-
-        // Ensure the row has exactly 3 columns to avoid out-of-bounds errors
-        // if (row.size() >= 3) {
-            // std::left aligns text to the left; std::setw sets fixed spacing
-            std::cout << std::left 
-                        << std::setw(colWidth) << expense->cost
-                        << std::setw(strWidth) << expense->reason
-                        << std::setw(colWidth) << date 
-                        << std::setw(idWidth) << i << "\n";
-        // }
-
-        // Print a divider under the header row
-        // if (i == 0) {
-        //     std::cout << std::string(colWidth * 2 + strWidth, '-') << "\n";
-        // }
-        expense++;
-    }
-
-    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
-
-    std::cout << "Total" << std::endl;
-
-    // std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
-    
-    std::cout << month.total << std::endl;
-
-    // Print bottom border
-    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n" << std::endl;
-}
-
-
-void PrintExpenses(const Month& month, std::chrono::year year) {
-    std::chrono::month curr_month = month.month;
-    std::cout << std::format("{:%B} {}", curr_month, static_cast<int>(year)) << std::endl;
-
-    const std::multiset<Expense>& expenses = month.expenses;
-
-
-    // // Set the equal width for each column
-    // const int colWidth = 20;
-    // const int strWidth = 80;
-
-    // Print top border
-    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
-
-
-    std::cout << std::left 
-                    << std::setw(colWidth) << "Cost"
-                    << std::setw(strWidth) << "Reason"
-                    << std::setw(colWidth) << "Date" << "\n";
-
-    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
-
-    auto expense = expenses.begin();
-    int expenses_size_goal = expenses.size() + 1;
-    for (int i = 1; i < expenses_size_goal; i++) { //const auto& expense : expenses //size_t i = 0; i < csvData.size(); ++i
-        // std::vector<std::string> row = parseCSVLine(csvData[i]);
-
-        //std::string date = std::format("{:02}-{}", curr_month, expenses[i].day);
-        std::string date = std::format("{}-{:02}-{:02}", year, static_cast<unsigned>(curr_month), static_cast<unsigned>(expense->day));
 
         // Ensure the row has exactly 3 columns to avoid out-of-bounds errors
         // if (row.size() >= 3) {
@@ -687,6 +643,7 @@ int DeleteExpense(Year& year, std::chrono::month curr_month) {
 
                 while (std::getline(std::cin, line)) {
                     if (line == "q") {
+                        std::cout << std::endl;
                         return 0;
                     }
 
@@ -758,6 +715,7 @@ int DeleteExpense(std::chrono::year year, Month& month) {
 
                 while (std::getline(std::cin, line)) {
                     if (line == "q") {
+                        std::cout << std::endl;
                         return 0;
                     }
 
@@ -845,7 +803,7 @@ int UpdateTotalsFile(const Year& year) {
     }
 
     if (!std::filesystem::exists(filename)) {
-        std::cout << filename.substr(filename.size() - 21, 21) << " file not found. Creating file...\n";
+        std::cerr << filename.substr(filename.size() - 21, 21) << " file not found. Creating file..." << std::endl;
     }
     
     // 1. Open the CSV file using an output file stream
@@ -942,7 +900,8 @@ int PrintTotalsFile(const Year& year) {
     }
 
     if (header.empty() || values.empty()) {
-        std::cerr << "Error: No totals data found in the CSV file.\n" << std::endl;
+        std::cerr << "Error: No totals data found in the CSV file." << std::endl;
+        std::cout << std::endl;
         return 0;
     }
 
@@ -1003,7 +962,7 @@ int PromptInsertYear() {
         }
     }
     
-    std::cerr << "Year could not be inserted.\n" << std::endl;
+    std::cerr << "Year could not be inserted." << std::endl;
     // std::exit(1);
     return 0; //return -1;
 }
@@ -1022,7 +981,7 @@ std::pair<Year&, bool> PromptYear() {
 
         if (ss >> num) {
             if (years.empty()) {
-                std::cerr << "No years are available.\n";
+                std::cerr << "No years are available." << std::endl;
 
                 std::cout << "Insert year?" << std::endl;
                 std::cout << "Press y or n" << std::endl;
@@ -1079,7 +1038,8 @@ std::pair<Year&, bool> PromptYear() {
         std::cout << "Enter 0 for latest year. Choose year: ";
     }
 
-    std::cerr << "Year could not be chosen.\n" << std::endl;
+    std::cerr << "Year could not be chosen." << std::endl;
+    std::cout << std::endl;
     // std::exit(1);
     return {quit_year, false};
 }
@@ -1109,7 +1069,8 @@ std::pair<std::chrono::month, bool> PromptMonth() {
         std::cout << "Choose month (1-12): ";
     }
 
-    std::cerr << "Month could not be chosen.\n" << std::endl;
+    std::cerr << "Month could not be chosen." << std::endl;
+    std::cout << std::endl;
     // std::exit(1);
     return {std::chrono::January, false};
 }
@@ -1144,7 +1105,8 @@ int PromptYearErase() {
         std::cout << "Enter q to quit. Choose year: ";
     }
 
-    std::cerr << "Year could not be chosen.\n" << std::endl;
+    std::cerr << "Year could not be chosen." << std::endl;
+    std::cout << std::endl;
     // std::exit(1);
     return 0;
 }

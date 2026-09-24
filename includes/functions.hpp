@@ -41,6 +41,8 @@
 //See available years says "deleted" when the year is "erased" by function call
 
 //can't decide the insert year behavior in PromptYear()
+//current behavior is the best to not have a crowded UI, unless you also want to remove the handholding insert year y or n option
+//which is arguably better and has a cleaner UI
 
 //currently expenses are stored under a multiset so that duplicate equal elenents could be added
 //ould change it so that ekements can't be equal but that doesn't make sense
@@ -62,6 +64,9 @@
 //perhaps I should add an option to update the file separately but the UI is already pretty full
 //edit: added this feature, added a separate line in the UI for all update functions
 
+//all print functions after PrintMenuYear and AddExpense and DeleteExpense print a newline at the end
+//PromptInsertYear and PromptYear and PromptMonth functions do not print a newline at the end
+
 //not my code, prints a csv file
 void PrintFile(std::string filename);
 
@@ -71,6 +76,8 @@ std::vector<std::string> parseCSVLine(const std::string& line);
 //prints the menu for the UI
 void PrintMenu();
 void PrintMenuYear(std::chrono::year year);
+
+void PrintAvailableYears();
 
 //prints out all expenses for each month the year
 void PrintAllExpenses(const Year& year);

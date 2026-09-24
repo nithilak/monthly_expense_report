@@ -128,20 +128,7 @@ int main() {
         }
       } else if (num == 2) {
         std::cout << std::endl;
-        std::cout << "Available years: ";
-
-        int years_size_goal = years.size() - 1;
-        if (years_size_goal > -1) {
-          auto it = years.begin();
-          for (int i = 0; i < years_size_goal; i++) {
-            std::cout << it->first << ", ";
-            ++it;
-          }
-          std::cout << it->first;
-        }
-
-        std::cout << "\n" << std::endl;
-
+        PrintAvailableYears();
       } else if (num == 3) {
         std::cout << std::endl;
         PromptYearErase();
