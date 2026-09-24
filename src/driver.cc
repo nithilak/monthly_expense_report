@@ -94,12 +94,12 @@ int main() {
               }
               std::cout << std::endl;
             } else {
-              std::pair<std::chrono::month, bool> get_month = PromptMonth();
-              if (!get_month.second) {
+              std::chrono::month get_month = PromptMonth();
+              if (!get_month.ok()) {
                 PrintMenuYear(year.year);
                 continue;
               }
-              std::chrono::month month_to_add = get_month.first;
+              std::chrono::month month_to_add = get_month; //old code was checking a bool first out of a pair and assigning the second element here
 
               std::cout << std::endl;
               if (num == 5) {
@@ -178,13 +178,12 @@ int main() {
           }
           std::cout << std::endl;
         } else {
-          std::pair<std::chrono::month, bool> get_month = PromptMonth();
-          if (!get_month.second) {
-            std::cout << std::endl;
-            PrintMenu();
+          std::chrono::month get_month = PromptMonth();
+          if (!get_month.ok()) {
+            PrintMenuYear(year.year);
             continue;
           }
-          std::chrono::month month_to_add = get_month.first;
+          std::chrono::month month_to_add = get_month; //old code was checking a bool first out of a pair and assigning the second element here
 
           std::cout << std::endl;
           if (num == 5) {

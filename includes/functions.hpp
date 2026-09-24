@@ -57,6 +57,13 @@
 //currently after doing AddExpense and DeleteExpense in main the month file and the totals file are automatically updated
 //could be changed
 
+//AddExpense does not permit you to enter an empty reason currently 
+//if it is in the CSV file when you read it it throws an error
+
+//I am using helper function to parse the csv for writing. 
+//I am using a helper function for reading to parse inside the double quotes
+//I tried to use std::quoted for writing but it doubled the quotes at the end so I just write the small code myself
+
 //press q anytime to go back a level
 
 //can't figure out how to quit when in promptyear or promptmonth
@@ -75,6 +82,27 @@ void PrintFile(std::string filename);
 
 //not my code, // Function to split a CSV line by commas
 std::vector<std::string> parseCSVLine(const std::string& line);
+
+//not my code, but I edited it to not push to a vector 
+// Parses a single CSV line, handling backslash escapes (\"), doubled quotes (""), and embedded commas
+//originally called parseCSVLine
+std::vector<std::string> parseCSVLine2(const std::string& line);
+
+//only parses one set of quotes, assumed to be quoted when you enter
+//couldn't use this because it removed the "day" part
+//so I made it return the rest as the second part of the vector
+std::vector<std::string> parseCSVLine3(const std::string& line);
+
+//like 3 but it modifies line
+std::string parseCSVLine5ChangeLine(std::string& line);
+
+//like 2 but it only prints an error message if more than one set of quotes was traversed
+std::vector<std::string> parseCSVLine4(const std::string& line);
+
+
+std::string MakeQuoted(const std::string& line);
+
+
 
 //prints the menu for the UI
 void PrintMenu();
@@ -156,7 +184,7 @@ int PrintTotalsFile(const Year& year);
 std::pair<Year&, bool> PromptYear();
 //returns a valid (prompted) month
 //bool is false if quit option is desired, not a valid month
-std::pair<std::chrono::month, bool> PromptMonth();
+std::chrono::month PromptMonth();
 
 //returns the number of years inserted if chose to insert all years, else
 //returns 1 if successfully inserted a (prompted) year into years, does not overwrite already inserted year

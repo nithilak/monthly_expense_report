@@ -85,6 +85,218 @@ std::vector<std::string> parseCSVLine(const std::string& line) {
     return row;
 }
 
+// Parses a single CSV line, handling backslash escapes (\"), doubled quotes (""), and embedded commas
+std::vector<std::string> parseCSVLine2(const std::string& line) {
+    std::vector<std::string> row;
+    std::string field = "";
+    bool inQuotes = false;
+
+    size_t end_size = line.length();
+    for (size_t i = 0; i < end_size; ++i) {
+        char c = line[i];
+
+        if (inQuotes) {
+            if (c == '"') {
+                if (i + 1 < line.length() && line[i + 1] == '"') {
+                    // Doubled quote escape (""): append a single quote and skip the second one
+                    field += '"';
+                    ++i; 
+                } else {
+                    // Closing quote found
+                    if (!(i == end_size - 2 && i != 0)) {
+                        std::cerr << "CSV not formatted properly." << std::endl;
+                    }
+                    inQuotes = false;
+                }
+            } else {
+                field += c;
+            }
+        } 
+        else {
+            if (c == '"') {
+                // Opening quote found
+                inQuotes = true;
+            } else if (c == ',') {
+                // End of field reached
+                row.push_back(field);
+                field.clear();
+            } else {
+                field += c;
+            }
+        }
+    }
+    // Add the final field
+    row.push_back(field);
+    return row;
+}
+
+// Parses a single CSV line, handling backslash escapes (\"), doubled quotes (""), and embedded commas
+std::vector<std::string> parseCSVLine3(const std::string& line) {
+    std::vector<std::string> ret;
+    std::string field = "";
+
+    char c = line[0];
+    if (c != '"') {
+        std::cerr << "CSV not formatted properly." << std::endl;
+    }
+
+    size_t end_size = line.length();
+    for (size_t i = 1; i < end_size; ++i) {
+        char c = line[i];
+
+        if (c == '"') {
+            if (i + 1 < line.length() && line[i + 1] == '"') {
+                // Doubled quote escape (""): append a single quote and skip the second one
+                field += '"';
+                ++i; 
+            } else {
+                // Closing quote found
+                if (++i >= end_size && line[i] != ',') {
+                    std::cerr << "CSV not formatted properly." << std::endl;
+                }
+                i++;
+                ret.push_back(field);
+                ret.push_back(line.substr(i, end_size - i));
+                return ret;
+            }
+        } else {
+            field += c;
+        }
+
+        // } 
+        // else {
+        //     if (c == ',') {
+        //         // End of field reached
+        //         // row.push_back(field);
+        //         // field.clear();
+        //         return field;
+        //     } else {
+        //         field += c;
+        //     }
+        // }
+    }
+    // Add the final field
+    ret.push_back(field);
+    return ret;
+}
+
+// Parses a single CSV line, handling backslash escapes (\"), doubled quotes (""), and embedded commas
+std::vector<std::string> parseCSVLine4(const std::string& line) {
+    std::vector<std::string> row;
+    std::string field = "";
+    bool inQuotes = false;
+    int quote_count = 0;
+
+    size_t end_size = line.length();
+    for (size_t i = 0; i < end_size; ++i) {
+        char c = line[i];
+
+        if (inQuotes) {
+            if (c == '"') {
+                if (i + 1 < line.length() && line[i + 1] == '"') {
+                    // Doubled quote escape (""): append a single quote and skip the second one
+                    field += '"';
+                    ++i; 
+                } else {
+                    // Closing quote found
+                    if (!(i == end_size - 2 && i != 0)) {
+                        std::cerr << "CSV not formatted properly." << std::endl;
+                    }
+                    inQuotes = false;
+                    quote_count++;
+                }
+            } else {
+                field += c;
+            }
+        } 
+        else {
+            if (c == '"') {
+                // Opening quote found
+                inQuotes = true;
+                quote_count++;
+            } else if (c == ',') {
+                // End of field reached
+                row.push_back(field);
+                field.clear();
+            } else {
+                field += c;
+            }
+        }
+    }
+    // Add the final field
+    row.push_back(field);
+
+    if (quote_count != 2) {
+        std::cerr << "CSV not formatted properly." << std::endl;
+    }
+
+    return row;
+}
+
+// Parses a single CSV line, handling backslash escapes (\"), doubled quotes (""), and embedded commas
+std::string parseCSVLine5ChangeLine(std::string& line) {
+    std::string field = "";
+
+    char c = line[0];
+    if (c != '"') {
+        std::cerr << "CSV not formatted properly." << std::endl;
+    }
+
+    size_t end_size = line.length();
+    for (size_t i = 1; i < end_size; ++i) {
+        char c = line[i];
+
+        if (c == '"') {
+            if (i + 1 < line.length() && line[i + 1] == '"') {
+                // Doubled quote escape (""): append a single quote and skip the second one
+                field += '"';
+                ++i; 
+            } else {
+                // Closing quote found
+                if (++i >= end_size && line[i] != ',') {
+                    std::cerr << "CSV not formatted properly." << std::endl;
+                }
+                i++;
+                line = line.substr(i, end_size - i);
+                return field;
+            }
+        } else {
+            field += c;
+        }
+
+        // } 
+        // else {
+        //     if (c == ',') {
+        //         // End of field reached
+        //         // row.push_back(field);
+        //         // field.clear();
+        //         return field;
+        //     } else {
+        //         field += c;
+        //     }
+        // }
+    }
+    // Add the final field
+    return field;
+}
+
+std::string MakeQuoted(const std::string& line) {
+    // std::cout << line << std::endl;
+    std::string output;
+    output += "\"";
+
+    for (char c : line) {
+        output += c;
+        if (c == '"') {
+            output += c;
+        }
+    }
+
+    output += "\"";
+
+    return output;
+}
+
 void PrintMenu() {
     std::cout << "Insert year: 0, Choose year: 1, See available years: 2, Delete year: 3" << std::endl;
     std::cout << "Print all month expenses: 4, Print month expenses: 5" << std::endl;
@@ -404,30 +616,46 @@ double PopulateExpenses(const std::string& filename, Month& month) {
     double& total = month.total;
     month.total = 0; //just to make sure
     std::string line;
-    std::getline(file, line);
+    std::getline(file, line); //the header
     // std::cout << line << std::endl;
 
     while (std::getline(file, line)) {
         // std::cout << line << std::endl;
-        // std::ranges::split_view result = std::views::split(line, ',');
-
-        std::stringstream ss(line);
-
         std::string cost;
         std::string reason;
         std::string day;
-        
-        // Split by the comma delimiter
-        std::getline(ss, cost, ',');
-        std::getline(ss, reason, ',');
-        std::getline(ss, day, '\n');
 
-        // std::cout << cost << std::endl;
-        // std::cout << reason << std::endl;
-        // std::cout << day << std::endl;
-        total += std::stod(cost);
-        expenses.insert(Expense(std::stod(cost), reason.substr(1, reason.size() - 2), std::chrono::day(std::stoi(day))));
-        
+        try {
+            std::stringstream ss(line);
+            std::getline(ss, cost, ',');
+            std::getline(ss, line);
+
+            std::string reason = parseCSVLine5ChangeLine(line);
+            if (reason.empty()) {
+                throw std::runtime_error("Reason cannot be empty.");
+            }
+            //day = line; //could just use line
+
+            // std::vector<std::string> contents = parseCSVLine3(line);
+
+            // std::string reason = contents[0];
+
+            // if (reason.empty()) {
+            //     std::cerr << "Reason cannot be empty." << std::endl;
+            // }
+
+            // std::string day = contents[1];
+            
+            // std::cout << cost << std::endl;
+            // std::cout << reason << std::endl;
+            // std::cout << line << std::endl; //std::cout << day << std::endl;
+
+            double costd = std::stod(cost);
+            total += costd;
+            expenses.insert(Expense(costd, reason, std::chrono::day(std::stoi(line))));
+        } catch (const std::exception& e) {
+            std::cerr << "Error in " << filename << "\n" << e.what() << std::endl;
+        }
     }
 
     file.close();
@@ -774,7 +1002,13 @@ int UpdateMonthFile(const Year& year, std::chrono::month curr_month) {
     file << "cost,reason,day\n";
 
     for (const auto& expense : expenses) {
-        file << expense.cost << ",\"" << expense.reason << "\"," << std::format("{:02}", static_cast<unsigned>(expense.day)) << "\n";
+        file << expense.cost << ",";
+
+
+        file << std::quoted(expense.reason, '"', '"') << ",";
+
+
+        file << std::format("{:02}", static_cast<unsigned>(expense.day)) << "\n";
     }
 
     // month.changed = false;
@@ -1087,7 +1321,7 @@ std::pair<Year&, bool> PromptYear() {
     return {quit_year, false};
 }
 
-std::pair<std::chrono::month, bool> PromptMonth() {
+std::chrono::month PromptMonth() {
     std::string line;
     std::cout << "Choose month (1-12): ";
 
@@ -1095,14 +1329,14 @@ std::pair<std::chrono::month, bool> PromptMonth() {
 
     while (std::getline(std::cin, line)) {
         if (line == "q") {
-            return {std::chrono::January, false};
+            return std::chrono::month{0};
         }
 
         std::stringstream ss(line);
 
         if (ss >> num) {
             if (0 < num && num < 13) {
-                return {static_cast<std::chrono::month>(num), true};
+                return static_cast<std::chrono::month>(num);
             } else {
                 std::cout << "Please choose a number between 1-12.\n";
             }
@@ -1115,7 +1349,7 @@ std::pair<std::chrono::month, bool> PromptMonth() {
     std::cerr << "Month could not be chosen." << std::endl;
     std::cout << std::endl;
     // std::exit(1);
-    return {std::chrono::January, false};
+    return std::chrono::month{0};
 }
 
 int PromptYearErase() {
