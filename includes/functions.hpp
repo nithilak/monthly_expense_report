@@ -20,7 +20,7 @@
 //std::string dirPath = filename.substr(0, filename.size() - 11 or 12 for month file or 21 or 22 for totals file); idk
 
 //could preface error messages with "Error: " like the computer code
-//also std::cout vs std::err in some cases, up to discretion
+//also std::cout vs std::cerr in some cases, up to discretion
 
 //also could add errors for reaching unreachable places? like after a while loop with std::getline
 //currently returning the quit option in those cases
@@ -39,6 +39,9 @@
 //has been optimized
 
 //See available years says "deleted" when the year is "erased" by function call
+
+//currently there is an option in PromptInsertYear() to include all years in directory "./includes/"
+//the UI is a bit cluttered for when new files are created
 
 //can't decide the insert year behavior in PromptYear()
 //current behavior is the best to not have a crowded UI, unless you also want to remove the handholding insert year y or n option
@@ -109,7 +112,7 @@ void PrintAnnualTotal(const Year& year);
 //inserts a year with all 12 month files formatted like includes/YEARExpenses/MONTHYEAR.csv into years
 //also updates includes/YEARExpenses/TotalExpensesYEAR.csv
 //creates directory and file if it does not exist
-//if files are deleted after inserted, running InsertYear again creates the files fresh from what is currently in memory
+//running InsertYear again overwrites what is stored in memory
 Year& InsertYear(int year);
 
 //not my code
@@ -155,6 +158,7 @@ std::pair<Year&, bool> PromptYear();
 //bool is false if quit option is desired, not a valid month
 std::pair<std::chrono::month, bool> PromptMonth();
 
+//returns the number of years inserted if chose to insert all years, else
 //returns 1 if successfully inserted a (prompted) year into years, does not overwrite already inserted year
 //has quit option
 int PromptInsertYear();

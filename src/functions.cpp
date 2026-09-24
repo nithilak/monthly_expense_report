@@ -469,7 +469,7 @@ Year& InsertYear(int year) {
     std::chrono::year year_to_insert = std::chrono::year{year};
     years.insert({year_to_insert, Year(year_to_insert)});
 
-    Year& year_return = years.at(year_to_insert);
+    Year& year_return = years.at(year_to_insert); //should not cause an error because the year was just inserted
 
     PopulateExpenses(year_return);
     
@@ -941,28 +941,79 @@ int PrintTotalsFile(const Year& year) {
 }
 
 int PromptInsertYear() {
-    std::string line;
-    std::cout << "Insert year: ";
 
-    unsigned num;
+    std::string line;
+
+    std::cout << "Insert all years in directory \"./includes/\"?" << std::endl;
+    std::cout << "Press y or n" << std::endl;
 
     while (std::getline(std::cin, line)) {
         if (line == "q") {
             return 0;
         }
 
-        std::stringstream ss(line);
+        if (line == "y") {
+            std::cout << std::endl;
+            std::filesystem::path targetDir = "./includes/"; 
+            int count = 0;
+            try {
+                if (std::filesystem::exists(targetDir) && std::filesystem::is_directory(targetDir)) {
+                    for (const auto& entry : std::filesystem::directory_iterator(targetDir)) {
+                        // Check if the current entry is a folder
+                        if (entry.is_directory()) {
+                            std::string path = entry.path().filename().string();
+                            std::stringstream ss(path);
+                            unsigned year_num;
+                            std::string word;
+                            if ((ss >> year_num)) {
+                                if (ss >> word && word == "Expenses") {
+                                    std::cout << "Inserted year: " << year_num << "\n";
+                                    InsertYear(year_num);
+                                    count++;
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    std::cerr << "Provided path does not exist or is not a directory." << std::endl;
+                }
+            } catch (const std::filesystem::filesystem_error& e) {
+                std::cerr << "Error: " << e.what() << std::endl;
+            }
 
-        if (ss >> num) {
-            std::cout << "Inserted year: " << num << "\n";
-            InsertYear(num);
-            return 1;
-        } else {
-            std::cout << "Invalid input.\n";
+            return count; //should I really return count of inserted years, or should I return 1?
         }
+
+        if (line == "n") {
+            std::cout << "Insert year: ";
+
+            unsigned num;
+
+            while (std::getline(std::cin, line)) {
+                if (line == "q") {
+                    return 0;
+                }
+
+                std::stringstream ss(line);
+
+                if (ss >> num) {
+                    // std::cout << std::endl; //only because it becomes hard to read
+                    std::cout << "Inserted year: " << num << "\n";
+                    InsertYear(num);
+                    return 1;
+                } else {
+                    std::cout << "Invalid input.\n";
+                }
+                
+                std::cout << "Insert year: ";
+            }
+        }
+
+        std::cout << "Invalid input.\n";
+
     }
     
-    std::cerr << "Year could not be inserted." << std::endl;
+    std::cerr << "Year(s) could not be inserted." << std::endl;
     // std::exit(1);
     return 0; //return -1;
 }
