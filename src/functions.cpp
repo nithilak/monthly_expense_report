@@ -1029,7 +1029,20 @@ std::pair<Year&, bool> PromptYear() {
 
                 while (std::getline(std::cin, line)) {
                     if (line == "y") {
-                        return {InsertYear(num), true};
+                        // if (num == 0) {
+                        //     if (PromptInsertYear()) {
+                        //         return {years.begin()->second, true};
+                        //     } else {
+                        //         return {quit_year, false};
+                        //     }
+                        // } else {
+                        //     return {InsertYear(num), true};
+                        // }
+                        if (PromptInsertYear()) {
+                            return {years.begin()->second, true};
+                        } else {
+                            return {quit_year, false};
+                        }
                     } else if (line == "n" || line == "q") {
                         return {quit_year, false};
                     }
