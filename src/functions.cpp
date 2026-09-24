@@ -1036,13 +1036,22 @@ std::pair<Year&, bool> PromptYear() {
                         //         return {quit_year, false};
                         //     }
                         // } else {
-                        //     return {InsertYear(num), true};
+                        //     if (InsertYear(num)) {
+                        //         return {years.begin()->second, true};
+                        //     } else {
+                        //         return {quit_year, false};
+                        //     }
+
+                        // if (PromptInsertYear()) {
+                        //     return {years.begin()->second, true};
+                        // } else {
+                        //     return {quit_year, false};
                         // }
-                        if (PromptInsertYear()) {
-                            return {years.begin()->second, true};
-                        } else {
-                            return {quit_year, false};
-                        }
+
+                        PromptInsertYear();
+                        return {quit_year, false};
+
+
                     } else if (line == "n" || line == "q") {
                         return {quit_year, false};
                     }

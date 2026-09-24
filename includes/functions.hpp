@@ -40,6 +40,8 @@
 
 //See available years says "deleted" when the year is "erased" by function call
 
+//can't decide the insert year behavior in PromptYear()
+
 //currently expenses are stored under a multiset so that duplicate equal elenents could be added
 //ould change it so that ekements can't be equal but that doesn't make sense
 
