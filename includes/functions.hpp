@@ -43,6 +43,8 @@
 //currently expenses are stored under a multiset so that duplicate equal elenents could be added
 //ould change it so that ekements can't be equal but that doesn't make sense
 
+//it is possible for an expense to be 0
+
 //AddExpense and DeleteExpense have one long continuous text when selecting no until you select yes or quit
 
 //currently after doing AddExpense and DeleteExpense in main the month file and the totals file are automatically updated
@@ -100,6 +102,10 @@ void PrintAnnualTotal(const Year& year);
 //creates directory and file if it does not exist
 //if files are deleted after inserted, running InsertYear again creates the files fresh from what is currently in memory
 Year& InsertYear(int year);
+
+//not my code
+//returns whether a string is empty/whitespace
+bool is_empty_or_whitespace(const std::string& s);
 
 //adds an expense to a month, returns 1 if made a change
 int AddExpense(Year& year, std::chrono::month curr_month);

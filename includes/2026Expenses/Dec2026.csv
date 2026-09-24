@@ -1,6 +1,7 @@
 cost,reason,day
 1,"test",01
 111,"test",04
+0,""nothing"",12
 13,"Taylor Swift Album",13
 12,"Socks",15
 25,"Christmas",25

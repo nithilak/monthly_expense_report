@@ -522,6 +522,12 @@ Year& InsertYear(int year) {
     return year_return;
 }
 
+bool is_empty_or_whitespace(const std::string& s) {
+    return std::all_of(s.begin(), s.end(), [](unsigned char ch) {
+        return std::isspace(ch);
+    });
+}
+
 int AddExpense(Year& year, std::chrono::month curr_month) {
     Month& month = year.months[static_cast<unsigned int>(curr_month) - 1];
 
@@ -551,7 +557,7 @@ int AddExpense(Year& year, std::chrono::month curr_month) {
             std::cout << "Invalid input.\n";
         }
 
-        // std::cout << "Enter a cost: ";
+        std::cout << "Enter a cost: ";
     }
 
     std::string text;
@@ -564,14 +570,14 @@ int AddExpense(Year& year, std::chrono::month curr_month) {
             return 0;
         }
 
-        if (!line.empty()) {
+        if (text.find_first_not_of(" \t\n\v\f\r") != std::string::npos) {
             std::cout << "Reason: " << text << "\n";
             break;
         } else {
             std::cout << "Reason cannot be empty.\n";
         }
 
-        // std::cout << "Enter a reason: ";
+        std::cout << "Enter a reason: ";
     }
 
     unsigned day_value{};
@@ -611,7 +617,7 @@ int AddExpense(Year& year, std::chrono::month curr_month) {
             std::cout << "Invalid input.\n";
         }
 
-        // std::cout << "Enter a day (1-" << last_day_num << "): ";
+        std::cout << "Enter a day (1-" << last_day_num << "): ";
     }
 
     std::cout << "Add Expense: " << num << ", " << text << ", " << date << std::endl;
@@ -708,7 +714,7 @@ int DeleteExpense(Year& year, std::chrono::month curr_month) {
             std::cout << "Invalid input.\n";
         }
 
-        // std::cout << "Enter a line number: ";
+        std::cout << "Enter a line number: ";
     }
 
     return 0;
@@ -777,7 +783,7 @@ int DeleteExpense(std::chrono::year year, Month& month) {
             std::cout << "Invalid input.\n";
         }
 
-        // std::cout << "Enter a line number: ";
+        std::cout << "Enter a line number: ";
     }
 
     return 0;
@@ -1113,7 +1119,7 @@ int PromptYearErase() {
             std::cout << "Invalid input.\n";
         }
 
-        std::cout << "Enter q to quit.\nChoose year: ";
+        std::cout << "Enter q to quit. Choose year: ";
     }
 
     std::cerr << "Year could not be chosen.\n" << std::endl;
