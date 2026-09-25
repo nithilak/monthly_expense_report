@@ -115,6 +115,12 @@
 //theoretically negative number years should work now
 //if you really want to enter or choose the year 0, you have to enter the word "zero"
 
+//there is no 0 shortcut for PromptYearErase() because why would you want to delete the most recent year
+//and having 0 choose the least recent year would 
+//be confusing because 0 always means most recent year or all available years in “./includes/”
+
+//there is a naming difference between PromptYearErase() and PromptInsertYear()
+
 //currently there is an option in PromptInsertYear() to include all years in directory "./includes/"
 //the UI is a bit cluttered for when new files are created
 
