@@ -1343,20 +1343,22 @@ int UpdateYearAuditFile(char sign, const Expense& expense, std::chrono::year yea
 int PrintFile2(std::string filename) {
     std::ifstream file(filename);
 
-    int width = 9;
+    int width = 15; //9
 
+    int id = 1;
     if (file.is_open()) {
         // Print the entire file contents to the console
-        std::cout << std::string(colWidth * 2 + strWidth + width, '-') << "\n";
+        std::cout << std::string(colWidth * 2 + strWidth + width + idWidth, '-') << "\n";
 
 
         std::cout << std::left 
                     << std::setw(colWidth) << "Cost"
                     << std::setw(strWidth) << "Reason"
                     << std::setw(colWidth) << "Date"
-                    << std::setw(width) << "" << "\n"; //Sign
+                    << std::setw(width) << "" //Sign
+                    << std::setw(idWidth) << "" << "\n";
 
-        std::cout << std::string(colWidth * 2 + strWidth + width, '-') << "\n";
+        std::cout << std::string(colWidth * 2 + strWidth + width + idWidth, '-') << "\n";
 
         std::string line;
         std::getline(file, line); //the header
@@ -1393,14 +1395,16 @@ int PrintFile2(std::string filename) {
                           << std::setw(colWidth) << cost
                           << std::setw(strWidth) << reason
                           << std::setw(colWidth) << line  //should already be formatted date YYYY-MM-DD, width is 10
-                          << std::setw(width) << display_sign << "\n";
+                          << std::setw(width) << display_sign
+                          << std::setw(idWidth) << id << "\n";
 
+                id++;
             } catch (const std::exception& e) {
                 std::cerr << "Error in printing " << filename << "\n" << e.what() << std::endl;
             }
         }
 
-        std::cout << std::string(colWidth * 2 + strWidth + width, '-') << "\n";
+        std::cout << std::string(colWidth * 2 + strWidth + width + idWidth, '-') << "\n";
         std::cout << std::endl;
 
         file.close();

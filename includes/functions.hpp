@@ -64,6 +64,9 @@
 
 //could change the directory from "./includes" to its own folder
 
+//some things are created as a variable, std::string date = thing; for example which I think is for readability
+//when it could be passed directly, which it is done sometimes
+
 //not added feature
 // std::cout << "Update all month files and total files for all years: 11" << std::endl; 
 //at this point the UI needs a sub menu if totals and years are to be separate
