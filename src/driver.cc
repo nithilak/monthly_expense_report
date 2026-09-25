@@ -78,21 +78,21 @@ int main() {
               std::cout << std::endl;
               PrintAnnualTotal(year);
             } else if (num == 10) {
-              std::cout << std::endl;
-              UpdateTotalsFile(year);
-              std::cout << "Updated TotalExpenses" << year.year << ".csv\n" << std::endl;
+              // std::cout << std::endl;
+              // UpdateTotalsFile(year);
+              // std::cout << "Updated TotalExpenses" << year.year << ".csv\n" << std::endl;
             } else if (num == 9) {
-              std::cout << std::endl;
-              std::chrono::month month_to_add = std::chrono::January;
-              for (int i = 1; i < 13; i++) {
-                bool passed = UpdateMonthFile(year, month_to_add);
-                std::cout << std::format("{:%b}{}.csv {}updated.\n", 
-                        month_to_add, 
-                        year.year, 
-                        passed ? "" : "not ");
-                month_to_add++;
-              }
-              std::cout << std::endl;
+              // std::cout << std::endl;
+              // std::chrono::month month_to_add = std::chrono::January;
+              // for (int i = 1; i < 13; i++) {
+              //   bool passed = UpdateMonthFile(year, month_to_add);
+              //   std::cout << std::format("{:%b}{}.csv {}updated.\n", 
+              //           month_to_add, 
+              //           year.year, 
+              //           passed ? "" : "not ");
+              //   month_to_add++;
+              // }
+              // std::cout << std::endl;
             } else {
               std::chrono::month get_month = PromptMonth();
               if (!get_month.ok()) {
@@ -107,19 +107,31 @@ int main() {
                 PrintExpenses(year, month_to_add);
               } else if (num == 6) {
                 if (AddExpense(year, month_to_add)) {
-                  UpdateMonthFile(year, month_to_add);
+                  bool passed = UpdateMonthFile(year, month_to_add);
+                  std::cout << std::format("{:%b}{}.csv {}updated.\n", 
+                        month_to_add, 
+                        year.year, 
+                        passed ? "" : "not ");
                   UpdateTotalsFile(year);
+                  std::cout << "Updated TotalExpenses" << year.year << ".csv\n" << std::endl;
+                  std::cout << std::endl;
                 }
               } else if (num == 7) {
                 if (DeleteExpense(year, month_to_add)) {
-                  UpdateMonthFile(year, month_to_add);
+                  bool passed = UpdateMonthFile(year, month_to_add);
+                  std::cout << std::format("{:%b}{}.csv {}updated.\n", 
+                        month_to_add, 
+                        year.year, 
+                        passed ? "" : "not ");
                   UpdateTotalsFile(year);
+                  std::cout << "Updated TotalExpenses" << year.year << ".csv\n" << std::endl;
+                  std::cout << std::endl;
                 }
               } else if (num == 8) {
-                if (UpdateMonthFile(year, month_to_add)) {
-                  std::cout << std::format("{:%b}", month_to_add) << year.year << ".csv updated." << std::endl;
-                }
-                std::cout << std::endl;
+                // if (UpdateMonthFile(year, month_to_add)) {
+                //   std::cout << std::format("{:%b}", month_to_add) << year.year << ".csv updated." << std::endl;
+                // }
+                // std::cout << std::endl;
               }
             }
           } else {
@@ -153,31 +165,31 @@ int main() {
           std::cout << std::endl;
           PrintAnnualTotal(year);
         } else if (num == 10) {
-          std::cout << std::endl;
-          UpdateTotalsFile(year);
-          std::cout << "Updated TotalExpenses" << year.year << ".csv\n" << std::endl;
+          // std::cout << std::endl;
+          // UpdateTotalsFile(year);
+          // std::cout << "Updated TotalExpenses" << year.year << ".csv\n" << std::endl;
         } else if (num == 9) {
-          std::cout << std::endl;
-          std::chrono::month month_to_add = std::chrono::January;
-          for (int i = 1; i < 13; i++) {
-            // // if (UpdateMonthFile(year, month_to_add)) {
-            // //   std::cout << std::format("{:%b}", month_to_add) << year.year << ".csv updated." << std::endl;
-            // // } else {
-            // //   std::cout << std::format("{:%b}", month_to_add) << year.year << ".csv not updated." << std::endl;
-            // // }
-            bool passed = UpdateMonthFile(year, month_to_add);
-            // std::cout << std::format("{:%b}", month_to_add) << year.year << ".csv ";
-            // if (!passed) {
-            //   std::cout << "not ";
-            // }
-            // std::cout << "updated." << std::endl;
-            std::cout << std::format("{:%b}{}.csv {}updated.\n", 
-                        month_to_add, 
-                        year.year, 
-                        passed ? "" : "not ");
-            month_to_add++;
-          }
-          std::cout << std::endl;
+          // std::cout << std::endl;
+          // std::chrono::month month_to_add = std::chrono::January;
+          // for (int i = 1; i < 13; i++) {
+          //   // // if (UpdateMonthFile(year, month_to_add)) {
+          //   // //   std::cout << std::format("{:%b}", month_to_add) << year.year << ".csv updated." << std::endl;
+          //   // // } else {
+          //   // //   std::cout << std::format("{:%b}", month_to_add) << year.year << ".csv not updated." << std::endl;
+          //   // // }
+          //   bool passed = UpdateMonthFile(year, month_to_add);
+          //   // std::cout << std::format("{:%b}", month_to_add) << year.year << ".csv ";
+          //   // if (!passed) {
+          //   //   std::cout << "not ";
+          //   // }
+          //   // std::cout << "updated." << std::endl;
+          //   std::cout << std::format("{:%b}{}.csv {}updated.\n", 
+          //               month_to_add, 
+          //               year.year, 
+          //               passed ? "" : "not ");
+          //   month_to_add++;
+          // }
+          // std::cout << std::endl;
         } else {
           std::chrono::month get_month = PromptMonth();
           if (!get_month.ok()) {
@@ -192,21 +204,31 @@ int main() {
             PrintExpenses(year, month_to_add);
           } else if (num == 6) {
             if (AddExpense(year, month_to_add)) {
-              UpdateMonthFile(year, month_to_add);
+              bool passed = UpdateMonthFile(year, month_to_add);
+              std::cout << std::format("{:%b}{}.csv {}updated.\n", 
+                    month_to_add, 
+                    year.year, 
+                    passed ? "" : "not ");
               UpdateTotalsFile(year);
+              std::cout << "Updated TotalExpenses" << year.year << ".csv\n" << std::endl;
+              std::cout << std::endl;
             }
-            // std::cout << std::endl; //temp
           } else if (num == 7) {
             if (DeleteExpense(year, month_to_add)) {
-              UpdateMonthFile(year, month_to_add);
+              bool passed = UpdateMonthFile(year, month_to_add);
+              std::cout << std::format("{:%b}{}.csv {}updated.\n", 
+                    month_to_add, 
+                    year.year, 
+                    passed ? "" : "not ");
               UpdateTotalsFile(year);
+              std::cout << "Updated TotalExpenses" << year.year << ".csv\n" << std::endl;
+              std::cout << std::endl;
             }
-            // std::cout << std::endl; //temp
           } else if (num == 8) {
-            if (UpdateMonthFile(year, month_to_add)) {
-              std::cout << std::format("{:%b}", month_to_add) << year.year << ".csv updated." << std::endl;
-            }
-            std::cout << std::endl;
+            // if (UpdateMonthFile(year, month_to_add)) {
+            //   std::cout << std::format("{:%b}", month_to_add) << year.year << ".csv updated." << std::endl;
+            // }
+            // std::cout << std::endl;
           }
         }
       }

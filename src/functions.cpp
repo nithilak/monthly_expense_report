@@ -331,21 +331,41 @@ std::vector<std::string> SplitPath(const std::string& filename) {
 }
 
 void PrintMenu() {
-    std::cout << "Insert year: 0, Choose year: 1, See available years: 2, Delete year: 3" << std::endl;
-    std::cout << "Print all month expenses: 4, Print month expenses: 5" << std::endl;
-    std::cout << "Add expense: 6, Delete expense: 7" << std::endl;
-    std::cout << "Update month file: 8, Update all month files: 9, Update totals file: 10" << std::endl; //9 is for a year
-    // std::cout << "Update all month files and total files for all years: 11" << std::endl; 
-    std::cout << "Print all month totals: 11, Print annual total: 12" << std::endl;
+    // std::cout << "Insert year: 0, Choose year: 1, See available years: 2, Delete year: 3" << std::endl;
+    // std::cout << "Print all month expenses: 4, Print month expenses: 5" << std::endl;
+    // std::cout << "Add expense: 6, Delete expense: 7" << std::endl;
+    // std::cout << "Update month file: 8, Update all month files: 9, Update totals file: 10" << std::endl; //9 is for a year
+    // // std::cout << "Update all month files and total files for all years: 11" << std::endl; 
+    // std::cout << "Print all month totals: 11, Print annual total: 12" << std::endl;
+
+    std::cout << "0: Insert year\n";
+    std::cout << "2: See available years\n";
+    std::cout << "1: Choose year\n";
+    std::cout << "3: Delete year\n";
+    std::cout << "12: Print annual total\n";
+    std::cout << "11: Print all month totals\n";
+    std::cout << "4: Print full list of expenses in a year\n";
+    std::cout << "5: Print full list of expenses in a month\n";
+    std::cout << "6: Add Expense\n";
+    std::cout << "7: Delete Expense\n";
+
+
 }
 
 void PrintMenuYear(std::chrono::year year) {
-    std::cout << "Year: " << year << std::endl;
-    std::cout << "Return to all years: 0" << std::endl;
-    std::cout << "Print all month expenses: 4, Print month expenses: 5" << std::endl;
-    std::cout << "Add expense: 6, Delete expense: 7" << std::endl;
-    std::cout << "Update month file: 8, Update all month files: 9, Update totals file: 10" << std::endl; 
-    std::cout << "Print all month totals: 11, Print annual total: 12" << std::endl;
+    // std::cout << "Year: " << year << std::endl;
+    // std::cout << "Return to all years: 0" << std::endl;
+    // std::cout << "Print all month expenses: 4, Print month expenses: 5" << std::endl;
+    // std::cout << "Add expense: 6, Delete expense: 7" << std::endl;
+    // std::cout << "Update month file: 8, Update all month files: 9, Update totals file: 10" << std::endl; 
+    // std::cout << "Print all month totals: 11, Print annual total: 12" << std::endl;
+
+    std::cout << "12: Print annual total\n";
+    std::cout << "11: Print all month totals\n";
+    std::cout << "4: Print full list of expenses in a year\n";
+    std::cout << "5: Print full list of expenses in a month\n";
+    std::cout << "6: Add Expense\n";
+    std::cout << "7: Delete Expense\n";
 }
 
 void PrintAvailableYears() {
