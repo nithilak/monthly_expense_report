@@ -1,4 +1,7 @@
 cost,reason,day
 10,"New Years streamers",01
 23,"stuff",02
+23,"q",03
+18,"test    test    test    q",04
+12,"""test"", 'test', """"""""""""""test    q",14
 15,"test, ""test"", ""another test"", test again",23

@@ -151,6 +151,10 @@
 //PopulateExpenses throws an error that is caught and displayed and it does not add that specific expense
 //it also does not permit you to enter "q" since "q" is the quit option
 //but you can enter "q " or just any q with whitespace 
+//and it can read "q" from the csv file
+//csv with newlines in the reason field throws an error and does not add that specific expense
+//because the csv is read with std::getline so the message gets cut
+//adding support for newlines in the reason field would require a modified parsing function to replace getline to parse double quotes
 
 //I wrote a helper function to parse the csv for writing, but now I am using std::quoted 
 //I am using a helper function for reading to parse inside the double quotes

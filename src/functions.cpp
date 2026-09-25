@@ -239,7 +239,7 @@ std::string parseCSVLine5ChangeLine(std::string& line) {
 
     char c = line[0];
     if (c != '"') {
-        std::cerr << "CSV not formatted properly." << std::endl;
+        throw std::runtime_error("CSV not formatted properly.");
     }
 
     size_t end_size = line.length();
@@ -254,7 +254,7 @@ std::string parseCSVLine5ChangeLine(std::string& line) {
             } else {
                 // Closing quote found
                 if (++i >= end_size && line[i] != ',') {
-                    std::cerr << "CSV not formatted properly." << std::endl;
+                    throw std::runtime_error("CSV not formatted properly.");
                 }
                 i++;
                 line = line.substr(i, end_size - i);
@@ -277,6 +277,7 @@ std::string parseCSVLine5ChangeLine(std::string& line) {
         // }
     }
     // Add the final field
+    throw std::runtime_error("CSV not formatted properly.");
     return field;
 }
 
@@ -1490,6 +1491,16 @@ int PromptYearErase() {
             return 0;
         }
         std::stringstream ss(line);
+
+        if (line == "zero") { //in case you are used to entering zero to mean choose year 0
+            // 1. Clear the contents
+            ss.str(""); 
+            
+            // 2. Reset error flags (like EOF), allowing you to write/read again safely
+            ss.clear(); 
+
+            ss << "0";
+        }
 
         if (ss >> num) {
             std::chrono::year year_to_insert = std::chrono::year{num};
