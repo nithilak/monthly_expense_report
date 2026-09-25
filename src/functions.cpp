@@ -344,7 +344,7 @@ void PrintMenuYear(std::chrono::year year) {
     std::cout << "Print all month expenses: 4, Print month expenses: 5" << std::endl;
     std::cout << "Add expense: 6, Delete expense: 7" << std::endl;
     std::cout << "Update month file: 8, Update all month files: 9, Update totals file: 10" << std::endl; 
-    std::cout << "Print all month totals: 10, Print annual total: 11" << std::endl;
+    std::cout << "Print all month totals: 11, Print annual total: 12" << std::endl;
 }
 
 void PrintAvailableYears() {

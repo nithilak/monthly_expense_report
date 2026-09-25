@@ -44,14 +44,14 @@ int main() {
 
         std::pair<Year&, bool> get_year = PromptYear();
 
-        std::cout << std::endl;
-
         if (!get_year.second) {
+          std::cout << std::endl;
           PrintMenu();
           continue;
         }
         Year& year = get_year.first;
 
+        std::cout << std::endl;
 
         PrintMenuYear(year.year);
 
@@ -96,6 +96,7 @@ int main() {
             } else {
               std::chrono::month get_month = PromptMonth();
               if (!get_month.ok()) {
+                std::cout << std::endl;
                 PrintMenuYear(year.year);
                 continue;
               }
@@ -180,6 +181,7 @@ int main() {
         } else {
           std::chrono::month get_month = PromptMonth();
           if (!get_month.ok()) {
+            std::cout << std::endl;
             PrintMenuYear(year.year);
             continue;
           }

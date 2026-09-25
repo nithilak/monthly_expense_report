@@ -149,6 +149,8 @@
 //AddExpense does not permit you to enter an empty reason or whitespace reasonn currently 
 //if the reason is empty/whitespace in the CSV file when you read it in with PopulateExpenses, 
 //PopulateExpenses throws an error that is caught and displayed and it does not add that specific expense
+//it also does not permit you to enter "q" since "q" is the quit option
+//but you can enter "q " or just any q with whitespace 
 
 //I wrote a helper function to parse the csv for writing, but now I am using std::quoted 
 //I am using a helper function for reading to parse inside the double quotes
