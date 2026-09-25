@@ -1,6 +1,0 @@
-Added Expense: 33.000000, test audit, 2027-12-31
-Deleted Expense: 33.000000, test audit, 2027-12-31
-Added Expense: 33.000000, test audit, 2027-12-31
-Added Expense: 23.000000, audit test, 2027-12-23
-Deleted Expense: 23.000000, audit test, 2027-12-23
-Deleted Expense: 33.000000, test audit, 2027-12-31

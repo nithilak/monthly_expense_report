@@ -23,6 +23,19 @@
 //also the error handling for not being able to open the file seems off somehow, ctrl+f dirPath to find all instances of this
 //PopulateExpenses(const std::string& filename, Month& month), UpdateMonthFile(const Year& year, std::chrono::month curr_month), UpdateTotalsFile(const Year& year)
 //the only way it could fail that I can see is if SplitPath() doesn't return a valid file path in the vector
+//or this, this is weird
+// if (!std::filesystem::exists(filename)) {
+//     std::cerr << paths[1] << " file not found. Creating file..." << std::endl;
+// }
+
+// // 1. Open the CSV file using an input file stream
+// std::ofstream file(filename);
+
+// // Best Practice: Always check if the file opened successfully
+// if (!file.is_open()) {
+//     std::cerr << "Error: Could not open the file!" << std::endl;
+//     return 0;
+// }
 
 //could preface error messages with "Error: " like the computer code
 //also std::cout vs std::cerr in some cases, up to discretion
@@ -46,6 +59,8 @@
 
 
 //See available years says "deleted" when the year is "erased" by function call
+
+//added audit files, and is "deleted" the correct term for removing an expense?
 
 //could change the directory from "./includes" to its own folder
 
@@ -150,7 +165,9 @@
 //AddExpense and DeleteExpense have one long continuous text when selecting no until you select yes or quit
 
 //currently after doing AddExpense and DeleteExpense in main the month file and the totals file are automatically updated
+//and main prints that the file is is updated
 //could be changed
+//the audit files are also automatically updated but main does not print that the file is updated
 
 //AddExpense does not permit you to enter an empty reason or whitespace reasonn currently 
 //if the reason is empty/whitespace in the CSV file when you read it in with PopulateExpenses, 
@@ -298,7 +315,22 @@ int PrintTotalsFile(const Year& year);
 //updates TotalExpensesYEAR.csv
 //creates the directory and file if it does not exist
 //returns 1 if updated the file successfully
-int UpdateAuditFile(std::string line);
+int UpdateAuditFile(char sign, const Expense& expense, std::chrono::year year, std::chrono::month month);
+int UpdateMonthAuditFile(char sign, const Expense& expense, std::chrono::year year, std::chrono::month month);
+int UpdateYearAuditFile(char sign, const Expense& expense, std::chrono::year year, std::chrono::month month);
+
+//creates the directory and file if it does not exist
+//returns 1 if updated the file successfully
+int CreateAuditFile(const std::string& filename);
+int CreateAuditFile();
+int CreateMonthAuditFile(std::chrono::year year, std::chrono::month month);
+int CreateYearAuditFile(std::chrono::year year);
+
+// Print the entire file contents to the console
+int PrintFile2(std::string filename);
+int PrintAuditFile();
+int PrintMonthAuditFile(std::chrono::year year, std::chrono::month month);
+int PrintYearAuditFile(std::chrono::year year);
 
 
 //for these two I could make a quit option by implementing a default year

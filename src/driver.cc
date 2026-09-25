@@ -77,7 +77,11 @@ int main() {
             } else if (num == 4) {
               std::cout << std::endl;
               PrintAnnualTotal(year);
-            } 
+            } else if (num == 9) {
+              std::cout << std::endl;
+              std::cout << "Audit file for " << year.year << std::endl;
+              PrintYearAuditFile(year.year);
+            }
             //else if (num == temp10) {
               // std::cout << std::endl;
               // UpdateTotalsFile(year);
@@ -107,7 +111,7 @@ int main() {
               std::cout << std::endl;
               if (num == 7) {
                 PrintExpenses(year, month_to_add);
-              } else if (num == 8) {
+              } else if (num == 11) {
                 if (AddExpense(year, month_to_add)) {
                   bool passed = UpdateMonthFile(year, month_to_add);
                   std::cout << std::format("{:%b}{}.csv {}updated.\n", 
@@ -118,7 +122,7 @@ int main() {
                   std::cout << "Updated TotalExpenses" << year.year << ".csv\n" << std::endl;
                   std::cout << std::endl;
                 }
-              } else if (num == 9) {
+              } else if (num == 12) {
                 if (DeleteExpense(year, month_to_add)) {
                   bool passed = UpdateMonthFile(year, month_to_add);
                   std::cout << std::format("{:%b}{}.csv {}updated.\n", 
@@ -129,6 +133,9 @@ int main() {
                   std::cout << "Updated TotalExpenses" << year.year << ".csv\n" << std::endl;
                   std::cout << std::endl;
                 }
+              } else if (num == 10) {
+                std::cout << "Audit file for " << std::format("{:%B}", month_to_add) << " " << year.year << std::endl;
+                PrintMonthAuditFile(year.year, month_to_add);
               } //else if (num == temp8) {
                 // if (UpdateMonthFile(year, month_to_add)) {
                 //   std::cout << std::format("{:%b}", month_to_add) << year.year << ".csv updated." << std::endl;
@@ -147,6 +154,10 @@ int main() {
       } else if (num == 3) {
         std::cout << std::endl;
         PromptYearErase();
+      } else if (num == 8) {
+        std::cout << std::endl;
+        std::cout << "Audit file" << std::endl;
+        PrintAuditFile();
       } else {
         std::pair<Year&, bool> get_year = PromptYear();
         
@@ -166,7 +177,11 @@ int main() {
         } else if (num == 4) {
           std::cout << std::endl;
           PrintAnnualTotal(year);
-        } //else if (num == temp10) {
+        } else if (num == 9) {
+          std::cout << std::endl;
+          std::cout << "Audit file for " << year.year << std::endl;
+          PrintYearAuditFile(year.year);
+        }//else if (num == temp10) {
           // std::cout << std::endl;
           // UpdateTotalsFile(year);
           // std::cout << "Updated TotalExpenses" << year.year << ".csv\n" << std::endl;
@@ -205,7 +220,7 @@ int main() {
           std::cout << std::endl;
           if (num == 7) {
             PrintExpenses(year, month_to_add);
-          } else if (num == 8) {
+          } else if (num == 11) {
             if (AddExpense(year, month_to_add)) {
               bool passed = UpdateMonthFile(year, month_to_add);
               std::cout << std::format("{:%b}{}.csv {}updated.\n", 
@@ -216,7 +231,7 @@ int main() {
               std::cout << "Updated TotalExpenses" << year.year << ".csv\n" << std::endl;
               std::cout << std::endl;
             }
-          } else if (num == 9) {
+          } else if (num == 12) {
             if (DeleteExpense(year, month_to_add)) {
               bool passed = UpdateMonthFile(year, month_to_add);
               std::cout << std::format("{:%b}{}.csv {}updated.\n", 
@@ -227,6 +242,9 @@ int main() {
               std::cout << "Updated TotalExpenses" << year.year << ".csv\n" << std::endl;
               std::cout << std::endl;
             }
+          } else if (num == 10) {
+            std::cout << "Audit file for " << std::format("{:%B}", month_to_add) << " " << year.year << std::endl;
+            PrintMonthAuditFile(year.year, month_to_add);
           } //else if (num == temp8) {
             // if (UpdateMonthFile(year, month_to_add)) {
             //   std::cout << std::format("{:%b}", month_to_add) << year.year << ".csv updated." << std::endl;

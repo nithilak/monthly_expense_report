@@ -338,16 +338,22 @@ void PrintMenu() {
     // // std::cout << "Update all month files and total files for all years: 11" << std::endl; 
     // std::cout << "Print all month totals: 11, Print annual total: 12" << std::endl;
 
-    std::cout << "0: Insert year\n";
-    std::cout << "1: See available years\n";
-    std::cout << "2: Choose year\n";
-    std::cout << "3: Delete year\n";
-    std::cout << "4: Print annual total\n";
-    std::cout << "5: Print all month totals in a year\n";
-    std::cout << "6: Print full list of expenses in a year\n";
-    std::cout << "7: Print full list of expenses in a month\n";
-    std::cout << "8: Add Expense\n";
-    std::cout << "9: Delete Expense\n";
+    std::cout << "0:  Insert year\n"
+              << "1:  See available years\n"
+              << "2:  Choose year\n"
+              << "3:  Delete year\n"
+              << "------------------------------------\n"
+              << "4:  Print annual total\n"
+              << "5:  Print all month totals in a year\n"
+              << "6:  Print full list of expenses in a year\n"
+              << "7:  Print full list of expenses in a month\n"
+              << "------------------------------------\n"
+              << "8:  Print audit file\n"
+              << "9:  Print year audit file\n"
+              << "10: Print month audit file\n"
+              << "------------------------------------\n"
+              << "11: Add Expense\n"
+              << "12: Delete Expense\n";
 
 
 }
@@ -360,12 +366,19 @@ void PrintMenuYear(std::chrono::year year) {
     // std::cout << "Update month file: 8, Update all month files: 9, Update totals file: 10" << std::endl; 
     // std::cout << "Print all month totals: 11, Print annual total: 12" << std::endl;
 
-    std::cout << "4: Print annual total\n";
-    std::cout << "5: Print all month totals in a year\n";
-    std::cout << "6: Print full list of expenses in a year\n";
-    std::cout << "7: Print full list of expenses in a month\n";
-    std::cout << "8: Add Expense\n";
-    std::cout << "9: Delete Expense\n";
+    std::cout << "Year: \n"
+              << "------------------------------------\n"
+              << "4:  Print annual total\n"
+              << "5:  Print all month totals in a year\n"
+              << "6:  Print full list of expenses in a year\n"
+              << "7:  Print full list of expenses in a month\n"
+              << "------------------------------------\n"
+              << "8:  Print audit file\n"
+              << "9:  Print year audit file\n"
+              << "10: Print month audit file\n"
+              << "------------------------------------\n"
+              << "11: Add Expense\n"
+              << "12: Delete Expense\n";
 }
 
 void PrintAvailableYears() {
@@ -681,6 +694,7 @@ double PopulateExpenses(const std::string& filename, Month& month) {
         std::cerr << paths[1] << " file not found. Creating file..." << std::endl;
         std::ofstream file(filename);
         file << "cost,reason,day\n";
+        file.close();
         return 0;
     }
 
@@ -778,6 +792,16 @@ Year& InsertYear(int year) {
     
     UpdateTotalsFile(year_return);
 
+    CreateAuditFile();
+
+    std::chrono::month curr_month = std::chrono::January;
+    for (int i = 0; i < 12; i++) {
+        CreateMonthAuditFile(year_to_insert, curr_month);
+        curr_month++;
+    }
+    
+    CreateYearAuditFile(year_to_insert);
+
     return year_return;
 }
 
@@ -789,9 +813,10 @@ bool is_empty_or_whitespace(const std::string& s) {
 
 int AddExpense(Year& year, std::chrono::month curr_month) {
     PrintExpenses(year, curr_month);
+    std::chrono::year curr_year = year.year;
     Month& month = year.months[static_cast<unsigned int>(curr_month) - 1];
 
-    std::cout << "Adding expense to: " << std::format("{:%B} {}", curr_month, static_cast<int>(year.year)) << std::endl;
+    std::cout << "Adding expense to: " << std::format("{:%B} {}", curr_month, static_cast<int>(curr_year)) << std::endl;
 
     std::cout << "Enter q to quit." << std::endl;
 
@@ -843,7 +868,7 @@ int AddExpense(Year& year, std::chrono::month curr_month) {
     unsigned day_value{};
     std::chrono::day d{};
     auto mdl = curr_month / std::chrono::last; // Last day of any February
-    auto ymdl = year.year / mdl;             // Resolves leap year (29 days)
+    auto ymdl = curr_year / mdl;             // Resolves leap year (29 days)
 
     std::chrono::day last_day = ymdl.day(); 
     unsigned last_day_num = static_cast<unsigned>(last_day);
@@ -864,7 +889,7 @@ int AddExpense(Year& year, std::chrono::month curr_month) {
             if (day_value >= 1 && day_value <= last_day_num) {
                 d = std::chrono::day{static_cast<unsigned>(day_value)};
                 date = std::format("{}-{:02}-{:02}", 
-                    static_cast<int>(year.year), 
+                    static_cast<int>(curr_year), 
                     static_cast<unsigned>(curr_month), 
                     static_cast<unsigned>(d)
                 );
@@ -890,12 +915,16 @@ int AddExpense(Year& year, std::chrono::month curr_month) {
         }
 
         if (line == "y") {
-            month.expenses.insert(Expense(num, text, d));
+            Expense expense_to_insert = Expense(num, text, d);
+            month.expenses.insert(expense_to_insert);
             month.total += num;
             year.total += num;
             // month.changed = true;
             std::cout << "Expense added.\n" << std::endl;
-            UpdateAuditFile("Added Expense: " + std::to_string(num) + ", " + text + ", " + date);
+            // std::string audit_line = "Added Expense: " + std::to_string(num) + ", " + text + ", " + date;
+            UpdateAuditFile('+', expense_to_insert, curr_year, curr_month);
+            UpdateMonthAuditFile('+', expense_to_insert, curr_year, curr_month);
+            UpdateYearAuditFile('+', expense_to_insert, curr_year, curr_month);
             return 1;
         }
 
@@ -912,11 +941,12 @@ int AddExpense(Year& year, std::chrono::month curr_month) {
 
 int DeleteExpense(Year& year, std::chrono::month curr_month) {
     PrintExpenses(year, curr_month);
+    std::chrono::year curr_year = year.year;
     Month& month = year.months[static_cast<unsigned int>(curr_month) - 1];
     std::multiset<Expense>& expenses = month.expenses; 
     // PrintExpenses(expenses, month, year.year);
 
-    std::cout << "Deleting expense from: " << std::format("{:%B} {}", curr_month, static_cast<int>(year.year)) << std::endl;
+    std::cout << "Deleting expense from: " << std::format("{:%B} {}", curr_month, curr_year) << std::endl;
 
     std::cout << "Enter q to quit." << std::endl;
 
@@ -940,7 +970,7 @@ int DeleteExpense(Year& year, std::chrono::month curr_month) {
                 auto it = std::next(expenses.begin(), num - 1);
                 const Expense& expense = *it;
                 std::string date = std::format("{}-{:02}-{:02}", 
-                    static_cast<int>(year.year), 
+                    static_cast<int>(curr_year), 
                     static_cast<unsigned>(curr_month), 
                     static_cast<unsigned>(expense.day)
                 );
@@ -959,10 +989,12 @@ int DeleteExpense(Year& year, std::chrono::month curr_month) {
                         //const double deleted_cost = expense.cost;
                         month.total -= cost;
                         year.total -= cost;
+                        UpdateAuditFile('-', expense, curr_year, curr_month);
+                        UpdateMonthAuditFile('-', expense, curr_year, curr_month);
+                        UpdateYearAuditFile('-', expense, curr_year, curr_month);
                         expenses.erase(it);
                         // month.changed = true;
                         std::cout << "Expense deleted.\n" << std::endl;
-                        UpdateAuditFile("Deleted Expense: " + std::to_string(cost) + ", " + reason + ", " + date);
                         return 1;
                     }
 
@@ -1033,10 +1065,12 @@ double DeleteExpense(std::chrono::year year, Month& month) {
 
                     if (line == "y") {
                         month.total -= cost;
+                        UpdateAuditFile('-', expense, year, curr_month);
+                        UpdateMonthAuditFile('-', expense, year, curr_month);
+                        UpdateYearAuditFile('-', expense, year, curr_month);
                         expenses.erase(it);
                         // month.changed = true;
                         std::cout << "Expense deleted.\n" << std::endl;
-                        UpdateAuditFile("Deleted Expense: " + std::to_string(cost) + ", " + reason + ", " + date);
                         return cost;
                     }
 
@@ -1180,8 +1214,64 @@ int UpdateTotalsFile(const Year& year) {
     return 1;
 }
 
-int UpdateAuditFile(std::string line) {
-    std::string filename = "includes/AuditFile.txt";
+int CreateAuditFile(const std::string& filename) {
+    std::vector<std::string> paths = SplitPath(filename);
+
+    if (paths.size() != 2) {
+        std::cerr << filename << " filename for audit file could not be read." << std::endl;
+        return 0;
+    }
+
+    std::string dirPath = paths[0];
+
+    if (dirPath.empty()) {
+        std::cerr << filename << " directory could not be read." << std::endl;
+        return 0;
+    }
+
+    if (std::filesystem::create_directories(dirPath)) {
+        std::cerr << "Directory " << dirPath << " not found. Creating directory..." << std::endl;
+    }
+
+    if (paths[1].empty()) {
+        std::cerr << filename << " file name could not be read." << std::endl;
+        return 0;
+    }
+
+    // 1. Open the CSV file using an output file stream
+    std::ofstream file(filename, std::ios::app);
+
+    // Best Practice: Always check if the file opened successfully
+    if (!file.is_open()) {
+        std::cerr << paths[1] << " file not found. Creating file..." << std::endl;
+        std::ofstream file(filename);
+        file << "sign,cost,reason,day\n";
+        file.close();
+        return 0;
+    }
+
+    file.close();
+    
+    return 1;
+}
+
+int CreateAuditFile() {
+    return CreateAuditFile("includes/AuditFile.csv");
+}
+
+int CreateMonthAuditFile(std::chrono::year year, std::chrono::month month) {
+    std::string year_str = std::format("{}", year);
+    std::string month_str = std::format("{:%b}", month);
+    return CreateAuditFile("includes/" + year_str + "Expenses/" + month_str + year_str + "AuditFile.csv");
+}
+
+int CreateYearAuditFile(std::chrono::year year) {
+    std::string year_str = std::format("{}", year);
+    return CreateAuditFile("includes/" + year_str + "Expenses/" + year_str + "AuditFile.csv");
+}
+
+int UpdateAuditFile(char sign, const Expense& expense, std::chrono::year year, std::chrono::month month) {
+    std::string filename = "includes/AuditFile.csv";
 
     std::vector<std::string> paths = SplitPath(filename);
 
@@ -1215,16 +1305,225 @@ int UpdateAuditFile(std::string line) {
 
     // Best Practice: Always check if the file opened successfully
     if (!file.is_open()) {
-        std::cerr << "Error: Could not open the file!" << std::endl;
-        return 0;
+        std::cerr << paths[1] << " file not found. Creating file..." << std::endl;
+        std::ofstream file(filename);
+        file << "sign,cost,reason,day\n";
+        file.close();
     }
 
-    file << line << std::endl;
+    file << sign << ",";
+
+    file << expense.cost << ",";
+
+    file << std::quoted(expense.reason, '"', '"') << ",";
+
+    file << std::format("{}", std::chrono::year_month_day(year, month, expense.day)) << std::endl;
 
     file.close();
     
     return 1;
 }
+
+int UpdateMonthAuditFile(char sign, const Expense& expense, std::chrono::year year, std::chrono::month month) {
+    std::string year_str = std::format("{}", year);
+    std::string month_str = std::format("{:%b}", month);
+    std::string filename = "includes/" + year_str + "Expenses/" + month_str + year_str + "AuditFile.csv";
+
+    std::vector<std::string> paths = SplitPath(filename);
+
+    if (paths.size() != 2) {
+        std::cerr << filename << " filename for audit file could not be read." << std::endl;
+        return 0;
+    }
+
+    std::string dirPath = paths[0];
+
+    if (dirPath.empty()) {
+        std::cerr << filename << " directory could not be read." << std::endl;
+        return 0;
+    }
+
+    if (std::filesystem::create_directories(dirPath)) {
+        std::cerr << "Directory " << dirPath << " not found. Creating directory..." << std::endl;
+    }
+
+    if (paths[1].empty()) {
+        std::cerr << filename << " file name could not be read." << std::endl;
+        return 0;
+    }
+
+    if (!std::filesystem::exists(filename)) {
+        std::cerr << paths[1] << " file not found. Creating file..." << std::endl;
+    }
+    
+    // 1. Open the CSV file using an output file stream
+    std::ofstream file(filename, std::ios::app);
+
+    // Best Practice: Always check if the file opened successfully
+    if (!file.is_open()) {
+        std::cerr << paths[1] << " file not found. Creating file..." << std::endl;
+        std::ofstream file(filename);
+        file << "sign,cost,reason,day\n";
+        file.close();
+    }
+
+    file << sign << ",";
+
+    file << expense.cost << ",";
+
+    file << std::quoted(expense.reason, '"', '"') << ",";
+
+    file << std::format("{}", std::chrono::year_month_day(year, month, expense.day)) << std::endl;
+
+    file.close();
+    
+    return 1;
+}
+
+int UpdateYearAuditFile(char sign, const Expense& expense, std::chrono::year year, std::chrono::month month) {
+    std::string year_str = std::format("{}", year);
+    std::string filename = "includes/" + year_str + "Expenses/" + year_str + "AuditFile.csv";
+
+    std::vector<std::string> paths = SplitPath(filename);
+
+    if (paths.size() != 2) {
+        std::cerr << filename << " filename for audit file could not be read." << std::endl;
+        return 0;
+    }
+
+    std::string dirPath = paths[0];
+
+    if (dirPath.empty()) {
+        std::cerr << filename << " directory could not be read." << std::endl;
+        return 0;
+    }
+
+    if (std::filesystem::create_directories(dirPath)) {
+        std::cerr << "Directory " << dirPath << " not found. Creating directory..." << std::endl;
+    }
+
+    if (paths[1].empty()) {
+        std::cerr << filename << " file name could not be read." << std::endl;
+        return 0;
+    }
+
+    if (!std::filesystem::exists(filename)) {
+        std::cerr << paths[1] << " file not found. Creating file..." << std::endl;
+    }
+    
+    // 1. Open the CSV file using an output file stream
+    std::ofstream file(filename, std::ios::app);
+
+    // Best Practice: Always check if the file opened successfully
+    if (!file.is_open()) {
+        std::cerr << paths[1] << " file not found. Creating file..." << std::endl;
+        std::ofstream file(filename);
+        file << "sign,cost,reason,day\n";
+        file.close();
+    }
+
+    file << sign << ",";
+
+    file << expense.cost << ",";
+
+    file << std::quoted(expense.reason, '"', '"') << ",";
+
+    file << std::format("{}", std::chrono::year_month_day(year, month, expense.day)) << std::endl;
+
+    file.close();
+    
+    return 1;
+}
+
+int PrintFile2(std::string filename) {
+    std::ifstream file(filename);
+
+    int width = 9;
+
+    if (file.is_open()) {
+        // Print the entire file contents to the console
+        std::cout << std::string(colWidth * 2 + strWidth + width, '-') << "\n";
+
+
+        std::cout << std::left 
+                    << std::setw(colWidth) << "Cost"
+                    << std::setw(strWidth) << "Reason"
+                    << std::setw(colWidth) << "Date"
+                    << std::setw(width) << "" << "\n"; //Sign
+
+        std::cout << std::string(colWidth * 2 + strWidth + width, '-') << "\n";
+
+        std::string line;
+        std::getline(file, line); //the header
+        // std::cout << line << std::endl;
+
+        while (std::getline(file, line)) {
+            // std::cout << line << std::endl;
+            std::string sign;
+            std::string cost;
+            std::string reason;
+            std::string day;
+
+            try {
+                std::stringstream ss(line);
+                std::getline(ss, sign, ',');
+                std::getline(ss, cost, ',');
+                std::getline(ss, line);
+
+                reason = parseCSVLine5ChangeLine(line);
+                // if (reason.find_first_not_of(" \t\n\v\f\r") == std::string::npos) {
+                //     throw std::runtime_error("Reason cannot be empty.");
+                // }
+
+                //day = line; //could just use line
+
+                std::string display_sign;
+                if (sign == "+") {
+                    display_sign = "Added";
+                } else if (sign == "-") {
+                    display_sign = "Deleted";
+                }
+
+                std::cout << std::left
+                          << std::setw(colWidth) << cost
+                          << std::setw(strWidth) << reason
+                          << std::setw(colWidth) << line  //should already be formatted date YYYY-MM-DD, width is 10
+                          << std::setw(width) << display_sign << "\n";
+
+            } catch (const std::exception& e) {
+                std::cerr << "Error in printing " << filename << "\n" << e.what() << std::endl;
+            }
+        }
+
+        std::cout << std::string(colWidth * 2 + strWidth + width, '-') << "\n";
+        std::cout << std::endl;
+
+        file.close();
+        return 1;
+    } else {
+        std::cerr << "Unable to open file" << std::endl;
+        std::cout << std::endl;
+        return 0;
+    }
+}
+
+int PrintAuditFile() {
+    return PrintFile2("includes/AuditFile.csv");
+}
+
+int PrintMonthAuditFile(std::chrono::year year, std::chrono::month month) {
+    std::string year_str = std::format("{}", year);
+    std::string month_str = std::format("{:%b}", month);
+    return PrintFile2("includes/" + year_str + "Expenses/" + month_str + year_str + "AuditFile.csv");
+}
+
+int PrintYearAuditFile(std::chrono::year year) {
+    std::string year_str = std::format("{}", year);
+    return PrintFile2("includes/" + year_str + "Expenses/" + year_str + "AuditFile.csv");
+}
+
+
+
 
 void PrintTotalsInternal(const Year& year) {
     std::cout << std::format("Year {}", static_cast<int>(year.year)) << std::endl;
