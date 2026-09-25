@@ -40,7 +40,7 @@ int main() {
         std::cout << std::endl;
         PromptInsertYear();
         std::cout << std::endl;
-      } else if (num == 1) {
+      } else if (num == 2) {
 
         std::pair<Year&, bool> get_year = PromptYear();
 
@@ -68,20 +68,21 @@ int main() {
               std::cout << std::endl;
               break;
             }
-            if (num == 4) {
+            if (num == 6) {
               std::cout << std::endl;
               PrintAllExpenses(year);
-            } else if (num == 11) {
+            } else if (num == 5) {
               std::cout << std::endl;
               PrintTotalsInternal(year);
-            } else if (num == 12) {
+            } else if (num == 4) {
               std::cout << std::endl;
               PrintAnnualTotal(year);
-            } else if (num == 10) {
+            } 
+            //else if (num == temp10) {
               // std::cout << std::endl;
               // UpdateTotalsFile(year);
               // std::cout << "Updated TotalExpenses" << year.year << ".csv\n" << std::endl;
-            } else if (num == 9) {
+            //} else if (num == temp9) {
               // std::cout << std::endl;
               // std::chrono::month month_to_add = std::chrono::January;
               // for (int i = 1; i < 13; i++) {
@@ -93,7 +94,8 @@ int main() {
               //   month_to_add++;
               // }
               // std::cout << std::endl;
-            } else {
+            //} 
+            else {
               std::chrono::month get_month = PromptMonth();
               if (!get_month.ok()) {
                 std::cout << std::endl;
@@ -103,9 +105,9 @@ int main() {
               std::chrono::month month_to_add = get_month; //old code was checking a bool first out of a pair and assigning the second element here
 
               std::cout << std::endl;
-              if (num == 5) {
+              if (num == 7) {
                 PrintExpenses(year, month_to_add);
-              } else if (num == 6) {
+              } else if (num == 8) {
                 if (AddExpense(year, month_to_add)) {
                   bool passed = UpdateMonthFile(year, month_to_add);
                   std::cout << std::format("{:%b}{}.csv {}updated.\n", 
@@ -116,7 +118,7 @@ int main() {
                   std::cout << "Updated TotalExpenses" << year.year << ".csv\n" << std::endl;
                   std::cout << std::endl;
                 }
-              } else if (num == 7) {
+              } else if (num == 9) {
                 if (DeleteExpense(year, month_to_add)) {
                   bool passed = UpdateMonthFile(year, month_to_add);
                   std::cout << std::format("{:%b}{}.csv {}updated.\n", 
@@ -127,19 +129,19 @@ int main() {
                   std::cout << "Updated TotalExpenses" << year.year << ".csv\n" << std::endl;
                   std::cout << std::endl;
                 }
-              } else if (num == 8) {
+              } //else if (num == temp8) {
                 // if (UpdateMonthFile(year, month_to_add)) {
                 //   std::cout << std::format("{:%b}", month_to_add) << year.year << ".csv updated." << std::endl;
                 // }
                 // std::cout << std::endl;
-              }
+              //}
             }
           } else {
             std::cout << "Invalid input.\n\n";
           }
           PrintMenuYear(year.year);
         }
-      } else if (num == 2) {
+      } else if (num == 1) {
         std::cout << std::endl;
         PrintAvailableYears();
       } else if (num == 3) {
@@ -155,20 +157,20 @@ int main() {
         }
         Year& year = get_year.first;
 
-        if (num == 4) {
+        if (num == 6) {
           std::cout << std::endl;
           PrintAllExpenses(year);
-        } else if (num == 11) {
+        } else if (num == 5) {
           std::cout << std::endl;
           PrintTotalsInternal(year);
-        } else if (num == 12) {
+        } else if (num == 4) {
           std::cout << std::endl;
           PrintAnnualTotal(year);
-        } else if (num == 10) {
+        } //else if (num == temp10) {
           // std::cout << std::endl;
           // UpdateTotalsFile(year);
           // std::cout << "Updated TotalExpenses" << year.year << ".csv\n" << std::endl;
-        } else if (num == 9) {
+        //} //else if (num == temp9) {
           // std::cout << std::endl;
           // std::chrono::month month_to_add = std::chrono::January;
           // for (int i = 1; i < 13; i++) {
@@ -190,7 +192,8 @@ int main() {
           //   month_to_add++;
           // }
           // std::cout << std::endl;
-        } else {
+        //} 
+        else {
           std::chrono::month get_month = PromptMonth();
           if (!get_month.ok()) {
             std::cout << std::endl;
@@ -200,9 +203,9 @@ int main() {
           std::chrono::month month_to_add = get_month; //old code was checking a bool first out of a pair and assigning the second element here
 
           std::cout << std::endl;
-          if (num == 5) {
+          if (num == 7) {
             PrintExpenses(year, month_to_add);
-          } else if (num == 6) {
+          } else if (num == 8) {
             if (AddExpense(year, month_to_add)) {
               bool passed = UpdateMonthFile(year, month_to_add);
               std::cout << std::format("{:%b}{}.csv {}updated.\n", 
@@ -213,7 +216,7 @@ int main() {
               std::cout << "Updated TotalExpenses" << year.year << ".csv\n" << std::endl;
               std::cout << std::endl;
             }
-          } else if (num == 7) {
+          } else if (num == 9) {
             if (DeleteExpense(year, month_to_add)) {
               bool passed = UpdateMonthFile(year, month_to_add);
               std::cout << std::format("{:%b}{}.csv {}updated.\n", 
@@ -224,12 +227,12 @@ int main() {
               std::cout << "Updated TotalExpenses" << year.year << ".csv\n" << std::endl;
               std::cout << std::endl;
             }
-          } else if (num == 8) {
+          } //else if (num == temp8) {
             // if (UpdateMonthFile(year, month_to_add)) {
             //   std::cout << std::format("{:%b}", month_to_add) << year.year << ".csv updated." << std::endl;
             // }
             // std::cout << std::endl;
-          }
+          //}
         }
       }
     } else {

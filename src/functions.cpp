@@ -339,15 +339,15 @@ void PrintMenu() {
     // std::cout << "Print all month totals: 11, Print annual total: 12" << std::endl;
 
     std::cout << "0: Insert year\n";
-    std::cout << "2: See available years\n";
-    std::cout << "1: Choose year\n";
+    std::cout << "1: See available years\n";
+    std::cout << "2: Choose year\n";
     std::cout << "3: Delete year\n";
-    std::cout << "12: Print annual total\n";
-    std::cout << "11: Print all month totals\n";
-    std::cout << "4: Print full list of expenses in a year\n";
-    std::cout << "5: Print full list of expenses in a month\n";
-    std::cout << "6: Add Expense\n";
-    std::cout << "7: Delete Expense\n";
+    std::cout << "4: Print annual total\n";
+    std::cout << "5: Print all month totals in a year\n";
+    std::cout << "6: Print full list of expenses in a year\n";
+    std::cout << "7: Print full list of expenses in a month\n";
+    std::cout << "8: Add Expense\n";
+    std::cout << "9: Delete Expense\n";
 
 
 }
@@ -360,12 +360,12 @@ void PrintMenuYear(std::chrono::year year) {
     // std::cout << "Update month file: 8, Update all month files: 9, Update totals file: 10" << std::endl; 
     // std::cout << "Print all month totals: 11, Print annual total: 12" << std::endl;
 
-    std::cout << "12: Print annual total\n";
-    std::cout << "11: Print all month totals\n";
-    std::cout << "4: Print full list of expenses in a year\n";
-    std::cout << "5: Print full list of expenses in a month\n";
-    std::cout << "6: Add Expense\n";
-    std::cout << "7: Delete Expense\n";
+    std::cout << "4: Print annual total\n";
+    std::cout << "5: Print all month totals in a year\n";
+    std::cout << "6: Print full list of expenses in a year\n";
+    std::cout << "7: Print full list of expenses in a month\n";
+    std::cout << "8: Add Expense\n";
+    std::cout << "9: Delete Expense\n";
 }
 
 void PrintAvailableYears() {
