@@ -788,6 +788,7 @@ bool is_empty_or_whitespace(const std::string& s) {
 }
 
 int AddExpense(Year& year, std::chrono::month curr_month) {
+    PrintExpenses(year, curr_month);
     Month& month = year.months[static_cast<unsigned int>(curr_month) - 1];
 
     std::cout << "Adding expense to: " << std::format("{:%B} {}", curr_month, static_cast<int>(year.year)) << std::endl;
@@ -894,6 +895,7 @@ int AddExpense(Year& year, std::chrono::month curr_month) {
             year.total += num;
             // month.changed = true;
             std::cout << "Expense added.\n" << std::endl;
+            UpdateAuditFile("Added Expense: " + std::to_string(num) + ", " + text + ", " + date);
             return 1;
         }
 
@@ -909,6 +911,7 @@ int AddExpense(Year& year, std::chrono::month curr_month) {
 }
 
 int DeleteExpense(Year& year, std::chrono::month curr_month) {
+    PrintExpenses(year, curr_month);
     Month& month = year.months[static_cast<unsigned int>(curr_month) - 1];
     std::multiset<Expense>& expenses = month.expenses; 
     // PrintExpenses(expenses, month, year.year);
@@ -941,7 +944,9 @@ int DeleteExpense(Year& year, std::chrono::month curr_month) {
                     static_cast<unsigned>(curr_month), 
                     static_cast<unsigned>(expense.day)
                 );
-                std::cout << "Delete expense: " << expense.cost << ", " << expense.reason << ", " << date << std::endl;
+                double cost = expense.cost;
+                std::string reason = expense.reason;
+                std::cout << "Delete expense: " << cost << ", " << reason << ", " << date << std::endl;
                 std::cout << "Press y or n" << std::endl;
 
                 while (std::getline(std::cin, line)) {
@@ -952,11 +957,12 @@ int DeleteExpense(Year& year, std::chrono::month curr_month) {
 
                     if (line == "y") {
                         //const double deleted_cost = expense.cost;
-                        month.total -= expense.cost;
-                        year.total -= expense.cost;
+                        month.total -= cost;
+                        year.total -= cost;
                         expenses.erase(it);
                         // month.changed = true;
                         std::cout << "Expense deleted.\n" << std::endl;
+                        UpdateAuditFile("Deleted Expense: " + std::to_string(cost) + ", " + reason + ", " + date);
                         return 1;
                     }
 
@@ -980,7 +986,8 @@ int DeleteExpense(Year& year, std::chrono::month curr_month) {
     return 0;
 }
 
-int DeleteExpense(std::chrono::year year, Month& month) {
+double DeleteExpense(std::chrono::year year, Month& month) {
+    // PrintExpenses(year, curr_month);
     std::multiset<Expense>& expenses = month.expenses; 
     std::chrono::month curr_month = month.month;
     // PrintExpenses(expenses, month);
@@ -1013,7 +1020,9 @@ int DeleteExpense(std::chrono::year year, Month& month) {
                     static_cast<unsigned>(curr_month), 
                     static_cast<unsigned>(expense.day)
                 );
-                std::cout << "Delete expense: " << expense.cost << ", " << expense.reason << ", " << date << std::endl;
+                double cost = expense.cost;
+                std::string reason = expense.reason;
+                std::cout << "Delete expense: " << cost << ", " << reason << ", " << date << std::endl;
                 std::cout << "Press y or n" << std::endl;
 
                 while (std::getline(std::cin, line)) {
@@ -1023,11 +1032,12 @@ int DeleteExpense(std::chrono::year year, Month& month) {
                     }
 
                     if (line == "y") {
-                        month.total -= expense.cost;
+                        month.total -= cost;
                         expenses.erase(it);
                         // month.changed = true;
                         std::cout << "Expense deleted.\n" << std::endl;
-                        return 1;
+                        UpdateAuditFile("Deleted Expense: " + std::to_string(cost) + ", " + reason + ", " + date);
+                        return cost;
                     }
 
                     if (line == "n") {
@@ -1167,6 +1177,52 @@ int UpdateTotalsFile(const Year& year) {
     }
     file << year.total << "\n";
 
+    return 1;
+}
+
+int UpdateAuditFile(std::string line) {
+    std::string filename = "includes/AuditFile.txt";
+
+    std::vector<std::string> paths = SplitPath(filename);
+
+    if (paths.size() != 2) {
+        std::cerr << filename << " filename for audit file could not be read." << std::endl;
+        return 0;
+    }
+
+    std::string dirPath = paths[0];
+
+    if (dirPath.empty()) {
+        std::cerr << filename << " directory could not be read." << std::endl;
+        return 0;
+    }
+
+    if (std::filesystem::create_directories(dirPath)) {
+        std::cerr << "Directory " << dirPath << " not found. Creating directory..." << std::endl;
+    }
+
+    if (paths[1].empty()) {
+        std::cerr << filename << " file name could not be read." << std::endl;
+        return 0;
+    }
+
+    if (!std::filesystem::exists(filename)) {
+        std::cerr << paths[1] << " file not found. Creating file..." << std::endl;
+    }
+    
+    // 1. Open the CSV file using an output file stream
+    std::ofstream file(filename, std::ios::app);
+
+    // Best Practice: Always check if the file opened successfully
+    if (!file.is_open()) {
+        std::cerr << "Error: Could not open the file!" << std::endl;
+        return 0;
+    }
+
+    file << line << std::endl;
+
+    file.close();
+    
     return 1;
 }
 

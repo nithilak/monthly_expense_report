@@ -270,11 +270,12 @@ int AddExpense(Year& year, std::chrono::month curr_month);
 
 //deletes an expense from a month, returns 1 if made a change
 int DeleteExpense(Year& year, std::chrono::month curr_month);
-int DeleteExpense(std::chrono::year year, Month& month);
+//deletes an expense from a month, returns month total if made a change
+double DeleteExpense(std::chrono::year year, Month& month);
 
 //updates the month's csv file to match its data
 //creates the directory and file if it does not exist
-//returns 1 if updated the file successfully after creating the file
+//returns 1 if updated the file successfully
 int UpdateMonthFile(const Year& year, std::chrono::month curr_month);
 //does not work for some reason
 //supposed to return number of successfully updated files
@@ -286,12 +287,18 @@ void PrintTotalsInternal(const Year& year);
 
 //updates TotalExpensesYEAR.csv
 //creates the directory and file if it does not exist
-//returns 1 if updated the file successfully after creating the file
+//returns 1 if updated the file successfully
 int UpdateTotalsFile(const Year& year);
 //prints TotalExpensesYEAR.csv
 //creates the directory and file if it does not exist via UpdateTotalsFile
 //returns 1 if csv file was opened and had both header not empty and values not empty
 int PrintTotalsFile(const Year& year);
+
+
+//updates TotalExpensesYEAR.csv
+//creates the directory and file if it does not exist
+//returns 1 if updated the file successfully
+int UpdateAuditFile(std::string line);
 
 
 //for these two I could make a quit option by implementing a default year
