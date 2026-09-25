@@ -57,6 +57,9 @@
 //has been optimized
 
 
+//there are a lot of unused helper functions
+
+
 
 //See available years says "deleted" when the year is "erased" by function call
 
@@ -66,6 +69,13 @@
 
 //some things are created as a variable, std::string date = thing; for example which I think is for readability
 //when it could be passed directly, which it is done sometimes
+
+//idWidth is set to 2 but really it should be like 6
+//I tried right aligning it but that looked wrong
+//guess the solution is padded zeros //std::cout << std::setw(idWidth) << std::format("{:06}", id) << "\n";
+
+//the totals file TotalExpensesYEAR.csv is mostly for show/file reader use only since it is recalculated 
+//upon inserting a year and is never read from, only updated from what is stored in memory
 
 //not added feature
 // std::cout << "Update all month files and total files for all years: 11" << std::endl; 
@@ -203,6 +213,7 @@
 //are created with code, (somewhere earlier in the code, I think PopulateExpenses and UpdateTotalsFile, 
 //and PrintTotalFile calls UpdateTotalsFile if the file cannot be opened but has been replaced with PrintTotalsInternal)
 //but if not you might want to run a try catch block around the function, though at that point you can't guarantee if anything changed or not
+
 
 
 //all print functions after PrintMenuYear and AddExpense and DeleteExpense print a newline at the end

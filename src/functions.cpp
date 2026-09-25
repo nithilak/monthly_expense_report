@@ -636,6 +636,8 @@ void PrintExpenses(const Year& year, std::chrono::month curr_month) {
                         << std::setw(strWidth) << expense->reason
                         << std::setw(colWidth) << date 
                         << std::setw(idWidth) << i << "\n";
+                        //<< std::setw(idWidth) << std::format("{:06}", i) << "\n";
+            //std::cout << std::right << std::setw(idWidth - 2) << id << "\n";
         // }
 
         // Print a divider under the header row
@@ -1397,6 +1399,8 @@ int PrintFile2(std::string filename) {
                           << std::setw(colWidth) << line  //should already be formatted date YYYY-MM-DD, width is 10
                           << std::setw(width) << display_sign
                           << std::setw(idWidth) << id << "\n";
+                          //<< std::setw(idWidth) << std::format("{:06}", id) << "\n";
+                //std::cout << std::right << std::setw(idWidth - 2) << id << "\n";
 
                 id++;
             } catch (const std::exception& e) {
