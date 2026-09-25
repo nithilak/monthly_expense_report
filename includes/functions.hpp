@@ -315,6 +315,7 @@ int PrintTotalsFile(const Year& year);
 //updates TotalExpensesYEAR.csv
 //creates the directory and file if it does not exist
 //returns 1 if updated the file successfully
+int UpdateAuditFileByFilename(std::string filename, char sign, const Expense& expense, std::chrono::year year, std::chrono::month month);
 int UpdateAuditFile(char sign, const Expense& expense, std::chrono::year year, std::chrono::month month);
 int UpdateMonthAuditFile(char sign, const Expense& expense, std::chrono::year year, std::chrono::month month);
 int UpdateYearAuditFile(char sign, const Expense& expense, std::chrono::year year, std::chrono::month month);

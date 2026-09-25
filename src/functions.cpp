@@ -1270,9 +1270,8 @@ int CreateYearAuditFile(std::chrono::year year) {
     return CreateAuditFile("includes/" + year_str + "Expenses/" + year_str + "AuditFile.csv");
 }
 
-int UpdateAuditFile(char sign, const Expense& expense, std::chrono::year year, std::chrono::month month) {
-    std::string filename = "includes/AuditFile.csv";
 
+int UpdateAuditFileByFilename(std::string filename, char sign, const Expense& expense, std::chrono::year year, std::chrono::month month) {
     std::vector<std::string> paths = SplitPath(filename);
 
     if (paths.size() != 2) {
@@ -1322,117 +1321,23 @@ int UpdateAuditFile(char sign, const Expense& expense, std::chrono::year year, s
     file.close();
     
     return 1;
+}
+
+
+
+int UpdateAuditFile(char sign, const Expense& expense, std::chrono::year year, std::chrono::month month) {
+    return UpdateAuditFileByFilename("includes/AuditFile.csv", sign, expense, year, month);
 }
 
 int UpdateMonthAuditFile(char sign, const Expense& expense, std::chrono::year year, std::chrono::month month) {
     std::string year_str = std::format("{}", year);
     std::string month_str = std::format("{:%b}", month);
-    std::string filename = "includes/" + year_str + "Expenses/" + month_str + year_str + "AuditFile.csv";
-
-    std::vector<std::string> paths = SplitPath(filename);
-
-    if (paths.size() != 2) {
-        std::cerr << filename << " filename for audit file could not be read." << std::endl;
-        return 0;
-    }
-
-    std::string dirPath = paths[0];
-
-    if (dirPath.empty()) {
-        std::cerr << filename << " directory could not be read." << std::endl;
-        return 0;
-    }
-
-    if (std::filesystem::create_directories(dirPath)) {
-        std::cerr << "Directory " << dirPath << " not found. Creating directory..." << std::endl;
-    }
-
-    if (paths[1].empty()) {
-        std::cerr << filename << " file name could not be read." << std::endl;
-        return 0;
-    }
-
-    if (!std::filesystem::exists(filename)) {
-        std::cerr << paths[1] << " file not found. Creating file..." << std::endl;
-    }
-    
-    // 1. Open the CSV file using an output file stream
-    std::ofstream file(filename, std::ios::app);
-
-    // Best Practice: Always check if the file opened successfully
-    if (!file.is_open()) {
-        std::cerr << paths[1] << " file not found. Creating file..." << std::endl;
-        std::ofstream file(filename);
-        file << "sign,cost,reason,day\n";
-        file.close();
-    }
-
-    file << sign << ",";
-
-    file << expense.cost << ",";
-
-    file << std::quoted(expense.reason, '"', '"') << ",";
-
-    file << std::format("{}", std::chrono::year_month_day(year, month, expense.day)) << std::endl;
-
-    file.close();
-    
-    return 1;
+    return UpdateAuditFileByFilename("includes/" + year_str + "Expenses/" + month_str + year_str + "AuditFile.csv", sign, expense, year, month);
 }
 
 int UpdateYearAuditFile(char sign, const Expense& expense, std::chrono::year year, std::chrono::month month) {
     std::string year_str = std::format("{}", year);
-    std::string filename = "includes/" + year_str + "Expenses/" + year_str + "AuditFile.csv";
-
-    std::vector<std::string> paths = SplitPath(filename);
-
-    if (paths.size() != 2) {
-        std::cerr << filename << " filename for audit file could not be read." << std::endl;
-        return 0;
-    }
-
-    std::string dirPath = paths[0];
-
-    if (dirPath.empty()) {
-        std::cerr << filename << " directory could not be read." << std::endl;
-        return 0;
-    }
-
-    if (std::filesystem::create_directories(dirPath)) {
-        std::cerr << "Directory " << dirPath << " not found. Creating directory..." << std::endl;
-    }
-
-    if (paths[1].empty()) {
-        std::cerr << filename << " file name could not be read." << std::endl;
-        return 0;
-    }
-
-    if (!std::filesystem::exists(filename)) {
-        std::cerr << paths[1] << " file not found. Creating file..." << std::endl;
-    }
-    
-    // 1. Open the CSV file using an output file stream
-    std::ofstream file(filename, std::ios::app);
-
-    // Best Practice: Always check if the file opened successfully
-    if (!file.is_open()) {
-        std::cerr << paths[1] << " file not found. Creating file..." << std::endl;
-        std::ofstream file(filename);
-        file << "sign,cost,reason,day\n";
-        file.close();
-    }
-
-    file << sign << ",";
-
-    file << expense.cost << ",";
-
-    file << std::quoted(expense.reason, '"', '"') << ",";
-
-    file << std::format("{}", std::chrono::year_month_day(year, month, expense.day)) << std::endl;
-
-    file.close();
-    
-    return 1;
+    return UpdateAuditFileByFilename("includes/" + year_str + "Expenses/" + year_str + "AuditFile.csv", sign, expense, year, month);
 }
 
 int PrintFile2(std::string filename) {
