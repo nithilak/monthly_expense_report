@@ -3,7 +3,8 @@
         {
             "name": "Mac",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/mpdecimal-4.0.1/libmpdec++"
             ],
             "defines": [],
             "cStandard": "c23",

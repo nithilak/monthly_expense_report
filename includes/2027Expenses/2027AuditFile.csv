@@ -3,3 +3,14 @@ sign,cost,reason,date,timestamp,timezone
 +,100,"hundred",2027-01-25,2026-09-26 11:24:02.898368,America/Chicago
 +,11,"to delete",2027-01-31,2026-09-26 12:21:00.046376,America/Chicago
 -,11,"to delete",2027-01-31,2026-09-26 12:21:09.989727,America/Chicago
++,30.00034,"test decimal",2027-12-30,2026-09-26 15:26:54.020387,America/Chicago
++,30.000,"test decimal",2027-12-30,2026-09-26 15:27:40.114233,America/Chicago
+-,30.00034,"test decimal",2027-12-30,2026-09-26 15:29:16.672834,America/Chicago
+-,30.000,"test decimal",2027-12-30,2026-09-26 15:30:05.570588,America/Chicago
++,30.00034,"test tota;",2027-12-30,2026-09-26 15:30:34.033404,America/Chicago
++,55.34,"test",2027-12-01,2026-09-26 15:31:55.130112,America/Chicago
+-,55.34,"test",2027-12-01,2026-09-26 15:32:07.039789,America/Chicago
+-,30.00034,"test tota;",2027-12-30,2026-09-26 15:32:52.998902,America/Chicago
++,12,"test",2027-12-14,2026-09-26 15:38:50.596559,America/Chicago
++,14,"test",2027-12-14,2026-09-26 15:40:08.361521,America/Chicago
+-,14,"test",2027-12-14,2026-09-26 15:41:06.984893,America/Chicago

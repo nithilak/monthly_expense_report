@@ -7,20 +7,23 @@
 #include <set>
 #include <map>
 #include <chrono>
+#include <decimal.hh>
+
+using namespace decimal;
 
 struct Expense {
-    double cost;
+    Decimal cost;
     std::string reason;
     std::chrono::day day;
 
-    Expense(double enter_cost, std::string enter_reason, std::chrono::day enter_day) {
+    Expense(Decimal enter_cost, std::string enter_reason, std::chrono::day enter_day) {
         cost = enter_cost;
         reason = enter_reason;
         day = enter_day;
     }
 
     std::string toString() const {
-        return std::format("{:.2f}, {}, {}\n", cost, reason, day);
+        return std::format("{}, {}, {}\n", cost.to_sci(), reason, day);
     }
 
     // Sort by date first, then cost, then reason so same-day entries stay distinct.
@@ -55,7 +58,7 @@ class Month {
     // std::chrono::year year;
     std::chrono::month month;
     std::multiset<Expense> expenses;
-    double total = 0;
+    Decimal total = 0;
     std::string filename;
     // bool changed = false;
 
@@ -80,7 +83,7 @@ class Year {
   public:
     std::chrono::year year;
     std::array<Month, 12> months = {Month(std::chrono::January), Month(std::chrono::February), Month(std::chrono::March), Month(std::chrono::April), Month(std::chrono::May), Month(std::chrono::June), Month(std::chrono::July), Month(std::chrono::August), Month(std::chrono::September), Month(std::chrono::October), Month(std::chrono::November), Month(std::chrono::December)};
-    double total = 0;
+    Decimal total = 0;
 
     Year(){};
 

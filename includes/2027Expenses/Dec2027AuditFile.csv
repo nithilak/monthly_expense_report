@@ -1,1 +1,12 @@
 sign,cost,reason,date,timestamp,timezone
++,30.00034,"test decimal",2027-12-30,2026-09-26 15:26:54.019676,America/Chicago
++,30.000,"test decimal",2027-12-30,2026-09-26 15:27:40.113658,America/Chicago
+-,30.00034,"test decimal",2027-12-30,2026-09-26 15:29:16.672124,America/Chicago
+-,30.000,"test decimal",2027-12-30,2026-09-26 15:30:05.569698,America/Chicago
++,30.00034,"test tota;",2027-12-30,2026-09-26 15:30:34.032787,America/Chicago
++,55.34,"test",2027-12-01,2026-09-26 15:31:55.129529,America/Chicago
+-,55.34,"test",2027-12-01,2026-09-26 15:32:07.039368,America/Chicago
+-,30.00034,"test tota;",2027-12-30,2026-09-26 15:32:52.998554,America/Chicago
++,12,"test",2027-12-14,2026-09-26 15:38:50.595903,America/Chicago
++,14,"test",2027-12-14,2026-09-26 15:40:08.360947,America/Chicago
+-,14,"test",2027-12-14,2026-09-26 15:41:06.984422,America/Chicago

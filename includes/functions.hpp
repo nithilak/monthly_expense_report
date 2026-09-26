@@ -4,8 +4,11 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <decimal.hh>
 
 #include "constants.hpp"
+
+using namespace decimal;
 
 //I don't use const iterators but maybe they could be implemented
 //also perhaps there should be less copy and pasting in main and less repeated newlines
@@ -52,6 +55,7 @@
 //std::stringstream ss2(line); //not going to reuse the old one because then I would have to reset all the flags
 
 //could preface error messages with "Error: " like the computer code
+//apparently catch (...) exists which I did not know about and did not use
 //also std::cout vs std::cerr in some cases, up to discretion
 //also some error messages regarding filename print the entire filename, others only a part of the filename
                 //     } else {
@@ -131,7 +135,7 @@
 //     auto iter = years.begin();
 //     auto iter2 = years.begin();
 
-//     double total = 0;
+//     Decimal total = 0;
 
 //     while (iter != years.end() && iter2 != years.end()) { //should have the same value
 
@@ -144,7 +148,7 @@
 
 //         std::cout << std::left;
 //         for (int i = 0; i < 6 && iter2 != years.end(); ++i) {
-//             double num = iter2->second.total;
+//             Decimal num = iter2->second.total;
 //             std::cout << std::setw(colWidth) << num;
 //             total += num;
 //             iter2++;
@@ -205,6 +209,8 @@
 //it is possible for an expense to be 0
 
 //AddExpense and DeleteExpense have one long continuous text when selecting no until you select yes or quit
+//could have the option to reprompt AddExpense and DeleteExpense until you say quit
+//could print the changed output after you make a change //if reprompting is implemented it will happen as part of the reprompting
 
 //currently after doing AddExpense and DeleteExpense in main the month file and the totals file are automatically updated
 //and main prints that the file is is updated
@@ -219,7 +225,7 @@
 //and it can read "q" from the csv file
 //csv with newlines in the reason field throws an error and does not add that specific expense
 //because the csv is read with std::getline so the message gets cut
-//adding support for newlines in the reason field would require a modified parsing function to replace getline to parse double quotes
+//adding support for newlines in the reason field would require a modified parsing function to replace getline to parse Decimal quotes
 
 //I wrote a helper function to parse the csv for writing, but now I am using std::quoted 
 //I am using a helper function for reading to parse inside the double quotes
@@ -307,7 +313,7 @@ void RecalculateYearTotals(Year& year);
 
 //prints out all expenses for the month
 //non void function returns the total for the expenses
-double PrintExpenses(const std::multiset<Expense>& expenses);
+Decimal PrintExpenses(const std::multiset<Expense>& expenses);
 void PrintExpenses(const Month& month);
 // void PrintExpenses(const Month& month, std::chrono::year year); //nice but unsafe
 void PrintExpenses(const Year& year, std::chrono::month curr_month);
@@ -315,13 +321,13 @@ void PrintExpenses(const Year& year, std::chrono::month curr_month);
 //reads in a csv file under the folder in includes/YEARExpenses/MONTHYEAR and uses it to fill month.expenses
 //creates the file and directory if it does not exist
 //updates month total and returns it
-double PopulateExpenses(const std::string& filename, Month& month);
+Decimal PopulateExpenses(const std::string& filename, Month& month);
 //deprecated by being skipped over
 //runs PopulateExpenses for that month and updates the year total
-double PopulateExpenses(const std::string& filename, Year& year, std::chrono::month curr_month);
+Decimal PopulateExpenses(const std::string& filename, Year& year, std::chrono::month curr_month);
 //runs PopulateExpenses for each month in the year and updates the year total
 //returns the year's total
-double PopulateExpenses(Year& year);
+Decimal PopulateExpenses(Year& year);
 
 //prints the year's total cost
 void PrintAnnualTotal(const Year& year);
@@ -342,7 +348,7 @@ int AddExpense(Year& year, std::chrono::month curr_month);
 //deletes an expense from a month, returns 1 if made a change
 int DeleteExpense(Year& year, std::chrono::month curr_month);
 //deletes an expense from a month, returns month total if made a change
-double DeleteExpense(std::chrono::year year, Month& month);
+Decimal DeleteExpense(std::chrono::year year, Month& month);
 
 //updates the month's csv file to match its data
 //creates the directory and file if it does not exist

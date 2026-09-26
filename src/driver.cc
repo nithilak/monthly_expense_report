@@ -12,6 +12,11 @@
 #include <chrono>
 
 int main() {
+  // Modify the thread-local context directly
+  context.prec(28);                  // Set precision
+  context.round(MPD_ROUND_HALF_EVEN); // Set banker's rounding
+
+
   entry_timezone = GetComputerTimezone();
 
 
@@ -124,6 +129,7 @@ int main() {
                   UpdateTotalsFile(year);
                   std::cout << "Updated TotalExpenses" << year.year << ".csv\n" << std::endl;
                   std::cout << std::endl;
+                  // PrintExpenses(year, month_to_add);
                 }
               } else if (num == 12) {
                 if (DeleteExpense(year, month_to_add)) {
@@ -135,6 +141,7 @@ int main() {
                   UpdateTotalsFile(year);
                   std::cout << "Updated TotalExpenses" << year.year << ".csv\n" << std::endl;
                   std::cout << std::endl;
+                  // PrintExpenses(year, month_to_add);
                 }
               } else if (num == 10) {
                 std::cout << "Audit file for " << std::format("{:%B}", month_to_add) << " " << year.year << std::endl;
@@ -233,6 +240,7 @@ int main() {
               UpdateTotalsFile(year);
               std::cout << "Updated TotalExpenses" << year.year << ".csv\n" << std::endl;
               std::cout << std::endl;
+              // PrintExpenses(year, month_to_add);
             }
           } else if (num == 12) {
             if (DeleteExpense(year, month_to_add)) {
@@ -244,6 +252,7 @@ int main() {
               UpdateTotalsFile(year);
               std::cout << "Updated TotalExpenses" << year.year << ".csv\n" << std::endl;
               std::cout << std::endl;
+              // PrintExpenses(year, month_to_add);
             }
           } else if (num == 10) {
             std::cout << "Audit file for " << std::format("{:%B}", month_to_add) << " " << year.year << std::endl;

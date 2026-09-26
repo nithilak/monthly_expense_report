@@ -571,9 +571,10 @@ void PrintAllExpenses(const Year& year) {
 }
 
 void RecalculateYearTotals(Year& year) {
-    year.total = 0.0;
+    // Decimal zero = Decimal("0", decimal::context);
+    year.total = Decimal("0", decimal::context); //maybe just "0" would be fine
     for (auto& month : year.months) {
-        month.total = 0.0;
+        month.total = Decimal("0", decimal::context);
         for (const auto& expense : month.expenses) {
             month.total += expense.cost;
         }
@@ -582,12 +583,12 @@ void RecalculateYearTotals(Year& year) {
 }
 
 
-double PrintExpenses(const std::multiset<Expense>& expenses) {
+Decimal PrintExpenses(const std::multiset<Expense>& expenses) {
     // // Set the equal width for each column
     // const int colWidth = 20;
     // const int strWidth = 80;
 
-    double total = 0;
+    Decimal total = 0;
 
     // Print top border
     std::cout << std::string(colWidth * 2 + strWidth + lineNumWidth, '-') << "\n";
@@ -608,7 +609,7 @@ double PrintExpenses(const std::multiset<Expense>& expenses) {
         //std::string date = std::format("{:02}-{}", curr_month, expenses[i].day);
         std::string date = std::format("{:02}", static_cast<unsigned>(expense->day));
 
-        double cost = expense->cost;
+        Decimal cost = expense->cost;
 
         // Ensure the row has exactly 3 columns to avoid out-of-bounds errors
         // if (row.size() >= 3) {
@@ -823,7 +824,7 @@ void PrintExpenses(const Year& year, std::chrono::month curr_month) {
     std::cout << std::string(colWidth * 2 + strWidth + lineNumWidth, '-') << "\n" << std::endl;
 }
 
-double PopulateExpenses(const std::string& filename, Month& month) {
+Decimal PopulateExpenses(const std::string& filename, Month& month) {
     month.filename = filename;
 
     std::vector<std::string> paths = SplitPath(filename);
@@ -868,7 +869,7 @@ double PopulateExpenses(const std::string& filename, Month& month) {
 
     expenses.clear(); //just to make sure
 
-    double& total = month.total;
+    Decimal& total = month.total;
     month.total = 0; //just to make sure
     std::string line;
     std::getline(file, line); //the header
@@ -905,7 +906,7 @@ double PopulateExpenses(const std::string& filename, Month& month) {
             // std::cout << reason << std::endl;
             // std::cout << line << std::endl; //std::cout << day << std::endl;
 
-            double costd = std::stod(cost);
+            Decimal costd = Decimal(cost, decimal::context);
             total += costd;
             expenses.insert(Expense(costd, reason, std::chrono::day(std::stoi(line))));
         } catch (const std::exception& e) {
@@ -918,15 +919,15 @@ double PopulateExpenses(const std::string& filename, Month& month) {
     return total;
 }
 
-double PopulateExpenses(const std::string& filename, Year& year, std::chrono::month curr_month) {
+Decimal PopulateExpenses(const std::string& filename, Year& year, std::chrono::month curr_month) {
     Month& month = year.months[static_cast<unsigned int>(curr_month) - 1];
     month.filename = filename;
-    double total = PopulateExpenses(filename, month);
+    Decimal total = PopulateExpenses(filename, month);
     year.total += total;
     return total;
 }
 
-double PopulateExpenses(Year& year) {
+Decimal PopulateExpenses(Year& year) {
     std::string year_str = std::format("{}", year.year);
     year.total = 0; //just to make sure
 
@@ -988,7 +989,9 @@ int AddExpense(Year& year, std::chrono::month curr_month) {
 
     std::string line;
 
-    double num{};
+    std::string num{};
+
+    Decimal cost = Decimal("0", decimal::context);
 
     // std::cout << "Enter a number, a word, and a day (1-31): ";
     std::cout << "Enter a cost: ";
@@ -1002,8 +1005,15 @@ int AddExpense(Year& year, std::chrono::month curr_month) {
         std::stringstream ss(line);
 
         if (ss >> num) {
-            std::cout << "Cost: " << num << "\n";
-            break;
+            try {
+                cost = Decimal(num, decimal::context);
+                // cost = cost.quantize(Decimal("0.00"));
+                std::cout << "Cost: " << cost << "\n";
+                break;
+            } catch (const std::exception& e) {
+                // Catches any exception derived from the standard base class
+                std::cerr << "Invalid input.\n";
+            }
         } else {
             std::cout << "Invalid input.\n";
         }
@@ -1081,10 +1091,10 @@ int AddExpense(Year& year, std::chrono::month curr_month) {
         }
 
         if (line == "y") {
-            Expense expense_to_insert = Expense(num, text, d);
+            Expense expense_to_insert = Expense(cost, text, d);
             month.expenses.insert(expense_to_insert);
-            month.total += num;
-            year.total += num;
+            month.total += cost;
+            year.total += cost;
             // month.changed = true;
             std::cout << "Expense added.\n" << std::endl;
             // std::string audit_line = "Added Expense: " + std::to_string(num) + ", " + text + ", " + date;
@@ -1140,7 +1150,7 @@ int DeleteExpense(Year& year, std::chrono::month curr_month) {
                     static_cast<unsigned>(curr_month), 
                     static_cast<unsigned>(expense.day)
                 );
-                double cost = expense.cost;
+                Decimal cost = expense.cost;
                 std::string reason = expense.reason;
                 std::cout << "Delete expense: " << cost << ", " << reason << ", " << date << std::endl;
                 std::cout << "Press y or n" << std::endl;
@@ -1184,7 +1194,7 @@ int DeleteExpense(Year& year, std::chrono::month curr_month) {
     return 0;
 }
 
-double DeleteExpense(std::chrono::year year, Month& month) {
+Decimal DeleteExpense(std::chrono::year year, Month& month) {
     // PrintExpenses(year, curr_month);
     std::multiset<Expense>& expenses = month.expenses; 
     std::chrono::month curr_month = month.month;
@@ -1218,7 +1228,7 @@ double DeleteExpense(std::chrono::year year, Month& month) {
                     static_cast<unsigned>(curr_month), 
                     static_cast<unsigned>(expense.day)
                 );
-                double cost = expense.cost;
+                Decimal cost = expense.cost;
                 std::string reason = expense.reason;
                 std::cout << "Delete expense: " << cost << ", " << reason << ", " << date << std::endl;
                 std::cout << "Press y or n" << std::endl;
