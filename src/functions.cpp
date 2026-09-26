@@ -906,7 +906,7 @@ Decimal PopulateExpenses(const std::string& filename, Month& month) {
             // std::cout << reason << std::endl;
             // std::cout << line << std::endl; //std::cout << day << std::endl;
 
-            Decimal costd = Decimal(cost, decimal::context);
+            Decimal costd = Decimal(cost, decimal::context); //should I rename costd? //and if so, to what?
             total += costd;
             expenses.insert(Expense(costd, reason, std::chrono::day(std::stoi(line))));
         } catch (const std::exception& e) {
@@ -1162,7 +1162,7 @@ int DeleteExpense(Year& year, std::chrono::month curr_month) {
                     }
 
                     if (line == "y") {
-                        //const double deleted_cost = expense.cost;
+                        //const Decimal deleted_cost = expense.cost;
                         month.total -= cost;
                         year.total -= cost;
                         UpdateAuditFile('-', expense, curr_year, curr_month);
