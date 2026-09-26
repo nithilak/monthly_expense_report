@@ -426,7 +426,7 @@ double PrintExpenses(const std::multiset<Expense>& expenses) {
     double total = 0;
 
     // Print top border
-    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
+    std::cout << std::string(colWidth * 2 + strWidth + lineNumWidth, '-') << "\n";
 
 
     std::cout << std::left 
@@ -434,7 +434,7 @@ double PrintExpenses(const std::multiset<Expense>& expenses) {
                     << std::setw(strWidth) << "Reason"
                     << std::setw(colWidth) << "Date" << "\n";
 
-    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
+    std::cout << std::string(colWidth * 2 + strWidth + lineNumWidth, '-') << "\n";
 
     auto expense = expenses.begin();
     int expenses_size_goal = expenses.size() + 1;
@@ -453,7 +453,7 @@ double PrintExpenses(const std::multiset<Expense>& expenses) {
                         << std::setw(colWidth) << cost
                         << std::setw(strWidth) << expense->reason
                         << std::setw(colWidth) << date 
-                        << std::setw(idWidth) << i << "\n";
+                        << std::setw(lineNumWidth) << i << "\n";
         // }
 
         // Print a divider under the header row
@@ -464,16 +464,16 @@ double PrintExpenses(const std::multiset<Expense>& expenses) {
         expense++;
     }
 
-    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
+    std::cout << std::string(colWidth * 2 + strWidth + lineNumWidth, '-') << "\n";
 
     std::cout << "Total" << std::endl;
 
-    // std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
+    // std::cout << std::string(colWidth * 2 + strWidth + lineNumWidth, '-') << "\n";
     
     std::cout << total << std::endl;
 
     // Print bottom border
-    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n" << std::endl;
+    std::cout << std::string(colWidth * 2 + strWidth + lineNumWidth, '-') << "\n" << std::endl;
 
     return total;
 }
@@ -491,7 +491,7 @@ void PrintExpenses(const Month& month) {
     // const int strWidth = 80;
 
     // Print top border
-    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
+    std::cout << std::string(colWidth * 2 + strWidth + lineNumWidth, '-') << "\n";
 
 
     std::cout << std::left 
@@ -499,7 +499,7 @@ void PrintExpenses(const Month& month) {
                     << std::setw(strWidth) << "Reason"
                     << std::setw(colWidth) << "Date" << "\n";
 
-    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
+    std::cout << std::string(colWidth * 2 + strWidth + lineNumWidth, '-') << "\n";
 
     auto expense = expenses.begin();
     int expenses_size_goal = expenses.size() + 1;
@@ -516,7 +516,7 @@ void PrintExpenses(const Month& month) {
                         << std::setw(colWidth) << expense->cost
                         << std::setw(strWidth) << expense->reason
                         << std::setw(colWidth) << date 
-                        << std::setw(idWidth) << i << "\n";
+                        << std::setw(lineNumWidth) << i << "\n";
         // }
 
         // Print a divider under the header row
@@ -526,16 +526,16 @@ void PrintExpenses(const Month& month) {
         expense++;
     }
 
-    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
+    std::cout << std::string(colWidth * 2 + strWidth + lineNumWidth, '-') << "\n";
 
     std::cout << "Total" << std::endl;
 
-    // std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
+    // std::cout << std::string(colWidth * 2 + strWidth + lineNumWidth, '-') << "\n";
     
     std::cout << month.total << std::endl;
 
     // Print bottom border
-    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n" << std::endl;
+    std::cout << std::string(colWidth * 2 + strWidth + lineNumWidth, '-') << "\n" << std::endl;
 }
 
 // void PrintExpenses(const Month& month, std::chrono::year year) {
@@ -550,7 +550,7 @@ void PrintExpenses(const Month& month) {
 //     // const int strWidth = 80;
 
 //     // Print top border
-//     std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
+//     std::cout << std::string(colWidth * 2 + strWidth + lineNumWidth, '-') << "\n";
 
 
 //     std::cout << std::left 
@@ -558,7 +558,7 @@ void PrintExpenses(const Month& month) {
 //                     << std::setw(strWidth) << "Reason"
 //                     << std::setw(colWidth) << "Date" << "\n";
 
-//     std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
+//     std::cout << std::string(colWidth * 2 + strWidth + lineNumWidth, '-') << "\n";
 
 //     auto expense = expenses.begin();
 //     int expenses_size_goal = expenses.size() + 1;
@@ -575,7 +575,7 @@ void PrintExpenses(const Month& month) {
 //                         << std::setw(colWidth) << expense->cost
 //                         << std::setw(strWidth) << expense->reason
 //                         << std::setw(colWidth) << date 
-//                         << std::setw(idWidth) << i << "\n";
+//                         << std::setw(lineNumWidth) << i << "\n";
 //         // }
 
 //         // Print a divider under the header row
@@ -585,16 +585,16 @@ void PrintExpenses(const Month& month) {
 //         expense++;
 //     }
 
-//     std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
+//     std::cout << std::string(colWidth * 2 + strWidth + lineNumWidth, '-') << "\n";
 
 //     std::cout << "Total" << std::endl;
 
-//     // std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
+//     // std::cout << std::string(colWidth * 2 + strWidth + lineNumWidth, '-') << "\n";
     
 //     std::cout << month.total << std::endl;
 
 //     // Print bottom border
-//     std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n" << std::endl;
+//     std::cout << std::string(colWidth * 2 + strWidth + lineNumWidth, '-') << "\n" << std::endl;
 // }
 
 void PrintExpenses(const Year& year, std::chrono::month curr_month) {
@@ -610,7 +610,7 @@ void PrintExpenses(const Year& year, std::chrono::month curr_month) {
     // const int strWidth = 80;
 
     // Print top border
-    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
+    std::cout << std::string(colWidth * 2 + strWidth + lineNumWidth, '-') << "\n";
 
 
     std::cout << std::left 
@@ -618,7 +618,7 @@ void PrintExpenses(const Year& year, std::chrono::month curr_month) {
                     << std::setw(strWidth) << "Reason"
                     << std::setw(colWidth) << "Date" << "\n";
 
-    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
+    std::cout << std::string(colWidth * 2 + strWidth + lineNumWidth, '-') << "\n";
 
     auto expense = expenses.begin();
     int expenses_size_goal = expenses.size() + 1;
@@ -635,9 +635,9 @@ void PrintExpenses(const Year& year, std::chrono::month curr_month) {
                         << std::setw(colWidth) << expense->cost
                         << std::setw(strWidth) << expense->reason
                         << std::setw(colWidth) << date 
-                        << std::setw(idWidth) << i << "\n";
-                        //<< std::setw(idWidth) << std::format("{:06}", i) << "\n";
-            //std::cout << std::right << std::setw(idWidth - 2) << id << "\n";
+                        << std::setw(lineNumWidth) << i << "\n";
+                        //<< std::setw(lineNumWidth) << std::format("{:06}", i) << "\n";
+            //std::cout << std::right << std::setw(lineNumWidth - 2) << id << "\n";
         // }
 
         // Print a divider under the header row
@@ -647,16 +647,16 @@ void PrintExpenses(const Year& year, std::chrono::month curr_month) {
         expense++;
     }
 
-    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
+    std::cout << std::string(colWidth * 2 + strWidth + lineNumWidth, '-') << "\n";
 
     std::cout << "Total" << std::endl;
 
-    // std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n";
+    // std::cout << std::string(colWidth * 2 + strWidth + lineNumWidth, '-') << "\n";
     
     std::cout << month.total << std::endl;
 
     // Print bottom border
-    std::cout << std::string(colWidth * 2 + strWidth + idWidth, '-') << "\n" << std::endl;
+    std::cout << std::string(colWidth * 2 + strWidth + lineNumWidth, '-') << "\n" << std::endl;
 }
 
 double PopulateExpenses(const std::string& filename, Month& month) {
@@ -1346,11 +1346,12 @@ int PrintFile2(std::string filename) {
     std::ifstream file(filename);
 
     int width = 15; //9
+    int lineNumWidth = 6;
 
-    int id = 1;
+    int i = 1;
     if (file.is_open()) {
         // Print the entire file contents to the console
-        std::cout << std::string(colWidth * 2 + strWidth + width + idWidth, '-') << "\n";
+        std::cout << std::string(colWidth * 2 + strWidth + width + lineNumWidth + 1, '-') << "\n";
 
 
         std::cout << std::left 
@@ -1358,9 +1359,9 @@ int PrintFile2(std::string filename) {
                     << std::setw(strWidth) << "Reason"
                     << std::setw(colWidth) << "Date"
                     << std::setw(width) << "" //Sign
-                    << std::setw(idWidth) << "" << "\n";
+                    << std::setw(lineNumWidth) << "" << "\n";
 
-        std::cout << std::string(colWidth * 2 + strWidth + width + idWidth, '-') << "\n";
+        std::cout << std::string(colWidth * 2 + strWidth + width + lineNumWidth + 1, '-') << "\n";
 
         std::string line;
         std::getline(file, line); //the header
@@ -1397,18 +1398,19 @@ int PrintFile2(std::string filename) {
                           << std::setw(colWidth) << cost
                           << std::setw(strWidth) << reason
                           << std::setw(colWidth) << line  //should already be formatted date YYYY-MM-DD, width is 10
-                          << std::setw(width) << display_sign
-                          << std::setw(idWidth) << id << "\n";
-                          //<< std::setw(idWidth) << std::format("{:06}", id) << "\n";
-                //std::cout << std::right << std::setw(idWidth - 2) << id << "\n";
+                          << std::setw(width) << display_sign;
+                          //<< std::setw(lineNumWidth) << i << "\n";
+                std::cout << std::right << std::setw(lineNumWidth - 1) << std::format("{:06}", i) << "\n";
+                          //<< std::setw(lineNumWidth) << std::format("{:06}", i) << "\n";
+                //std::cout << std::right << std::setw(lineNumWidth - 2) << i << "\n";
 
-                id++;
+                i++;
             } catch (const std::exception& e) {
                 std::cerr << "Error in printing " << filename << "\n" << e.what() << std::endl;
             }
         }
 
-        std::cout << std::string(colWidth * 2 + strWidth + width + idWidth, '-') << "\n";
+        std::cout << std::string(colWidth * 2 + strWidth + width + lineNumWidth + 1, '-') << "\n";
         std::cout << std::endl;
 
         file.close();
