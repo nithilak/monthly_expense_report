@@ -1,5 +1,5 @@
-+,67,"six seven",2027-01-06
-+,30,"a good reason",2027-01-30
-+,13,"dog treats",2027-01-27
-+,2,"delete",2027-01-02
--,2,"delete",2027-01-02
+sign,cost,reason,date,timestamp,timezone
++,1783.24,"test audit",2027-01-24,2026-09-26 09:27:00.819586,America/Chicago
++,100,"hundred",2027-01-25,2026-09-26 11:24:02.898368,America/Chicago
++,11,"to delete",2027-01-31,2026-09-26 12:21:00.046376,America/Chicago
+-,11,"to delete",2027-01-31,2026-09-26 12:21:09.989727,America/Chicago

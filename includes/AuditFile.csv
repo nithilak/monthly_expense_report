@@ -1,13 +1,17 @@
-sign,cost,reason,date
-+,33,"test audit",2027-12-31
--,33,"test audit",2027-12-31
-+,33,"test audit",2027-12-31
-+,23,"audit test",2027-12-23
--,23,"audit test",2027-12-23
--,33,"test audit",2027-12-31
-+,67,"six seven",2026-01-06
-+,67,"six seven",2027-01-06
-+,30,"a good reason",2027-01-30
-+,13,"dog treats",2027-01-27
-+,2,"delete",2027-01-02
--,2,"delete",2027-01-02
+sign,cost,reason,date,timestamp,timezone
++,33,"test audit",2027-12-31,2026-09-25 06:33:04.276749,America/Chicago
+-,33,"test audit",2027-12-31,2026-09-25 06:33:04.276749,America/Chicago
++,33,"test audit",2027-12-31,2026-09-25 06:33:04.276749,America/Chicago
++,23,"audit test",2027-12-23,2026-09-25 06:33:04.276749,America/Chicago
+-,23,"audit test",2027-12-23,2026-09-25 06:33:04.276749,America/Chicago
+-,33,"test audit",2027-12-31,2026-09-25 06:33:04.276749,America/Chicago
++,67,"six seven",2026-01-06,2026-09-25 06:33:04.276749,America/Chicago
++,67,"six seven",2027-01-06,2026-09-25 06:33:04.276749,America/Chicago
++,30,"a good reason",2027-01-30,2026-09-25 06:33:04.276749,America/Chicago
++,13,"dog treats",2027-01-27,2026-09-25 06:33:04.276749,America/Chicago
++,2,"delete",2027-01-02,2026-09-25 06:33:04.276749,America/Chicago
+-,2,"delete",2027-01-02,2026-09-25 06:33:04.276749,America/Chicago
++,1783.24,"test audit",2027-01-24,2026-09-26 09:27:00.816661,America/Chicago
++,100,"hundred",2027-01-25,2026-09-26 11:24:02.895141,America/Chicago
++,11,"to delete",2027-01-31,2026-09-26 12:21:00.045378,America/Chicago
+-,11,"to delete",2027-01-31,2026-09-26 12:21:09.988751,America/Chicago

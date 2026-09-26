@@ -9,7 +9,9 @@
 #include <iomanip>
 #include <format>
 #include <chrono>
+#include <ctime>
 #include <filesystem>
+#include <CoreFoundation/CoreFoundation.h>
 
 void PrintFile(std::string filename) {
     // 1. Open the CSV file using an input file stream
@@ -17,7 +19,7 @@ void PrintFile(std::string filename) {
 
     // Best Practice: Always check if the file opened successfully
     if (!file.is_open()) {
-        std::cerr << "Error: Could not open the file!" << std::endl;
+        std::cerr << "Error: Could not open the file" << filename << std::endl;
         return;
     }
 
@@ -328,6 +330,168 @@ std::vector<std::string> SplitPath(const std::string& filename) {
 
     // ret.push_back(filename.substr(0, i + 1));
     return ret;
+}
+
+//not my code
+//gets the current computer timezone and returns it as a string
+//returns an empty string upon failure
+std::string GetComputerTimezone() {
+    CFTimeZoneRef timezone = CFTimeZoneCopySystem();
+
+    CFStringRef name = CFTimeZoneGetName(timezone);
+
+    char buffer[256];
+
+    bool success = CFStringGetCString(
+        name,
+        buffer,
+        sizeof(buffer),
+        kCFStringEncodingUTF8
+    );
+
+    CFRelease(timezone);
+
+    if (!success) {
+        return "";
+    }
+
+    return std::string(buffer);
+}
+
+std::string ConvertToChicago(const std::string& timestamp) {
+    std::tm tm{};
+    std::istringstream ss(timestamp);
+
+    ss >> std::get_time(&tm, "%Y-%m-%d %H:%M:%S");
+
+    if (ss.fail()) {
+        return "";
+    }
+
+    // Treat the CSV timestamp as UTC.
+    time_t utc = timegm(&tm);
+
+    // Convert UTC -> Chicago.
+    setenv("TZ", "America/Chicago", 1);
+    tzset();
+
+    std::tm chicago{};
+    localtime_r(&utc, &chicago);
+
+    std::ostringstream output;
+    output << std::put_time(&chicago, "%Y-%m-%d %H:%M:%S");
+
+    return output.str();
+}
+
+//not my code
+//supposed to take in a timestamp in GMT and IANA timezone from the csv and display the converted time alongside the timezone abbreviation
+std::string ConvertToTimezone(const std::string& timestamp, const std::string& timezone) {
+    std::tm tm{};
+    std::istringstream ss(timestamp);
+
+    ss >> std::get_time(&tm, "%Y-%m-%d %H:%M:%S");
+
+    if (ss.fail()) {
+        return "";
+    }
+
+    // Read microseconds.
+    int microseconds = 0;
+
+    if (ss.peek() == '.') {
+        ss.get();
+
+        std::string fraction;
+        ss >> fraction;
+
+        if (fraction.size() > 6) {
+            fraction.resize(6);
+        }
+
+        while (fraction.size() < 6) {
+            fraction += '0';
+        }
+
+        microseconds = std::stoi(fraction);
+    }
+
+    // Input timestamp is UTC.
+    time_t utc = timegm(&tm);
+
+    // Create CF timezone.
+    CFStringRef name =
+        CFStringCreateWithCString(
+            nullptr,
+            timezone.c_str(),
+            kCFStringEncodingUTF8
+        );
+
+    CFTimeZoneRef timeZone =
+        CFTimeZoneCreateWithName(
+            nullptr,
+            name,
+            false
+        );
+
+    CFRelease(name);
+
+    if (timeZone == nullptr) {
+        return "";
+    }
+
+    // Get UTC offset at this specific instant.
+    CFTimeInterval offset =
+        CFTimeZoneGetSecondsFromGMT(
+            timeZone,
+            static_cast<CFAbsoluteTime>(utc) +
+            kCFAbsoluteTimeIntervalSince1970
+        );
+
+    // Convert UTC -> local time.
+    time_t localTime =
+        utc + static_cast<time_t>(offset);
+
+    std::tm local{};
+    gmtime_r(&localTime, &local);
+
+    // Get CDT/CST/etc.
+    CFStringRef abbreviation =
+        CFTimeZoneCopyAbbreviation(
+            timeZone,
+            static_cast<CFAbsoluteTime>(utc) +
+            kCFAbsoluteTimeIntervalSince1970
+        );
+
+    char abbreviationBuffer[32] = "";
+
+    if (abbreviation != nullptr) {
+        CFStringGetCString(
+            abbreviation,
+            abbreviationBuffer,
+            sizeof(abbreviationBuffer),
+            kCFStringEncodingUTF8
+        );
+
+        CFRelease(abbreviation);
+    }
+
+    CFRelease(timeZone);
+
+    std::ostringstream output;
+
+    output << std::put_time(
+                  &local,
+                  "%Y-%m-%d %H:%M:%S"
+              )
+           << "."
+           << std::setfill('0')
+           << std::setw(6)
+           << microseconds
+           << " "
+           << abbreviationBuffer;
+
+    return output.str();
 }
 
 void PrintMenu() {
@@ -745,7 +909,7 @@ double PopulateExpenses(const std::string& filename, Month& month) {
             total += costd;
             expenses.insert(Expense(costd, reason, std::chrono::day(std::stoi(line))));
         } catch (const std::exception& e) {
-            std::cerr << "Error in " << filename << "\n" << e.what() << std::endl;
+            std::cerr << "Error in reading csv " << filename << "\n" << e.what() << std::endl; //why print the full filename? //I guess to match the print function PrintFile2
         }
     }
 
@@ -1132,7 +1296,7 @@ int UpdateMonthFile(const Year& year, std::chrono::month curr_month) {
 
     // Best Practice: Always check if the file opened successfully
     if (!file.is_open()) {
-        std::cerr << "Error: Could not open the file!" << std::endl;
+        std::cerr << "Error: Could not open the file" << filename << std::endl;
         return 0;
     }
 
@@ -1201,7 +1365,7 @@ int UpdateTotalsFile(const Year& year) {
 
     // Best Practice: Always check if the file opened successfully
     if (!file.is_open()) {
-        std::cerr << "Error: Could not open the file!" << std::endl;
+        std::cerr << "Error: Could not open the file" << filename << std::endl;
         return 0;
     }
 
@@ -1240,16 +1404,23 @@ int CreateAuditFile(const std::string& filename) {
         return 0;
     }
 
+    bool fileExists = std::filesystem::exists(filename);
+
+    if (!fileExists) {
+        std::cerr << paths[1] << " file not found. Creating file..." << std::endl;
+    }
+    
     // 1. Open the CSV file using an output file stream
     std::ofstream file(filename, std::ios::app);
 
     // Best Practice: Always check if the file opened successfully
     if (!file.is_open()) {
-        std::cerr << paths[1] << " file not found. Creating file..." << std::endl;
-        std::ofstream file(filename);
-        file << "sign,cost,reason,day\n";
-        file.close();
+        std::cerr << "Error: Could not open the file" << filename << std::endl;
         return 0;
+    }
+
+    if (!fileExists) {
+        file << "sign,cost,reason,date,timestamp,timezone\n";
     }
 
     file.close();
@@ -1274,6 +1445,7 @@ int CreateYearAuditFile(std::chrono::year year) {
 
 
 int UpdateAuditFileByFilename(std::string filename, char sign, const Expense& expense, std::chrono::year year, std::chrono::month month) {
+    //could replace setup with CreateAuditFile(const std::string& filename) but I'm too scared to do that
     std::vector<std::string> paths = SplitPath(filename);
 
     if (paths.size() != 2) {
@@ -1297,7 +1469,10 @@ int UpdateAuditFileByFilename(std::string filename, char sign, const Expense& ex
         return 0;
     }
 
-    if (!std::filesystem::exists(filename)) {
+    // Check whether the file already exists
+    bool fileExists = std::filesystem::exists(filename);
+
+    if (!fileExists) {
         std::cerr << paths[1] << " file not found. Creating file..." << std::endl;
     }
     
@@ -1306,19 +1481,25 @@ int UpdateAuditFileByFilename(std::string filename, char sign, const Expense& ex
 
     // Best Practice: Always check if the file opened successfully
     if (!file.is_open()) {
-        std::cerr << paths[1] << " file not found. Creating file..." << std::endl;
-        std::ofstream file(filename);
-        file << "sign,cost,reason,day\n";
-        file.close();
+        std::cerr << filename << " could not be opened." << std::endl;
+        return 0;
     }
 
-    file << sign << ",";
+    if (!fileExists) {
+        file << "sign,cost,reason,date,timestamp,timezone\n";
+    }
 
-    file << expense.cost << ",";
+    file << sign << ","
 
-    file << std::quoted(expense.reason, '"', '"') << ",";
+         << expense.cost << ","
 
-    file << std::format("{}", std::chrono::year_month_day(year, month, expense.day)) << std::endl;
+         << std::quoted(expense.reason, '"', '"') << ","
+
+         << std::format("{}", std::chrono::year_month_day(year, month, expense.day)) << ","
+
+         << std::chrono::system_clock::now() << ","
+
+         << entry_timezone << std::endl;
 
     file.close();
     
@@ -1345,23 +1526,26 @@ int UpdateYearAuditFile(char sign, const Expense& expense, std::chrono::year yea
 int PrintFile2(std::string filename) {
     std::ifstream file(filename);
 
-    int width = 15; //9
+    int width = 15; //9 //15
     int lineNumWidth = 6;
+    int strWidth = 60;
+    int timestampWidth = colWidth + 15;
 
     int i = 1;
     if (file.is_open()) {
         // Print the entire file contents to the console
-        std::cout << std::string(colWidth * 2 + strWidth + width + lineNumWidth + 1, '-') << "\n";
+        std::cout << std::string(colWidth * 2 + strWidth + width + lineNumWidth + 1 + timestampWidth, '-') << "\n";
 
 
         std::cout << std::left 
                     << std::setw(colWidth) << "Cost"
                     << std::setw(strWidth) << "Reason"
                     << std::setw(colWidth) << "Date"
+                    << std::setw(colWidth) << "Timestamp"
                     << std::setw(width) << "" //Sign
-                    << std::setw(lineNumWidth) << "" << "\n";
+                    << std::setw(lineNumWidth) << "" << "\n"; //line num
 
-        std::cout << std::string(colWidth * 2 + strWidth + width + lineNumWidth + 1, '-') << "\n";
+        std::cout << std::string(colWidth * 2 + strWidth + width + lineNumWidth + 1 + timestampWidth, '-') << "\n";
 
         std::string line;
         std::getline(file, line); //the header
@@ -1372,7 +1556,9 @@ int PrintFile2(std::string filename) {
             std::string sign;
             std::string cost;
             std::string reason;
-            std::string day;
+            std::string date;
+            std::string timestamp;
+            std::string timezone;
 
             try {
                 std::stringstream ss(line);
@@ -1385,7 +1571,12 @@ int PrintFile2(std::string filename) {
                 //     throw std::runtime_error("Reason cannot be empty.");
                 // }
 
-                //day = line; //could just use line
+                //google said
+                //The only scenario where reusing a stream might make sense is if you are writing a tight, ultra-high-performance loop executed millions of times per second, and benchmarking explicitly shows that std::string heap allocations inside the stream are causing a measurable bottleneck. Even then, you should look into more modern alternatives like std::format (C++20), std::print (C++23), or tools like boost::container::small_vector before resorting to manually recycling streams.
+                std::stringstream ss2(line); //not going to reuse the old one because then I would have to reset all the flags
+                std::getline(ss2, date, ',');
+                std::getline(ss2, timestamp, ',');
+                std::getline(ss2, timezone, '\n');
 
                 std::string display_sign;
                 if (sign == "+") {
@@ -1397,7 +1588,8 @@ int PrintFile2(std::string filename) {
                 std::cout << std::left
                           << std::setw(colWidth) << cost
                           << std::setw(strWidth) << reason
-                          << std::setw(colWidth) << line  //should already be formatted date YYYY-MM-DD, width is 10
+                          << std::setw(colWidth) << date  //should already be formatted date YYYY-MM-DD, width is 10
+                          << std::setw(timestampWidth) << ConvertToTimezone(timestamp, timezone) //timestamp.substr(0, timestamp.size() - 7)
                           << std::setw(width) << display_sign;
                           //<< std::setw(lineNumWidth) << i << "\n";
                 std::cout << std::right << std::setw(lineNumWidth - 1) << std::format("{:06}", i) << "\n";
@@ -1410,13 +1602,13 @@ int PrintFile2(std::string filename) {
             }
         }
 
-        std::cout << std::string(colWidth * 2 + strWidth + width + lineNumWidth + 1, '-') << "\n";
+        std::cout << std::string(colWidth * 2 + strWidth + width + lineNumWidth + 1 + timestampWidth, '-') << "\n";
         std::cout << std::endl;
 
         file.close();
         return 1;
     } else {
-        std::cerr << "Unable to open file" << std::endl;
+        std::cerr << "Unable to open file " << filename << std::endl;
         std::cout << std::endl;
         return 0;
     }
@@ -1487,7 +1679,7 @@ int PrintTotalsFile(const Year& year) {
         file.open(filename);
 
         if (!file.is_open()) {
-            std::cerr << "Error: Could not open the file!" << std::endl;
+            std::cerr << "Error: Could not open the file " << filename << std::endl;
             std::cout << std::endl;
             return 0;
         }
@@ -1514,7 +1706,7 @@ int PrintTotalsFile(const Year& year) {
     }
 
     if (header.empty() || values.empty()) {
-        std::cerr << "Error: No totals data found in the CSV file." << std::endl;
+        std::cerr << "Error: No totals data found in the CSV file " << filename << std::endl;
         std::cout << std::endl;
         return 0;
     }
@@ -1620,11 +1812,11 @@ int PromptInsertYear() {
                             }
                         }
                     } else {
-                        std::cerr << "Provided path does not exist or is not a directory." << std::endl;
+                        std::cerr << "Target path " << targetDir << " does not exist or is not a directory." << std::endl; //used to say Provided path, but who provided the path? me?
                     }
                 } catch (const std::filesystem::filesystem_error& e) {
                     std::cerr << "Error: " << e.what() << std::endl;
-                }
+                } //do I need to be more descriptive after “Error: “ here? I don’t think so, since you just ran the action of insert year for all years in includes directory
 
                 return count; //should I really return count of inserted years, or should I return 1?
                 

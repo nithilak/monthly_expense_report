@@ -107,7 +107,9 @@ constexpr int fixed_csv_file_prefix_length = 21;
 constexpr int colWidth = 20;
 
 constexpr int strWidth = 80;
-constexpr int lineNumWidth = 2; //6
+constexpr int lineNumWidth = 3; //6 //2
+
+inline std::string entry_timezone;
 
 
 #endif // CONSTANTS_HPP

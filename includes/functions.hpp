@@ -37,8 +37,29 @@
 //     return 0;
 // }
 
+//for UpdateAuditFileByFilename(std::string filename, char sign, const Expense& expense, std::chrono::year year, std::chrono::month month)
+//could replace setup involving dirPath with CreateAuditFile(const std::string& filename) but I'm too scared to do that
+
+//in PrintFile2 I use std::getline(ss, line); but then later std::getline(ss2, timezone, '\n');, not consistent
+//PopulateExpenses(const std::string& filename, Month& month) uses std::getline(ss, line);
+//don't forget at the top std::getline(file, line); //the header
+//"top" meaning right before the while loop starts
+
+//in PrintFile2 I make another stringstream after reason = parseCSVLine5ChangeLine(line); which gets the string for reason and changes line to be the rest of the csv entries
+//google said
+//The only scenario where reusing a stream might make sense is if you are writing a tight, ultra-high-performance loop executed millions of times per second, and benchmarking explicitly shows that std::string heap allocations inside the stream are causing a measurable bottleneck. Even then, you should look into more modern alternatives like std::format (C++20), std::print (C++23), or tools like boost::container::small_vector before resorting to manually recycling streams.
+//std::stringstream ss2(line); //not going to reuse the old one because then I would have to reset all the flags
+
 //could preface error messages with "Error: " like the computer code
 //also std::cout vs std::cerr in some cases, up to discretion
+//also some error messages regarding filename print the entire filename, others only a part of the filename
+                //     } else {
+                //         std::cerr << "Target path " << targetDir << " does not exist or is not a directory." << std::endl; //used to say Provided path, but who provided the path? me?
+                //     }
+                // } catch (const std::filesystem::filesystem_error& e) {
+                //     std::cerr << "Error: " << e.what() << std::endl;
+                // }
+//do I need to be more descriptive after “Error: “ here? I don’t think so, since you just ran the action of insert year for all years in includes directory
 
 //also could add errors for reaching unreachable places? like after a while loop with std::getline
 //currently returning the quit option in those cases
@@ -64,15 +85,22 @@
 //See available years says "deleted" when the year is "erased" by function call
 
 //added audit files, and is "deleted" the correct term for removing an expense?
+//calling whether the entry in the audit csv file is added or deleted as "sign", what else should I have called it?
+
+//currently storing timestamp in UTC/GMT by file << std::chrono::system_clock::now(); in the csv which looks like 2026-09-26 09:27:00.816661
+//could change to storing time since epoch instead
+//from the generated code for ConvertToChicago(const std::string& timestamp)
+//One caveat: the code I gave changes the process-wide TZ environment variable. If your program is single-threaded, that's usually fine, but I'd prefer a solution that doesn't modify global timezone state if this is a larger application.
 
 //could change the directory from "./includes" to its own folder
 
 //some things are created as a variable, std::string date = thing; for example which I think is for readability
 //when it could be passed directly, which it is done sometimes
 
-//idWidth is set to 2 but really it should be like 6
+//lineNumWidth is set to 2 but really it should be like 6
 //I tried right aligning it but that looked wrong
-//guess the solution is padded zeros //std::cout << std::setw(idWidth) << std::format("{:06}", id) << "\n";
+//guess the solution is padded zeros //std::cout << std::setw(lineNumWidth) << std::format("{:06}", id) << "\n";
+//after aligning the audit file it makes the other printing files' alignment of cost and line number a bit weird, but ok for small scale
 
 //the totals file TotalExpensesYEAR.csv is mostly for show/file reader use only since it is recalculated 
 //upon inserting a year and is never read from, only updated from what is stored in memory
@@ -251,6 +279,17 @@ std::string ReturnDirPath(const std::string& filename);
 //returns the parent path of the input string by checking for the last instance of "/" as the first entry
 //returns the rest as the second entry
 std::vector<std::string> SplitPath(const std::string& filename);
+
+//not my code
+//converts the GMT timestamp from auto now = std::chrono::system_clock::now(); printed output in the csv file to chicago time
+//from generated code:
+//"One caveat: the code I gave changes the process-wide TZ environment variable. If your program is single-threaded, that's usually fine, but I'd prefer a solution that doesn't modify global timezone state if this is a larger application."
+std::string ConvertToChicago(const std::string& timestamp);
+
+//not my code
+//gets the current computer timezone and returns it as a string
+//returns an empty string upon failure
+std::string GetComputerTimezone();
 
 //prints the menu for the UI
 void PrintMenu();

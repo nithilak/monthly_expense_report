@@ -3,6 +3,7 @@ CXX := clang++
 CXXFLAGS := -std=c++20
 CPPFLAGS := -Iincludes
 OPTFLAGS := -O0 -gdwarf-4
+LDFLAGS := -framework CoreFoundation
 
 SRCS := ./src/driver.cc ./src/functions.cpp
 TARGET := bin/exec
@@ -13,7 +14,7 @@ all: $(TARGET)
 
 $(TARGET): $(SRCS)
 	mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) $(SRCS) -o $@
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPTFLAGS) $(SRCS) $(LDFLAGS) -o $@
 
 clean:
 	rm -f $(TARGET)

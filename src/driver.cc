@@ -12,6 +12,9 @@
 #include <chrono>
 
 int main() {
+  entry_timezone = GetComputerTimezone();
+
+
   std::string line;
 
   std::cout << "Enter q to quit." << std::endl;

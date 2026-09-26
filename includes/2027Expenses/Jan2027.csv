@@ -1,10 +1,12 @@
 cost,reason,day
+30,"a good reason",00
 10,"New Years streamers",01
 23,"stuff",02
+15,"test, ""test"", ""another test"", test again",03
 23,"q",03
+12,"""test"", 'test', """"""""""""""test    q",04
 18,"test    test    test    q",04
 67,"six seven",06
-12,"""test"", 'test', """"""""""""""test    q",14
-15,"test, ""test"", ""another test"", test again",23
-13,"dog treats",27
-30,"a good reason",30
+13,"dog treats",07
+1783.24,"test audit",24
+100,"hundred",25
