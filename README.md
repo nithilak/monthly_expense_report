@@ -11,6 +11,7 @@ do:
 to run the program.  
 
 Press q to quit anytime and go back a level.  
+(Except for when prompted for a text entry.)  
 
 Insert year by adding a folder in includes with the title YEARExpenses.  
 (The automatic file creator writes the year with a 4 leading zero format.)  

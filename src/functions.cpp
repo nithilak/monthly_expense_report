@@ -852,10 +852,10 @@ int AddExpense(Year& year, std::chrono::month curr_month) {
     std::cout << "Enter a reason: ";
 
     while (std::getline(std::cin, text)) {
-        if (text == "q") {
-            std::cout << std::endl;
-            return 0;
-        }
+        // if (text == "q") {
+        //     std::cout << std::endl;
+        //     return 0;
+        // }
 
         if (text.find_first_not_of(" \t\n\v\f\r") != std::string::npos) {
             std::cout << "Reason: " << text << "\n";
