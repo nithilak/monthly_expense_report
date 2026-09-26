@@ -1526,7 +1526,7 @@ int UpdateYearAuditFile(char sign, const Expense& expense, std::chrono::year yea
 int PrintFile2(std::string filename) {
     std::ifstream file(filename);
 
-    int width = 15; //9 //15
+    int signWidth = 15; //9 //15
     int lineNumWidth = 6;
     int strWidth = 60;
     int timestampWidth = colWidth + 15;
@@ -1534,7 +1534,7 @@ int PrintFile2(std::string filename) {
     int i = 1;
     if (file.is_open()) {
         // Print the entire file contents to the console
-        std::cout << std::string(colWidth * 2 + strWidth + width + lineNumWidth + 1 + timestampWidth, '-') << "\n";
+        std::cout << std::string(colWidth * 2 + strWidth + signWidth + lineNumWidth + 1 + timestampWidth, '-') << "\n";
 
 
         std::cout << std::left 
@@ -1542,10 +1542,10 @@ int PrintFile2(std::string filename) {
                     << std::setw(strWidth) << "Reason"
                     << std::setw(colWidth) << "Date"
                     << std::setw(colWidth) << "Timestamp"
-                    << std::setw(width) << "" //Sign
+                    << std::setw(signWidth) << "" //Sign
                     << std::setw(lineNumWidth) << "" << "\n"; //line num
 
-        std::cout << std::string(colWidth * 2 + strWidth + width + lineNumWidth + 1 + timestampWidth, '-') << "\n";
+        std::cout << std::string(colWidth * 2 + strWidth + signWidth + lineNumWidth + 1 + timestampWidth, '-') << "\n";
 
         std::string line;
         std::getline(file, line); //the header
@@ -1590,7 +1590,7 @@ int PrintFile2(std::string filename) {
                           << std::setw(strWidth) << reason
                           << std::setw(colWidth) << date  //should already be formatted date YYYY-MM-DD, width is 10
                           << std::setw(timestampWidth) << ConvertToTimezone(timestamp, timezone) //timestamp.substr(0, timestamp.size() - 7)
-                          << std::setw(width) << display_sign;
+                          << std::setw(signWidth) << display_sign;
                           //<< std::setw(lineNumWidth) << i << "\n";
                 std::cout << std::right << std::setw(lineNumWidth - 1) << std::format("{:06}", i) << "\n";
                           //<< std::setw(lineNumWidth) << std::format("{:06}", i) << "\n";
@@ -1602,7 +1602,7 @@ int PrintFile2(std::string filename) {
             }
         }
 
-        std::cout << std::string(colWidth * 2 + strWidth + width + lineNumWidth + 1 + timestampWidth, '-') << "\n";
+        std::cout << std::string(colWidth * 2 + strWidth + signWidth + lineNumWidth + 1 + timestampWidth, '-') << "\n";
         std::cout << std::endl;
 
         file.close();
