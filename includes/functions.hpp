@@ -9,6 +9,7 @@
 
 //I don't use const iterators but maybe they could be implemented
 //also perhaps there should be less copy and pasting in main and less repeated newlines
+//and hopefully less copy and pasting in functions.cpp
 
 //using int vs unsigned for month and year
 //std::chrono::year{int}; accepts an int but year.months[static_cast<unsigned int>(curr_month) - 1]; is an unsigned int cast function
@@ -381,11 +382,13 @@ int CreateMonthAuditFile(std::chrono::year year, std::chrono::month month);
 int CreateYearAuditFile(std::chrono::year year);
 
 // Print the entire file contents to the console
-int PrintFile2(std::string filename);
+int PrintAuditFile(std::string filename);
 int PrintAuditFile();
 int PrintMonthAuditFile(std::chrono::year year, std::chrono::month month);
 int PrintYearAuditFile(std::chrono::year year);
-
+//prints the file contents in reverse order
+//line number displays from end to 1, could be reversed
+int PrintAuditFileReverse(std::string filename);
 
 //for these two I could make a quit option by implementing a default year
 

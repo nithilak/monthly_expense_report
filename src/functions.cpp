@@ -302,7 +302,7 @@ std::string MakeQuoted(const std::string& line) {
 
 std::string ReturnDirPath(const std::string& filename) {
     int filename_length = filename.size();
-    for (int i = filename_length - 1; i >= 0; i--) {
+    for (int i = filename_length - 1; i >= 0; i--) { //i > -1
         std::cout << filename.at(i) << std::endl;
         if (filename.at(i) == '/') {
             return filename.substr(0, i + 1);
@@ -319,7 +319,7 @@ std::vector<std::string> SplitPath(const std::string& filename) {
     }
 
     int filename_length = filename.size();
-    for (int i = filename_length - 1; i >= 0; i--) {
+    for (int i = filename_length - 1; i >= 0; i--) { //i > -1
         // std::cout << filename.at(i) << std::endl;
         if (filename.at(i) == '/') {
             ret.push_back(filename.substr(0, i + 1));
@@ -1523,7 +1523,7 @@ int UpdateYearAuditFile(char sign, const Expense& expense, std::chrono::year yea
     return UpdateAuditFileByFilename("includes/" + year_str + "Expenses/" + year_str + "AuditFile.csv", sign, expense, year, month);
 }
 
-int PrintFile2(std::string filename) {
+int PrintAuditFile(std::string filename) {
     std::ifstream file(filename);
 
     int signWidth = 15; //9 //15
@@ -1614,19 +1614,126 @@ int PrintFile2(std::string filename) {
     }
 }
 
+int PrintAuditFileReverse(std::string filename) {
+    std::ifstream file(filename);
+
+    int signWidth = 15; //9 //15
+    int lineNumWidth = 6;
+    int strWidth = 60;
+    int timestampWidth = colWidth + 15;
+
+    if (file.is_open()) {
+        // Print the entire file contents to the console
+        std::cout << std::string(colWidth * 2 + strWidth + signWidth + lineNumWidth + 1 + timestampWidth, '-') << "\n";
+
+
+        std::cout << std::left 
+                    << std::setw(colWidth) << "Cost"
+                    << std::setw(strWidth) << "Reason"
+                    << std::setw(colWidth) << "Date"
+                    << std::setw(colWidth) << "Timestamp"
+                    << std::setw(signWidth) << "" //Sign
+                    << std::setw(lineNumWidth) << "" << "\n"; //line num
+
+        std::cout << std::string(colWidth * 2 + strWidth + signWidth + lineNumWidth + 1 + timestampWidth, '-') << "\n";
+
+        std::vector<std::array<std::string, 6>> lines;
+        
+        std::string line;
+        std::getline(file, line); //the header
+        // std::cout << line << std::endl;
+
+        while (std::getline(file, line)) {
+            // std::cout << line << std::endl;
+            std::string sign;
+            std::string cost;
+            std::string reason;
+            std::string date;
+            std::string timestamp;
+            std::string timezone;
+
+
+            try {
+                std::stringstream ss(line);
+                std::getline(ss, sign, ',');
+                std::getline(ss, cost, ',');
+                std::getline(ss, line);
+
+                reason = parseCSVLine5ChangeLine(line);
+                // if (reason.find_first_not_of(" \t\n\v\f\r") == std::string::npos) {
+                //     throw std::runtime_error("Reason cannot be empty.");
+                // }
+
+                //google said
+                //The only scenario where reusing a stream might make sense is if you are writing a tight, ultra-high-performance loop executed millions of times per second, and benchmarking explicitly shows that std::string heap allocations inside the stream are causing a measurable bottleneck. Even then, you should look into more modern alternatives like std::format (C++20), std::print (C++23), or tools like boost::container::small_vector before resorting to manually recycling streams.
+                std::stringstream ss2(line); //not going to reuse the old one because then I would have to reset all the flags
+                std::getline(ss2, date, ',');
+                std::getline(ss2, timestamp, ',');
+                std::getline(ss2, timezone, '\n');
+
+                std::string display_sign;
+                if (sign == "+") {
+                    display_sign = "Added";
+                } else if (sign == "-") {
+                    display_sign = "Deleted";
+                }
+
+                lines.push_back({{display_sign, cost, reason, date, timestamp, timezone}});
+
+            } catch (const std::exception& e) {
+                std::cerr << "Error in reading " << filename << "\n" << e.what() << std::endl;
+            }
+        }
+
+        try {
+
+            // int count = 1;
+            for (int i = lines.size() - 1; i > -1; --i) { //i >= 0
+                const std::array<std::string, 6>& arr = lines.at(i);
+                std::cout << std::left
+                        << std::setw(colWidth) << arr.at(1) //cost
+                        << std::setw(strWidth) << arr.at(2) //reason
+                        << std::setw(colWidth) << arr.at(3)  //date //should already be formatted date YYYY-MM-DD, width is 10
+                        << std::setw(timestampWidth) << ConvertToTimezone(arr.at(4), arr.at(5)) //(timestamp, timezone) //timestamp.substr(0, timestamp.size() - 7)
+                        << std::setw(signWidth) << arr.at(0); //display_sign
+                        //<< std::setw(lineNumWidth) << i << "\n";
+                std::cout << std::right << std::setw(lineNumWidth - 1) << std::format("{:06}", i + 1) << "\n";
+                        //<< std::setw(lineNumWidth) << std::format("{:06}", i) << "\n";
+                //std::cout << std::right << std::setw(lineNumWidth - 2) << i << "\n";
+                // count++;
+            }
+
+        } catch (const std::exception& e) {
+            std::cerr << "Error in printing " << filename << "\n" << e.what() << std::endl;
+        }
+
+
+        std::cout << std::string(colWidth * 2 + strWidth + signWidth + lineNumWidth + 1 + timestampWidth, '-') << "\n";
+        std::cout << std::endl;
+
+        file.close();
+        return 1;
+    } else {
+        std::cerr << "Unable to open file " << filename << std::endl;
+        std::cout << std::endl;
+        return 0;
+    }
+}
+
 int PrintAuditFile() {
-    return PrintFile2("includes/AuditFile.csv");
+    return PrintAuditFile("includes/AuditFile.csv");
+    // return PrintAuditFileReverse("includes/AuditFile.csv");
 }
 
 int PrintMonthAuditFile(std::chrono::year year, std::chrono::month month) {
     std::string year_str = std::format("{}", year);
     std::string month_str = std::format("{:%b}", month);
-    return PrintFile2("includes/" + year_str + "Expenses/" + month_str + year_str + "AuditFile.csv");
+    return PrintAuditFile("includes/" + year_str + "Expenses/" + month_str + year_str + "AuditFile.csv");
 }
 
 int PrintYearAuditFile(std::chrono::year year) {
     std::string year_str = std::format("{}", year);
-    return PrintFile2("includes/" + year_str + "Expenses/" + year_str + "AuditFile.csv");
+    return PrintAuditFile("includes/" + year_str + "Expenses/" + year_str + "AuditFile.csv");
 }
 
 
