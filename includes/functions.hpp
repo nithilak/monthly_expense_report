@@ -10,6 +10,12 @@
 
 using namespace decimal;
 
+//this code is written for macOS (with arm64) (I think), current version Tahoe 26.6 (25G72)
+//compiler:
+//  Apple clang 21.0.0 
+//  arm64-apple-darwin25.6.0
+//using C based libraries <ctime> and <CoreFoundation/CoreFoundation.h> because support for std::chrono time functions std::chrono::zoned_time, std::chrono::current_zone(), std::chrono::locate_zone() etc. are not ready as of 2026 September 27 and also because generated code said to in my case
+
 //I don't use const iterators but maybe they could be implemented
 //also perhaps there should be less copy and pasting in main and less repeated newlines
 //and hopefully less copy and pasting in functions.cpp
