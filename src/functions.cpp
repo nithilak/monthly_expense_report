@@ -358,6 +358,10 @@ std::string GetComputerTimezone() {
     return std::string(buffer);
 }
 
+//not my code
+//converts the GMT timestamp from auto now = std::chrono::system_clock::now(); printed output in the csv file to chicago time
+//from generated code:
+//"One caveat: the code I gave changes the process-wide TZ environment variable. If your program is single-threaded, that's usually fine, but I'd prefer a solution that doesn't modify global timezone state if this is a larger application."
 std::string ConvertToChicago(const std::string& timestamp) {
     std::tm tm{};
     std::istringstream ss(timestamp);

@@ -361,6 +361,10 @@ std::string ConvertToChicago(const std::string& timestamp);
 //returns an empty string upon failure
 std::string GetComputerTimezone();
 
+//not my code
+//supposed to take in a timestamp in GMT and IANA timezone from the csv and display the converted time alongside the timezone abbreviation
+std::string ConvertToTimezone(const std::string& timestamp, const std::string& timezone);
+
 //prints the menu for the UI
 void PrintMenu();
 void PrintMenuYear(std::chrono::year year);
