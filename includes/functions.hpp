@@ -91,8 +91,10 @@ using namespace decimal;
 
 //added audit files, and is "deleted" the correct term for removing an expense?
 //calling whether the entry in the audit csv file is added or deleted as "sign", what else should I have called it?
+//audit files are printed from oldest to newest, but I did create a function to print the audit file in reverse order if that needed to be changed
 
-//currently storing timestamp in UTC/GMT by file << std::chrono::system_clock::now(); in the csv which looks like 2026-09-26 09:27:00.816661
+//in audit file csv
+//currently storing timestamp in UTC/GMT by file << std::chrono::system_clock::now(); in the csv which looks like 2026-09-26 09:27:00.816661, then adding the computer's timezone as the next entry //when displayed by the print function it shows the GMT time converted to that timezone
 //could change to storing time since epoch instead
 //from the generated code for ConvertToChicago(const std::string& timestamp)
 //One caveat: the code I gave changes the process-wide TZ environment variable. If your program is single-threaded, that's usually fine, but I'd prefer a solution that doesn't modify global timezone state if this is a larger application.
@@ -109,6 +111,34 @@ using namespace decimal;
 
 //the totals file TotalExpensesYEAR.csv is mostly for show/file reader use only since it is recalculated 
 //upon inserting a year and is never read from, only updated from what is stored in memory
+
+//not added feature
+//AddExpense reprompts after adding an expense, and maybe DeleteExpense does too after deleting an expense
+// int AddExpense(Year& year, std::chrono::month curr_month) {
+//     return AddExpense(year, curr_month, false);
+// }
+// int AddExpense(Year& year, std::chrono::month curr_month, bool changed_data) {
+// ...
+//         if (line == "q") { //anytime this appears
+//             std::cout << std::endl;
+//             return AddExpense(year, curr_month, changed_data);
+//         }
+// ...
+//             std::cout << "Expense added.\n" << std::endl;
+//             // std::string audit_line = "Added Expense: " + std::to_string(num) + ", " + text + ", " + date;
+//             UpdateAuditFile('+', expense_to_insert, curr_year, curr_month);
+//             UpdateMonthAuditFile('+', expense_to_insert, curr_year, curr_month);
+//             UpdateYearAuditFile('+', expense_to_insert, curr_year, curr_month);
+//             return AddExpense(year, curr_month, true);
+//             return 1;
+//         }
+
+//         if (line == "n") {
+//             return AddExpense(year, curr_month, changed_data);
+//         }
+// ...
+// }
+
 
 //not added feature
 // std::cout << "Update all month files and total files for all years: 11" << std::endl; 
@@ -211,6 +241,7 @@ using namespace decimal;
 //AddExpense and DeleteExpense have one long continuous text when selecting no until you select yes or quit
 //could have the option to reprompt AddExpense and DeleteExpense until you say quit
 //could print the changed output after you make a change //if reprompting is implemented it will happen as part of the reprompting
+//note: see not added feature list above
 
 //currently after doing AddExpense and DeleteExpense in main the month file and the totals file are automatically updated
 //and main prints that the file is is updated
