@@ -113,6 +113,7 @@ using namespace decimal;
 //upon inserting a year and is never read from, only updated from what is stored in memory
 
 //not added feature
+//if I were to actually use this program I would want this feature
 //AddExpense reprompts after adding an expense, and maybe DeleteExpense does too after deleting an expense
 // int AddExpense(Year& year, std::chrono::month curr_month) {
 //     return AddExpense(year, curr_month, false);
@@ -129,8 +130,16 @@ using namespace decimal;
 //             UpdateAuditFile('+', expense_to_insert, curr_year, curr_month);
 //             UpdateMonthAuditFile('+', expense_to_insert, curr_year, curr_month);
 //             UpdateYearAuditFile('+', expense_to_insert, curr_year, curr_month);
+//             bool passed = UpdateMonthFile(year, month_to_add);
+//             std::cout << std::format("{:%b}{}.csv {}updated.\n", 
+//                      month_to_add, 
+//                      curr_year, 
+//                      passed ? "" : "not ");
+//                bool passed2 = UpdateTotalsFile(year);
+//                std::cout << std::format("TotalExpenses{}.csv {}updated.\n",  
+//                      curr_year, 
+//                      passed2 ? "" : "not ") << std::endl;
 //             return AddExpense(year, curr_month, true);
-//             return 1;
 //         }
 
 //         if (line == "n") {
@@ -138,7 +147,17 @@ using namespace decimal;
 //         }
 // ...
 // }
-
+//if you were to run audit file updates + month and totals file updates outside the function
+//inside the outer function
+//store an array of three strings/structs/tuples for the csv entry
+//then store the wrapper function as a bool, but
+//modify the wrapper function to accept the array as a reference input and
+//then upon adding an expense, add to each string what would be in the audit file 
+//this is the tricky part, converting the audit file entry to a string     
+//std::string str = sign + ',' + std::format("{}", expense.cost) + ',' + std::quoted(expense.reason, '"', '"') + ',' + std::format("{}", std::chrono::year_month_day(year, month, expense.day)) + ',' + std::chrono::system_clock::now() + ',' + entry_timezone + '\n';
+//quoted does not work
+//or if using a struct/tuple just store the parameters to pass to the audit file update function
+//then before returning the bool, update the audit files using the array and also update the month file and totals file
 
 //not added feature
 // std::cout << "Update all month files and total files for all years: 11" << std::endl; 
@@ -244,6 +263,7 @@ using namespace decimal;
 //note: see not added feature list above
 
 //currently after doing AddExpense and DeleteExpense in main the month file and the totals file are automatically updated
+//edit: moved the month file and totals file updates to inside the function //though this makes the int return a bit weird //also should the print statement for "file updated" be inside the update functions themselves?
 //and main prints that the file is is updated
 //could be changed
 //the audit files are also automatically updated but main does not print that the file is updated
