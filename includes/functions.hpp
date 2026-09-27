@@ -72,7 +72,7 @@ using namespace decimal;
 //bit inconsistent with naming month vs curr_month, year vs curr_year 
 //for which one is the Month or Year and which is the std::chrono::month or std::chrono::year
 
-//incosistent use of "\n" at the end of invalid rather than std::endl; but it's ok (got it from code written not by me)
+//inconsistent use of "\n" at the end of invalid rather than std::endl; but it's ok (got it from code written not by me)
 //apparently std::endl is more expensive and slower 
 //google says "You should use std::endl when you absolutely need to guarantee that the user or a file sees the text right now. "
 
@@ -81,6 +81,12 @@ using namespace decimal;
 
 //for (int i = 0; i < years.size() - 1; i++) {} turns out that calls the size function each time
 //has been optimized
+
+//std::endl; vs << "\n" in the general sense, including std::format("{}\n", ...) vs std::format("{}", ...) << std::endl;
+
+//"," vs ',', "\n" vs '\n'
+
+//i >= 0 vs i > -1
 
 
 //there are a lot of unused helper functions

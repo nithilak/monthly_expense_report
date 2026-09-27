@@ -14,3 +14,5 @@ sign,cost,reason,date,timestamp,timezone
 +,12,"test",2027-12-14,2026-09-26 15:38:50.596559,America/Chicago
 +,14,"test",2027-12-14,2026-09-26 15:40:08.361521,America/Chicago
 -,14,"test",2027-12-14,2026-09-26 15:41:06.984893,America/Chicago
++,34,"test print statement",2027-12-09,2026-09-27 20:32:57.084553,America/Chicago
+-,34,"test print statement",2027-12-09,2026-09-27 20:34:35.774793,America/Chicago
