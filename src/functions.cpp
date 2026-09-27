@@ -1265,12 +1265,12 @@ Decimal DeleteExpense(std::chrono::year year, Month& month) {
                         expenses.erase(it);
                         // month.changed = true;
                         std::cout << "Expense deleted.\n" << std::endl;
-                        bool passed = UpdateMonthFile(year, curr_month);
+                        bool passed = UpdateMonthFile(years.at(year), curr_month);
                         std::cout << std::format("{:%b}{}.csv {}updated.\n", 
                                 curr_month, 
                                 year, 
                                 passed ? "" : "not ");
-                        bool passed2 = UpdateTotalsFile(year);
+                        bool passed2 = UpdateTotalsFile(years.at(year));
                         std::cout << std::format("TotalExpenses{}.csv {}updated.\n",  
                                 year, 
                                 passed2 ? "" : "not ") << std::endl;

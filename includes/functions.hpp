@@ -268,6 +268,12 @@ using namespace decimal;
 //could be changed
 //the audit files are also automatically updated but main does not print that the file is updated
 
+//speaking of the edit
+//update files currently have int UpdateTotalsFile(const Year& year) { and int UpdateMonthFile(const Year& year, std::chrono::month curr_month) {
+//which kind of makes Decimal DeleteExpense(std::chrono::year year, Month& month) { kind of against the point since the update functions require the Year
+//but the update month file function could just take the year and Month, or even just the Month
+//but I guess it is not done that way to keep consistency so that the month and year match and that the error message for filename prints the right year
+
 //AddExpense does not permit you to enter an empty reason or whitespace reasonn currently 
 //if the reason is empty/whitespace in the CSV file when you read it in with PopulateExpenses, 
 //PopulateExpenses throws an error that is caught and displayed and it does not add that specific expense
