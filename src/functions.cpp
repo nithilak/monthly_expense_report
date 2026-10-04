@@ -13,6 +13,60 @@
 #include <filesystem>
 #include <CoreFoundation/CoreFoundation.h>
 
+std::string Expense::toString() const {
+    return std::format("{}, {}, {}\n", cost.to_sci(), reason, day);
+}
+
+bool Expense::operator<(const Expense& other) const {
+    if (this->day != other.day) {
+        return this->day < other.day;
+    }
+    if (this->cost != other.cost) {
+        return this->cost < other.cost;
+    }
+    return this->reason < other.reason;
+}
+
+bool Expense::operator>(const Expense& other) const {
+    return other < *this;
+}
+
+bool Expense::operator==(const Expense& other) const {
+    return (this->cost == other.cost) && (this->reason == other.reason) && (this->day == other.day);
+}
+
+bool Expense::operator!=(const Expense& other) const {
+    return (this->cost != other.cost) || (this->reason != other.reason) || (this->day != other.day);
+}
+
+Month::Month(std::chrono::month enter_month) { //, std::chrono::year enter_year
+    month = enter_month;
+    // year = enter_year;
+}
+
+Month::Month(std::string enter_filename, std::chrono::month enter_month) { //, std::chrono::year enter_year
+    month = enter_month;
+    // year = enter_year;
+    filename = enter_filename;
+}
+
+bool Month::operator<(const Month& other) const {
+    return this->month < other.month;
+}
+
+Year::Year(){};
+
+Year::Year(std::chrono::year enter_year) {
+    year = enter_year;
+}
+
+bool Year::operator<(const Year& other) const {
+    return this->year < other.year;
+}
+
+
+
+
 void PrintFile(std::string filename) {
     // 1. Open the CSV file using an input file stream
     std::ifstream file(filename);
